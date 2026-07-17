@@ -1,0 +1,2707 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>ESI — UPH Information Systems | FAIDAS</title>
+		<link rel="icon" type="image/png" href="assets/esi.png" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@500;700&display=swap"
+			rel="stylesheet"
+		/>
+		<style>
+			:root {
+				/* Glass theme — terinspirasi identitas Imago Dei UPH & flyer prodi */
+				--bg: #e9eff8;
+				--bg-2: #dfe8f5;
+				--ink: #152246; /* navy teks */
+				--muted: #5b6c90;
+				--glass: rgba(255, 255, 255, 0.55);
+				--glass-strong: rgba(255, 255, 255, 0.72);
+				--glass-border: rgba(255, 255, 255, 0.85);
+				--glass-edge: rgba(21, 34, 70, 0.08);
+				--indigo: #4a3f8f;
+				--plum: #a4468a;
+				--orange: #f0762b; /* syal ESI + ujung gradien logo SI */
+				--cyan: #0fa8a3; /* aksen teal (versi kontras utk latar terang) */
+				--grad: linear-gradient(100deg, #4a3f8f 0%, #a4468a 55%, #f0762b 100%);
+				--radius: 22px;
+				--shadow: 0 18px 45px rgba(21, 34, 70, 0.16);
+				--shadow-soft: 0 10px 30px rgba(21, 34, 70, 0.1);
+			}
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+			html {
+				scroll-behavior: smooth;
+			}
+			body {
+				font-family: "Nunito Sans", system-ui, sans-serif;
+				background:
+					radial-gradient(
+						900px 540px at 88% -6%,
+						rgba(90, 77, 168, 0.18),
+						transparent 60%
+					),
+					radial-gradient(
+						820px 560px at -12% 28%,
+						rgba(164, 70, 138, 0.13),
+						transparent 55%
+					),
+					radial-gradient(
+						760px 520px at 72% 96%,
+						rgba(240, 118, 43, 0.14),
+						transparent 55%
+					),
+					linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+				color: var(--ink);
+				min-height: 100vh;
+				overflow-x: hidden;
+			}
+			#bg-net {
+				position: fixed;
+				inset: 0;
+				z-index: 0;
+				pointer-events: none;
+				opacity: 0.5;
+			}
+			.wrap {
+				position: relative;
+				z-index: 1;
+				max-width: 1080px;
+				margin: 0 auto;
+				padding: 0 22px;
+			}
+			h1,
+			h2,
+			h3,
+			.display {
+				font-family: "Baloo 2", cursive;
+			}
+			.mono {
+				font-family: "JetBrains Mono", monospace;
+			}
+			a {
+				color: inherit;
+			}
+			img {
+				max-width: 100%;
+				display: block;
+			}
+
+			/* ---------- kaca / glass utility ---------- */
+			.glass,
+			.game-shell,
+			.quiz-shell,
+			.card,
+			.logos .plate {
+				background: var(--glass);
+				-webkit-backdrop-filter: blur(18px) saturate(1.15);
+				backdrop-filter: blur(18px) saturate(1.15);
+				border: 1px solid var(--glass-border);
+				box-shadow:
+					var(--shadow-soft),
+					inset 0 1px 0 rgba(255, 255, 255, 0.9);
+			}
+
+			/* ---------- header ---------- */
+			header {
+				position: sticky;
+				top: 0;
+				z-index: 50;
+				background: rgba(255, 255, 255, 0.5);
+				-webkit-backdrop-filter: blur(16px) saturate(1.2);
+				backdrop-filter: blur(16px) saturate(1.2);
+				border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+				box-shadow: 0 4px 24px rgba(21, 34, 70, 0.06);
+			}
+			.nav {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				gap: 16px;
+				padding: 10px 0;
+			}
+			.nav-logo {
+				background: rgba(255, 255, 255, 0.8);
+				border: 1px solid var(--glass-border);
+				border-radius: 12px;
+				padding: 6px 10px;
+				box-shadow: var(--shadow-soft);
+			}
+			.nav-logo img {
+				height: 34px;
+				width: auto;
+			}
+			.nav-links {
+				display: flex;
+				gap: 6px;
+				flex-wrap: wrap;
+			}
+			.nav-links a {
+				text-decoration: none;
+				font-weight: 700;
+				font-size: 0.92rem;
+				color: var(--muted);
+				padding: 8px 14px;
+				border-radius: 999px;
+				transition: 0.2s;
+			}
+			.nav-links a:hover,
+			.nav-links a:focus-visible {
+				color: var(--ink);
+				background: rgba(255, 255, 255, 0.75);
+			}
+
+			/* ---------- hero ---------- */
+			.hero {
+				display: grid;
+				grid-template-columns: 1.15fr 0.85fr;
+				gap: 30px;
+				align-items: center;
+				padding: 64px 0 40px;
+				min-height: 78vh;
+			}
+			.eyebrow {
+				display: inline-flex;
+				align-items: center;
+				gap: 8px;
+				font-weight: 800;
+				font-size: 0.8rem;
+				letter-spacing: 0.12em;
+				text-transform: uppercase;
+				color: var(--cyan);
+				background: rgba(255, 255, 255, 0.6);
+				border: 1px solid rgba(15, 168, 163, 0.35);
+				border-radius: 999px;
+				padding: 7px 14px;
+				margin-bottom: 18px;
+				-webkit-backdrop-filter: blur(10px);
+				backdrop-filter: blur(10px);
+			}
+			.eyebrow .dot {
+				width: 8px;
+				height: 8px;
+				border-radius: 50%;
+				background: var(--cyan);
+				animation: pulse 1.6s infinite;
+			}
+			@keyframes pulse {
+				0%,
+				100% {
+					transform: scale(1);
+					opacity: 1;
+				}
+				50% {
+					transform: scale(1.6);
+					opacity: 0.4;
+				}
+			}
+			.hero h1 {
+				font-size: clamp(2.1rem, 4.6vw, 3.4rem);
+				line-height: 1.08;
+				font-weight: 800;
+			}
+			.hero h1 .grad {
+				background: var(--grad);
+				-webkit-background-clip: text;
+				background-clip: text;
+				color: transparent;
+			}
+			.hero p.lead {
+				margin: 18px 0 26px;
+				font-size: 1.08rem;
+				color: var(--muted);
+				max-width: 46ch;
+			}
+			.cta-row {
+				display: flex;
+				gap: 14px;
+				flex-wrap: wrap;
+			}
+			.btn {
+				display: inline-flex;
+				align-items: center;
+				gap: 10px;
+				cursor: pointer;
+				text-decoration: none;
+				font-family: "Baloo 2", cursive;
+				font-weight: 700;
+				font-size: 1.05rem;
+				padding: 14px 26px;
+				border-radius: 999px;
+				border: none;
+				transition: 0.2s;
+			}
+			.btn-primary {
+				background: var(--grad);
+				color: #fff;
+				box-shadow: 0 10px 28px rgba(240, 118, 43, 0.35);
+			}
+			.btn-primary:hover,
+			.btn-primary:focus-visible {
+				transform: translateY(-3px);
+				box-shadow: 0 16px 34px rgba(240, 118, 43, 0.45);
+			}
+			.btn-ghost {
+				background: rgba(255, 255, 255, 0.6);
+				color: var(--ink);
+				border: 2px solid rgba(21, 34, 70, 0.18);
+				-webkit-backdrop-filter: blur(10px);
+				backdrop-filter: blur(10px);
+			}
+			.btn-ghost:hover,
+			.btn-ghost:focus-visible {
+				border-color: var(--cyan);
+				color: var(--cyan);
+			}
+			:focus-visible {
+				outline: 3px solid var(--cyan);
+				outline-offset: 3px;
+			}
+
+			.hero-esi {
+				position: relative;
+				display: flex;
+				justify-content: center;
+			}
+			.esi-stage {
+				position: relative;
+				width: min(320px, 80%);
+			}
+			.esi-stage img {
+				width: 100%;
+				filter: drop-shadow(0 24px 26px rgba(21, 34, 70, 0.28));
+				animation: bob 3.4s ease-in-out infinite;
+			}
+			@keyframes bob {
+				0%,
+				100% {
+					transform: translateY(0) rotate(-1.5deg);
+				}
+				50% {
+					transform: translateY(-16px) rotate(1.5deg);
+				}
+			}
+			.esi-ring {
+				position: absolute;
+				inset: -8% -14%;
+				border-radius: 50%;
+				background: radial-gradient(
+					circle,
+					rgba(255, 255, 255, 0.75),
+					rgba(255, 255, 255, 0.25) 55%,
+					transparent 70%
+				);
+				border: 1px solid rgba(255, 255, 255, 0.8);
+				-webkit-backdrop-filter: blur(6px);
+				backdrop-filter: blur(6px);
+				box-shadow: var(--shadow-soft);
+				z-index: -1;
+			}
+			.bubble {
+				position: absolute;
+				top: -34px;
+				right: -8px;
+				background: rgba(255, 255, 255, 0.85);
+				color: var(--ink);
+				-webkit-backdrop-filter: blur(12px);
+				backdrop-filter: blur(12px);
+				border: 1px solid var(--glass-border);
+				font-family: "Baloo 2", cursive;
+				font-weight: 700;
+				font-size: 0.98rem;
+				padding: 11px 16px;
+				border-radius: 18px 18px 18px 4px;
+				box-shadow: var(--shadow);
+				max-width: 220px;
+				animation: bubblein 0.6s 0.4s both;
+			}
+			.bubble::after {
+				content: "";
+				position: absolute;
+				bottom: -8px;
+				left: 16px;
+				border: 9px solid transparent;
+				border-top-color: rgba(255, 255, 255, 0.85);
+				border-left-color: rgba(255, 255, 255, 0.85);
+			}
+			@keyframes bubblein {
+				from {
+					opacity: 0;
+					transform: translateY(10px) scale(0.9);
+				}
+				to {
+					opacity: 1;
+					transform: none;
+				}
+			}
+
+			/* ---------- sections ---------- */
+			section {
+				padding: 70px 0;
+			}
+			.sec-head {
+				text-align: center;
+				max-width: 640px;
+				margin: 0 auto 36px;
+			}
+			.sec-head h2 {
+				font-size: clamp(1.7rem, 3.4vw, 2.4rem);
+				font-weight: 800;
+			}
+			.sec-head h2 span {
+				background: var(--grad);
+				-webkit-background-clip: text;
+				background-clip: text;
+				color: transparent;
+			}
+			.sec-head p {
+				color: var(--muted);
+				margin-top: 10px;
+			}
+
+			/* ---------- game shell ---------- */
+			.game-shell {
+				border-radius: var(--radius);
+				overflow: hidden;
+			}
+			.game-top {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				gap: 10px;
+				flex-wrap: wrap;
+				padding: 14px 18px;
+				border-bottom: 1px solid rgba(21, 34, 70, 0.08);
+			}
+			.hud {
+				display: flex;
+				gap: 18px;
+				flex-wrap: wrap;
+			}
+			.hud .stat {
+				display: flex;
+				flex-direction: column;
+			}
+			.hud .lab {
+				font-size: 0.68rem;
+				letter-spacing: 0.14em;
+				text-transform: uppercase;
+				color: var(--muted);
+				font-weight: 800;
+			}
+			.hud .val {
+				font-family: "JetBrains Mono", monospace;
+				font-weight: 700;
+				font-size: 1.2rem;
+			}
+			.hud .val.combo {
+				color: var(--orange);
+			}
+			#game-canvas {
+				display: block;
+				width: 100%;
+				height: auto;
+				background:
+					radial-gradient(
+						620px 300px at 50% 112%,
+						rgba(15, 168, 163, 0.1),
+						transparent 60%
+					),
+					linear-gradient(180deg, #fafcff 0%, #eaf0fa 100%);
+				touch-action: none;
+			}
+			.game-overlay {
+				position: absolute;
+				inset: 0;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				text-align: center;
+				background: rgba(240, 245, 252, 0.72);
+				-webkit-backdrop-filter: blur(14px) saturate(1.1);
+				backdrop-filter: blur(14px) saturate(1.1);
+				padding: 24px;
+			}
+			.game-overlay.hidden {
+				display: none;
+			}
+			.game-overlay img {
+				width: 110px;
+				margin-bottom: 8px;
+				animation: bob 3s ease-in-out infinite;
+				filter: drop-shadow(0 14px 16px rgba(21, 34, 70, 0.25));
+			}
+			.game-overlay h3 {
+				font-size: 1.9rem;
+				margin-bottom: 6px;
+			}
+			.game-overlay p {
+				color: var(--muted);
+				max-width: 44ch;
+				margin-bottom: 18px;
+			}
+			.legend {
+				display: flex;
+				gap: 14px;
+				flex-wrap: wrap;
+				justify-content: center;
+				margin-bottom: 20px;
+			}
+			.legend span {
+				background: rgba(255, 255, 255, 0.7);
+				border: 1px solid var(--glass-border);
+				border-radius: 999px;
+				padding: 7px 14px;
+				font-weight: 700;
+				font-size: 0.9rem;
+				box-shadow: var(--shadow-soft);
+			}
+			.game-wrap {
+				position: relative;
+			}
+			#name-input,
+			#ty-name-input {
+				font-family: "JetBrains Mono", monospace;
+				font-size: 1.05rem;
+				text-align: center;
+				background: rgba(255, 255, 255, 0.8);
+				color: var(--ink);
+				border: 2px solid rgba(21, 34, 70, 0.15);
+				border-radius: 12px;
+				padding: 11px 14px;
+				width: min(280px, 80%);
+				margin-bottom: 14px;
+				text-transform: uppercase;
+			}
+			#name-input:focus,
+			#ty-name-input:focus {
+				border-color: var(--cyan);
+				outline: none;
+			}
+			.board {
+				width: min(340px, 90%);
+				margin: 6px auto 18px;
+				text-align: left;
+			}
+			.board h4 {
+				font-family: "Baloo 2", cursive;
+				text-align: center;
+				margin-bottom: 8px;
+				color: var(--cyan);
+				letter-spacing: 0.06em;
+			}
+			.board ol {
+				list-style: none;
+				counter-reset: rank;
+			}
+			.board li {
+				counter-increment: rank;
+				display: flex;
+				justify-content: space-between;
+				gap: 10px;
+				font-family: "JetBrains Mono", monospace;
+				font-size: 0.95rem;
+				padding: 7px 12px;
+				border-radius: 10px;
+				margin-bottom: 5px;
+				background: rgba(255, 255, 255, 0.7);
+				border: 1px solid var(--glass-border);
+			}
+			.board li::before {
+				content: counter(rank) ".";
+				color: var(--muted);
+				margin-right: 8px;
+			}
+			.board li:first-child {
+				background: var(--grad);
+				color: #fff;
+				border: none;
+			}
+			.board li:first-child::before {
+				color: rgba(255, 255, 255, 0.8);
+			}
+			.board li:first-child small {
+				color: rgba(255, 255, 255, 0.8) !important;
+			}
+			.hint {
+				font-size: 0.85rem;
+				color: var(--muted);
+			}
+
+			#mute-btn,
+			.fs-btn {
+				background: rgba(255, 255, 255, 0.6);
+				border: 1px solid rgba(21, 34, 70, 0.15);
+				color: var(--ink);
+				border-radius: 10px;
+				padding: 7px 12px;
+				cursor: pointer;
+				font-size: 1rem;
+				transition: 0.15s;
+			}
+			#mute-btn:hover,
+			.fs-btn:hover {
+				border-color: var(--cyan);
+				color: var(--cyan);
+			}
+			.top-btns {
+				display: flex;
+				gap: 8px;
+				align-items: center;
+			}
+
+			/* ---------- fullscreen mode ---------- */
+			.game-shell:fullscreen {
+				border-radius: 0;
+				display: flex;
+				flex-direction: column;
+				background: linear-gradient(180deg, #f2f6fc 0%, #e4ecf8 100%);
+				-webkit-backdrop-filter: none;
+				backdrop-filter: none;
+			}
+			.game-shell:fullscreen .game-top {
+				flex: 0 0 auto;
+			}
+			.game-shell:fullscreen .game-wrap {
+				flex: 1;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				min-height: 0;
+				position: relative;
+			}
+			.game-shell:fullscreen #game-canvas {
+				width: 100%;
+				height: 100%;
+				object-fit: contain;
+			}
+			.game-shell:fullscreen .ty-stage {
+				flex: 1;
+				width: 100%;
+				min-height: 100%;
+			}
+
+			/* ---------- papan skor publik ---------- */
+			.lb-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+				gap: 18px;
+				max-width: 820px;
+				margin: 0 auto;
+			}
+			.lb-card {
+				background: var(--glass);
+				-webkit-backdrop-filter: blur(18px) saturate(1.15);
+				backdrop-filter: blur(18px) saturate(1.15);
+				border: 1px solid var(--glass-border);
+				border-radius: var(--radius);
+				box-shadow:
+					var(--shadow-soft),
+					inset 0 1px 0 rgba(255, 255, 255, 0.9);
+				padding: 24px 22px;
+			}
+			.lb-card h3 {
+				font-size: 1.2rem;
+				text-align: center;
+				margin-bottom: 16px;
+				cursor: default;
+				user-select: none;
+			}
+			.lb-list {
+				list-style: none;
+				counter-reset: rank;
+			}
+			.lb-list li {
+				counter-increment: rank;
+				display: flex;
+				justify-content: space-between;
+				gap: 10px;
+				font-family: "JetBrains Mono", monospace;
+				font-size: 0.95rem;
+				padding: 9px 14px;
+				border-radius: 10px;
+				margin-bottom: 6px;
+				background: rgba(255, 255, 255, 0.7);
+				border: 1px solid var(--glass-border);
+			}
+			.lb-list li::before {
+				content: counter(rank) ".";
+				color: var(--muted);
+				margin-right: 8px;
+			}
+			.lb-list li:first-child {
+				background: var(--grad);
+				color: #fff;
+				border: none;
+				font-weight: 700;
+			}
+			.lb-list li:first-child::before {
+				content: "👑";
+			}
+			.lb-list li:first-child small {
+				color: rgba(255, 255, 255, 0.8) !important;
+			}
+
+			/* ---------- typing challenge ---------- */
+			.ty-wrap {
+				min-height: 420px;
+			}
+			.ty-stage {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				gap: 22px;
+				min-height: 420px;
+				padding: 34px 20px;
+				text-align: center;
+				background:
+					radial-gradient(
+						620px 300px at 50% 115%,
+						rgba(15, 168, 163, 0.1),
+						transparent 60%
+					),
+					linear-gradient(180deg, #fafcff 0%, #eaf0fa 100%);
+			}
+			.ty-timerbar {
+				width: min(520px, 90%);
+				height: 8px;
+				border-radius: 99px;
+				background: rgba(21, 34, 70, 0.1);
+				overflow: hidden;
+			}
+			.ty-timerbar i {
+				display: block;
+				height: 100%;
+				width: 100%;
+				background: var(--grad);
+				border-radius: 99px;
+				transition: width 0.25s linear;
+			}
+			.ty-word {
+				font-family: "JetBrains Mono", monospace;
+				font-weight: 700;
+				font-size: clamp(1.6rem, 4.5vw, 2.7rem);
+				letter-spacing: 0.04em;
+				min-height: 1.4em;
+				color: var(--ink);
+			}
+			.ty-word b {
+				color: var(--cyan);
+				font-weight: 700;
+			}
+			.ty-word u {
+				text-decoration: none;
+				border-bottom: 3px solid var(--orange);
+				color: var(--ink);
+			}
+			.ty-word.err {
+				animation: tyshake 0.25s;
+			}
+			@keyframes tyshake {
+				0%,
+				100% {
+					transform: translateX(0);
+				}
+				25% {
+					transform: translateX(-8px);
+				}
+				75% {
+					transform: translateX(8px);
+				}
+			}
+			#ty-input {
+				font-family: "JetBrains Mono", monospace;
+				font-size: 1.25rem;
+				text-align: center;
+				background: rgba(255, 255, 255, 0.85);
+				color: var(--ink);
+				border: 2px solid rgba(21, 34, 70, 0.15);
+				border-radius: 14px;
+				padding: 14px 18px;
+				width: min(420px, 92%);
+				box-shadow: var(--shadow-soft);
+			}
+			#ty-input:focus {
+				border-color: var(--cyan);
+				outline: none;
+			}
+			#ty-input.err {
+				border-color: var(--plum);
+			}
+
+			/* ---------- prodi cards ---------- */
+			.cards {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+				gap: 18px;
+			}
+			.card {
+				border-radius: var(--radius);
+				padding: 26px 22px;
+				transition: 0.25s;
+				position: relative;
+				overflow: hidden;
+			}
+			.card::before {
+				content: "";
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				height: 4px;
+				background: var(--grad);
+				opacity: 0;
+				transition: 0.25s;
+			}
+			.card:hover {
+				transform: translateY(-6px);
+				box-shadow: var(--shadow);
+				background: var(--glass-strong);
+			}
+			.card:hover::before {
+				opacity: 1;
+			}
+			.card .ico {
+				width: 52px;
+				height: 52px;
+				border-radius: 16px;
+				display: grid;
+				place-items: center;
+				font-size: 1.5rem;
+				background: linear-gradient(
+					135deg,
+					rgba(74, 63, 143, 0.15),
+					rgba(240, 118, 43, 0.15)
+				);
+				border: 1px solid var(--glass-border);
+				margin-bottom: 16px;
+			}
+			.card h3 {
+				font-size: 1.18rem;
+				margin-bottom: 8px;
+			}
+			.card p {
+				color: var(--muted);
+				font-size: 0.94rem;
+				line-height: 1.55;
+			}
+			.card .num {
+				font-family: "JetBrains Mono", monospace;
+				font-weight: 700;
+				font-size: 0.78rem;
+				letter-spacing: 0.18em;
+				color: var(--orange);
+				margin-bottom: 10px;
+				display: block;
+			}
+			.mini-lab {
+				display: block;
+				font-size: 0.68rem;
+				font-weight: 800;
+				letter-spacing: 0.14em;
+				text-transform: uppercase;
+				color: var(--muted);
+				margin: 16px 0 8px;
+			}
+			.chips {
+				display: flex;
+				gap: 8px;
+				flex-wrap: wrap;
+				margin-top: 0;
+			}
+			.chips span {
+				font-size: 0.76rem;
+				font-weight: 800;
+				color: #0c7b77;
+				background: rgba(215, 244, 243, 0.75);
+				border: 1px solid rgba(15, 168, 163, 0.3);
+				border-radius: 999px;
+				padding: 4px 10px;
+			}
+			.chips.karir span {
+				color: #b65a10;
+				background: rgba(253, 236, 219, 0.8);
+				border-color: rgba(240, 118, 43, 0.35);
+			}
+
+			/* ---------- quiz ---------- */
+			.quiz-shell {
+				max-width: 640px;
+				margin: 0 auto;
+				border-radius: var(--radius);
+				padding: 30px;
+				position: relative;
+			}
+			.quiz-progress {
+				display: flex;
+				gap: 6px;
+				margin-bottom: 22px;
+			}
+			.quiz-progress i {
+				flex: 1;
+				height: 6px;
+				border-radius: 99px;
+				background: rgba(21, 34, 70, 0.1);
+			}
+			.quiz-progress i.done {
+				background: var(--grad);
+			}
+			.quiz-q {
+				font-family: "Baloo 2", cursive;
+				font-size: 1.35rem;
+				font-weight: 700;
+				margin-bottom: 20px;
+				min-height: 3.2em;
+			}
+			.quiz-opts {
+				display: grid;
+				gap: 10px;
+			}
+			.quiz-opts button {
+				text-align: left;
+				font-family: "Nunito Sans", sans-serif;
+				font-weight: 700;
+				font-size: 1rem;
+				color: var(--ink);
+				background: rgba(255, 255, 255, 0.65);
+				border: 2px solid var(--glass-border);
+				border-radius: 14px;
+				padding: 14px 16px;
+				cursor: pointer;
+				transition: 0.15s;
+				box-shadow: var(--shadow-soft);
+			}
+			.quiz-opts button:hover:not(:disabled) {
+				border-color: var(--cyan);
+				transform: translateX(4px);
+			}
+			.quiz-opts button.right {
+				border-color: var(--cyan);
+				background: rgba(15, 168, 163, 0.14);
+			}
+			.quiz-opts button.wrong {
+				border-color: var(--plum);
+				background: rgba(164, 70, 138, 0.12);
+				opacity: 0.8;
+			}
+			.quiz-opts button:disabled {
+				cursor: default;
+			}
+			.quiz-esi {
+				position: absolute;
+				top: -52px;
+				right: 22px;
+				width: 86px;
+				transform: rotate(6deg);
+				filter: drop-shadow(0 10px 12px rgba(21, 34, 70, 0.3));
+			}
+			.quiz-react {
+				margin-top: 16px;
+				font-family: "Baloo 2", cursive;
+				font-weight: 700;
+				color: var(--cyan);
+				min-height: 1.6em;
+			}
+			.quiz-done {
+				text-align: center;
+			}
+			.quiz-done .big {
+				font-size: 3rem;
+				font-family: "JetBrains Mono", monospace;
+				font-weight: 700;
+				background: var(--grad);
+				-webkit-background-clip: text;
+				background-clip: text;
+				color: transparent;
+				margin: 10px 0;
+			}
+
+			/* ---------- footer ---------- */
+			footer {
+				padding: 70px 0 46px;
+			}
+			.booth-cta {
+				background: var(--grad);
+				border-radius: 26px;
+				padding: 40px 30px;
+				text-align: center;
+				color: #fff;
+				box-shadow: 0 22px 55px rgba(164, 70, 138, 0.35);
+				position: relative;
+				overflow: hidden;
+			}
+			.booth-cta::before {
+				content: "";
+				position: absolute;
+				inset: 0;
+				background: radial-gradient(
+					420px 200px at 20% 0%,
+					rgba(255, 255, 255, 0.22),
+					transparent 60%
+				);
+				pointer-events: none;
+			}
+			.booth-cta .cta-logo {
+				height: 34px;
+				width: auto;
+				margin: 0 auto 18px;
+				opacity: 0.95;
+			}
+			.booth-cta h2 {
+				font-size: clamp(1.6rem, 3.4vw, 2.3rem);
+				margin-bottom: 8px;
+			}
+			.booth-cta p {
+				opacity: 0.92;
+				max-width: 52ch;
+				margin: 0 auto 20px;
+			}
+			.booth-cta .btn {
+				background: rgba(255, 255, 255, 0.92);
+				color: var(--ink);
+			}
+			.booth-cta img.mini-esi {
+				position: absolute;
+				width: 92px;
+				bottom: -6px;
+				right: 4%;
+				transform: rotate(-8deg);
+				opacity: 0.95;
+			}
+			.logos {
+				display: flex;
+				gap: 16px;
+				justify-content: center;
+				align-items: stretch;
+				flex-wrap: wrap;
+				margin-top: 40px;
+			}
+			.logos .plate {
+				border-radius: 16px;
+				padding: 14px 22px;
+				display: flex;
+				align-items: center;
+			}
+			.logos img {
+				height: 44px;
+				width: auto;
+			}
+			.credit {
+				text-align: center;
+				color: var(--muted);
+				font-size: 0.85rem;
+				margin-top: 26px;
+			}
+
+			@media (max-width: 820px) {
+				.hero {
+					grid-template-columns: 1fr;
+					text-align: center;
+					padding-top: 40px;
+					min-height: auto;
+				}
+				.hero p.lead {
+					margin-inline: auto;
+				}
+				.cta-row {
+					justify-content: center;
+				}
+				.hero-esi {
+					order: -1;
+				}
+				.esi-stage {
+					width: min(220px, 64%);
+				}
+				.bubble {
+					right: -30px;
+				}
+				.quiz-esi {
+					width: 64px;
+					top: -40px;
+				}
+				.nav-links a {
+					padding: 7px 10px;
+					font-size: 0.85rem;
+				}
+			}
+			@media (prefers-reduced-motion: reduce) {
+				*,
+				*::before,
+				*::after {
+					animation-duration: 0.01ms !important;
+					animation-iteration-count: 1 !important;
+					transition-duration: 0.01ms !important;
+				}
+				html {
+					scroll-behavior: auto;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<canvas id="bg-net" aria-hidden="true"></canvas>
+
+		<header>
+			<div class="wrap nav">
+				<div class="nav-logo">
+					<img src="assets/si-horizontal.png" alt="Information Systems Logo" />
+				</div>
+				<nav class="nav-links" aria-label="Navigation">
+					<a href="#game">🎮 Data Rush</a>
+					<a href="#typing">⌨️ Typing</a>
+					<a href="#leaderboard">🏆 Leaderboard</a>
+					<a href="#quiz">🧠 Quiz</a>
+					<a href="#prodi">📚 Specializations</a>
+					<a href="#booth">📍 Booth</a>
+				</nav>
+			</div>
+		</header>
+
+		<main>
+			<!-- ============ HERO ============ -->
+			<div class="wrap hero">
+				<div>
+					<span class="eyebrow"
+						><span class="dot"></span> Booth Showcase · FAIDAS UPH</span
+					>
+					<h1>
+						Hi! I'm <span class="grad">ESI</span> 🐧<br />Explore the World of
+						<span class="grad">Information Systems</span>
+					</h1>
+					<p class="lead">
+						Where business meets technology, Information Systems makes the
+						connection. Conquer both games, complete the quiz, and discover
+						three exciting specializations that could shape your future!
+					</p>
+					<div class="cta-row">
+						<a class="btn btn-primary" href="#game">🎮 Play with ESI</a>
+						<a class="btn btn-ghost" href="#prodi"
+							>Discover Information Systems</a
+						>
+					</div>
+				</div>
+				<div class="hero-esi">
+					<div class="esi-stage">
+						<div class="esi-ring"></div>
+						<div class="bubble">
+							Ready to enter the world of data? Let’s play! 🚀
+						</div>
+						<img
+							src="assets/esi.png"
+							alt="ESI — the Information Systems penguin mascot wearing a VR headset"
+						/>
+					</div>
+				</div>
+			</div>
+
+			<!-- ============ GAME ============ -->
+			<section id="game">
+				<div class="wrap">
+					<div class="sec-head">
+						<h2>🎮 ESI <span>Data Rush</span></h2>
+						<p>
+							Help ESI catch data falling from the cloud! Reach the target score
+							in each level to advance—conquer all three levels and claim the
+							top spot on the booth leaderboard.
+						</p>
+					</div>
+					<div class="game-shell">
+						<div class="game-top">
+							<div class="hud">
+								<div class="stat">
+									<span class="lab">Level</span
+									><span class="val" id="hud-level" style="color: var(--cyan)"
+										>1/3</span
+									>
+								</div>
+								<div class="stat">
+									<span class="lab">Score</span
+									><span class="val" id="hud-score">0</span>
+								</div>
+								<div class="stat">
+									<span class="lab">Target</span
+									><span class="val" id="hud-target">150</span>
+								</div>
+								<div class="stat">
+									<span class="lab">Time</span
+									><span class="val" id="hud-time">30</span>
+								</div>
+								<div class="stat">
+									<span class="lab">Combo</span
+									><span class="val combo" id="hud-combo">x1</span>
+								</div>
+							</div>
+							<div class="top-btns">
+								<button id="mute-btn" aria-label="Toggle sound" title="Sound">
+									🔊
+								</button>
+								<button
+									id="fs-rush"
+									class="fs-btn"
+									aria-label="Fullscreen"
+									title="Fullscreen"
+								>
+									⛶
+								</button>
+							</div>
+						</div>
+						<div class="game-wrap">
+							<canvas
+								id="game-canvas"
+								width="960"
+								height="520"
+								aria-label="ESI Data Rush game"
+							></canvas>
+
+							<div class="game-overlay" id="ov-start">
+								<img src="assets/esi.png" alt="" />
+								<h3>ESI Data Rush</h3>
+								<p>
+									Move ESI to catch the data. Reach the
+									<b>target score</b> before time runs out to advance. The
+									higher the level, the faster the data falls—and the more
+									<b>bugs</b> appear!
+								</p>
+								<div class="legend">
+									<span>💾 📊 🧩 +10</span>
+									<span>⭐ +30</span>
+									<span>🐛 −15 &amp; combo lost</span>
+									<span>🥉🥈🥇 3 Level</span>
+								</div>
+								<button class="btn btn-primary" id="btn-start">
+									▶ Start Level 1
+								</button>
+								<p class="hint" style="margin-top: 14px">
+									⌨️ Arrow keys / A-D &nbsp;·&nbsp; 🖱️ Move the mouse
+									&nbsp;·&nbsp; 📱 Touch &amp; drag
+								</p>
+							</div>
+
+							<div class="game-overlay hidden" id="ov-level">
+								<img src="assets/esi.png" alt="" />
+								<h3 id="lv-title">LEVEL 1 COMPLETE! 🎉</h3>
+								<p id="lv-sub">Your score so far:</p>
+								<div class="quiz-done">
+									<div class="big" id="lv-score">0</div>
+								</div>
+								<p class="hint" id="lv-next" style="margin-bottom: 16px">
+									Level 2 Target: 380 points
+								</p>
+								<button class="btn btn-primary" id="btn-next">
+									⚡ Continue to the Next Level
+								</button>
+							</div>
+
+							<div class="game-overlay hidden" id="ov-end">
+								<h3 id="end-title">Time’s Up!</h3>
+								<p id="end-sub">Your score:</p>
+								<div class="quiz-done">
+									<div class="big" id="end-score">0</div>
+								</div>
+								<input
+									id="name-input"
+									maxlength="10"
+									placeholder="YOUR NAME"
+									aria-label="Enter your name for the leaderboard"
+								/>
+								<div
+									style="
+										display: flex;
+										gap: 12px;
+										flex-wrap: wrap;
+										justify-content: center;
+									"
+								>
+									<button class="btn btn-primary" id="btn-save">
+										💾 Save Score
+									</button>
+									<button class="btn btn-ghost" id="btn-retry">
+										🔁 Play Again
+									</button>
+								</div>
+								<div class="board">
+									<h4>🏆 BOOTH LEADERBOARD</h4>
+									<ol id="board-list"></ol>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- ============ TYPING CHALLENGE ============ -->
+			<section id="typing">
+				<div class="wrap">
+					<div class="sec-head">
+						<h2>⌨️ ESI <span>Typing Challenge</span></h2>
+						<p>
+							How fast can you type? Enter Information Systems terms before time
+							runs out. Three levels take you from simple words to challenging
+							technology phrases!
+						</p>
+					</div>
+					<div class="game-shell">
+						<div class="game-top">
+							<div class="hud">
+								<div class="stat">
+									<span class="lab">Level</span
+									><span
+										class="val"
+										id="ty-hud-level"
+										style="color: var(--cyan)"
+										>1/3</span
+									>
+								</div>
+								<div class="stat">
+									<span class="lab">Score</span
+									><span class="val" id="ty-hud-score">0</span>
+								</div>
+								<div class="stat">
+									<span class="lab">Words</span
+									><span class="val" id="ty-hud-words">0/8</span>
+								</div>
+								<div class="stat">
+									<span class="lab">Time</span
+									><span class="val" id="ty-hud-time">30</span>
+								</div>
+							</div>
+							<div class="top-btns">
+								<span class="hint" id="ty-level-label">Level 1 · Warm-Up</span>
+								<button
+									id="fs-ty"
+									class="fs-btn"
+									aria-label="Fullscreen"
+									title="Fullscreen"
+								>
+									⛶
+								</button>
+							</div>
+						</div>
+						<div class="game-wrap ty-wrap">
+							<div class="ty-stage" id="ty-stage">
+								<div class="ty-timerbar"><i id="ty-bar"></i></div>
+								<div class="ty-word" id="ty-word" aria-live="polite"></div>
+								<input
+									id="ty-input"
+									autocomplete="off"
+									autocapitalize="off"
+									autocorrect="off"
+									spellcheck="false"
+									placeholder="type here…"
+									aria-label="Type the displayed word"
+								/>
+								<p class="hint" id="ty-hint">
+									Type the word above—the game continues automatically when you
+									are correct!
+								</p>
+							</div>
+
+							<div class="game-overlay" id="ty-ov-start">
+								<img src="assets/esi.png" alt="" />
+								<h3>ESI Typing Challenge</h3>
+								<p>
+									Type each word as quickly as possible. Complete the
+									<b>target number of words</b> before time runs out to advance.
+									Your remaining time becomes <b>bonus points</b>!
+								</p>
+								<div class="legend">
+									<span>🥉 Lv 1 · short words</span>
+									<span>🥈 Lv 2 · IS terms</span>
+									<span>🥇 Lv 3 · technology phrases</span>
+								</div>
+								<button class="btn btn-primary" id="ty-btn-start">
+									▶ Start Typing
+								</button>
+							</div>
+
+							<div class="game-overlay hidden" id="ty-ov-level">
+								<img src="assets/esi.png" alt="" />
+								<h3 id="ty-lv-title">LEVEL 1 COMPLETE! 🎉</h3>
+								<p id="ty-lv-sub">Time bonus: +0</p>
+								<div class="quiz-done">
+									<div class="big" id="ty-lv-score">0</div>
+								</div>
+								<p class="hint" id="ty-lv-next" style="margin-bottom: 16px"></p>
+								<button class="btn btn-primary" id="ty-btn-next">
+									⚡ Continue to the Next Level
+								</button>
+							</div>
+
+							<div class="game-overlay hidden" id="ty-ov-end">
+								<h3 id="ty-end-title">Time’s Up!</h3>
+								<p id="ty-end-sub">Your score:</p>
+								<div class="quiz-done">
+									<div class="big" id="ty-end-score">0</div>
+								</div>
+								<input
+									id="ty-name-input"
+									maxlength="10"
+									placeholder="YOUR NAME"
+									aria-label="Enter your name for the typing leaderboard"
+								/>
+								<div
+									style="
+										display: flex;
+										gap: 12px;
+										flex-wrap: wrap;
+										justify-content: center;
+									"
+								>
+									<button class="btn btn-primary" id="ty-btn-save">
+										💾 Save Score
+									</button>
+									<button class="btn btn-ghost" id="ty-btn-retry">
+										🔁 Play Again
+									</button>
+								</div>
+								<div class="board">
+									<h4>🏆 LEADERBOARD TYPING</h4>
+									<ol id="ty-board-list"></ol>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- ============ LEADERBOARD ============ -->
+			<section id="leaderboard">
+				<div class="wrap">
+					<div class="sec-head">
+						<h2>🏆 Leaderboard <span>Booth</span></h2>
+						<p>
+							See today’s top five players in each game. Can you take their
+							spot? Your score is saved as soon as you finish playing!
+						</p>
+					</div>
+					<div class="lb-grid">
+						<div class="lb-card">
+							<h3
+								id="lb-rush-title"
+								title="Double-click to reset (booth staff only)"
+							>
+								🎮 ESI Data Rush
+							</h3>
+							<ol id="lb-rush-list" class="lb-list"></ol>
+						</div>
+						<div class="lb-card">
+							<h3
+								id="lb-ty-title"
+								title="Double-click to reset (booth staff only)"
+							>
+								⌨️ Typing Challenge
+							</h3>
+							<ol id="lb-ty-list" class="lb-list"></ol>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- ============ QUIZ ============ -->
+			<section id="quiz">
+				<div class="wrap">
+					<div class="sec-head">
+						<h2>🧠 How Well Do You Know <span>Information Systems?</span></h2>
+						<p>
+							Five quick questions from ESI. Answer them all correctly and show
+							your result to the team at the booth!
+						</p>
+					</div>
+					<div class="quiz-shell">
+						<img class="quiz-esi" src="assets/esi.png" alt="" />
+						<div
+							class="quiz-progress"
+							id="quiz-progress"
+							aria-hidden="true"
+						></div>
+						<div id="quiz-body">
+							<div class="quiz-q" id="quiz-q"></div>
+							<div class="quiz-opts" id="quiz-opts"></div>
+							<div class="quiz-react" id="quiz-react" aria-live="polite"></div>
+						</div>
+						<div id="quiz-final" class="quiz-done" style="display: none">
+							<h3 class="display" style="font-size: 1.6rem">Your Quiz Score</h3>
+							<div class="big" id="quiz-score">0/5</div>
+							<p
+								id="quiz-msg"
+								style="color: var(--muted); margin-bottom: 18px"
+							></p>
+							<button class="btn btn-primary" id="quiz-retry">
+								🔁 Retake the Quiz
+							</button>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- ============ PRODI / PEMINATAN ============ -->
+			<section id="prodi">
+				<div class="wrap">
+					<div class="sec-head">
+						<h2>📚 3 <span>UPH Information Systems Specializations</span></h2>
+						<p>
+							The Information Systems program in the Faculty of Artificial
+							Intelligence and Data Sciences (FAIDAS) offers three
+							specialization pathways—choose the one that best matches your
+							passion!
+						</p>
+					</div>
+					<div
+						class="cards"
+						style="grid-template-columns: repeat(auto-fit, minmax(290px, 1fr))"
+					>
+						<div class="card">
+							<span class="num">— 01/03</span>
+							<div class="ico">📊</div>
+							<h3>Data Science &amp; Analytics</h3>
+							<p>
+								Behind every successful business decision is reliable data.
+								Learn to transform datasets into
+								<b>valuable insights</b> through machine learning, predictive
+								analytics, data visualization, and more.
+							</p>
+							<span class="mini-lab">🔹 Featured Courses</span>
+							<div class="chips">
+								<span>Big Data Management</span><span>AI for Business</span
+								><span>Web Analytics &amp; Social Media</span
+								><span>Process Mining</span
+								><span>Behavioral Analytics &amp; Trends</span>
+							</div>
+							<span class="mini-lab">🔸 Career Opportunities</span>
+							<div class="chips karir">
+								<span>Data Scientist</span><span>AI Specialist</span
+								><span>Machine Learning Engineer</span><span>Data Analyst</span>
+							</div>
+						</div>
+
+						<div class="card">
+							<span class="num">— 02/03</span>
+							<div class="ico">🕹️</div>
+							<h3>Interactive Intelligence Systems</h3>
+							<p>
+								Want to create applications that <b>keep users engaged</b>? This
+								is where you learn how! Design advanced UI/UX, build interactive
+								applications, and explore immersive technologies such as AR and
+								VR.
+							</p>
+							<span class="mini-lab">🔹 Featured Courses</span>
+							<div class="chips">
+								<span>Advanced UI/UX</span><span>Immersive Technology</span
+								><span>Interactive Application Development</span
+								><span>GenAI App Development</span
+								><span>Advanced Software Project</span>
+							</div>
+							<span class="mini-lab">🔸 Career Opportunities</span>
+							<div class="chips karir">
+								<span>UI/UX Designer</span><span>UX Researcher</span
+								><span>AR/VR Designer</span><span>Product Designer</span>
+							</div>
+						</div>
+
+						<div class="card">
+							<span class="num">— 03/03</span>
+							<div class="ico">💡</div>
+							<h3>Digital Technology and Innovation</h3>
+							<p>
+								Want to build <b>the digital product of your dreams</b>? This is
+								where you can make it happen! Create innovative technology
+								products such as IoT solutions and mobile apps, supported by
+								strong business strategy and project management.
+							</p>
+							<span class="mini-lab">🔹 Featured Courses</span>
+							<div class="chips">
+								<span>IoT Programming</span
+								><span>Advanced Mobile Application Programming</span
+								><span>Business Recommendation System</span
+								><span>Immersive Technology</span
+								><span>IT Risk Management</span>
+							</div>
+							<span class="mini-lab">🔸 Career Opportunities</span>
+							<div class="chips karir">
+								<span>Software Engineer</span
+								><span>Project &amp; Product Manager</span
+								><span>IT Consultant</span><span>Cybersecurity Consultant</span
+								><span>Technopreneur</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- ============ FOOTER / BOOTH CTA ============ -->
+			<footer id="booth">
+				<div class="wrap">
+					<div class="booth-cta">
+						<img
+							class="cta-logo"
+							src="assets/is-logo-white.png"
+							alt="UPH — FAIDAS"
+						/>
+						<h2>Curious? Come Visit Our Booth! 👋</h2>
+						<p>
+							Talk directly with Information Systems lecturers and students, try
+							our project demos, and take a photo with ESI. See you at the
+							booth!
+						</p>
+						<a class="btn" href="#game">🎮 Try the Game First</a>
+						<img class="mini-esi" src="assets/esi.png" alt="" />
+					</div>
+					<div class="logos">
+						<div class="plate">
+							<img
+								src="assets/uph-faidas.png"
+								alt="Universitas Pelita Harapan — Faculty of Artificial Intelligence and Data Sciences"
+							/>
+						</div>
+						<div class="plate">
+							<img
+								src="assets/si-horizontal.png"
+								alt="Information Systems Program"
+							/>
+						</div>
+					</div>
+					<p class="credit">
+						Information Systems Program · Faculty of Artificial Intelligence and
+						Data Sciences · Universitas Pelita Harapan · 📷 @sisteminformasi.uph
+					</p>
+				</div>
+			</footer>
+		</main>
+
+		<script>
+			/* ============================================================
+   ESI Showcase — Sistem Informasi UPH · FAIDAS
+   1) Background node network (motif logo SI)
+   2) Game: ESI Data Rush
+   3) Leaderboard (localStorage dengan fallback aman)
+   4) Kuis kilat
+   5) Efek suara WebAudio sederhana
+============================================================ */
+
+			const reduceMotion = window.matchMedia(
+				"(prefers-reduced-motion: reduce)",
+			).matches;
+
+			/* ---------- 1. BACKGROUND NODE NETWORK ---------- */
+			(function () {
+				const cv = document.getElementById("bg-net");
+				const ctx = cv.getContext("2d");
+				let W,
+					H,
+					nodes = [];
+				const COLORS = ["#5A4DA8", "#A4468A", "#F0762B", "#53D7D3"];
+
+				function resize() {
+					W = cv.width = innerWidth;
+					H = cv.height = innerHeight;
+					const count = Math.min(70, Math.floor((W * H) / 26000));
+					nodes = Array.from({ length: count }, () => ({
+						x: Math.random() * W,
+						y: Math.random() * H,
+						vx: (Math.random() - 0.5) * 0.35,
+						vy: (Math.random() - 0.5) * 0.35,
+						r: 1.6 + Math.random() * 2.6,
+						c: COLORS[Math.floor(Math.random() * COLORS.length)],
+					}));
+				}
+				addEventListener("resize", resize);
+				resize();
+
+				function frame() {
+					ctx.clearRect(0, 0, W, H);
+					for (const n of nodes) {
+						n.x += n.vx;
+						n.y += n.vy;
+						if (n.x < 0 || n.x > W) n.vx *= -1;
+						if (n.y < 0 || n.y > H) n.vy *= -1;
+					}
+					// garis penghubung — motif "molekul" logo SI
+					for (let i = 0; i < nodes.length; i++) {
+						for (let j = i + 1; j < nodes.length; j++) {
+							const a = nodes[i],
+								b = nodes[j];
+							const d = Math.hypot(a.x - b.x, a.y - b.y);
+							if (d < 130) {
+								ctx.strokeStyle = "rgba(21,34,70," + 0.12 * (1 - d / 130) + ")";
+								ctx.lineWidth = 1;
+								ctx.beginPath();
+								ctx.moveTo(a.x, a.y);
+								ctx.lineTo(b.x, b.y);
+								ctx.stroke();
+							}
+						}
+					}
+					for (const n of nodes) {
+						ctx.fillStyle = n.c;
+						ctx.globalAlpha = 0.55;
+						ctx.beginPath();
+						ctx.arc(n.x, n.y, n.r, 0, 7);
+						ctx.fill();
+						ctx.globalAlpha = 1;
+					}
+					if (!reduceMotion) requestAnimationFrame(frame);
+				}
+				frame();
+			})();
+
+			/* ---------- helpers: storage aman + audio ---------- */
+			const store = (() => {
+				try {
+					localStorage.setItem("__esi_t", "1");
+					localStorage.removeItem("__esi_t");
+					return localStorage;
+				} catch (e) {
+					const m = {};
+					return {
+						getItem: (k) => (k in m ? m[k] : null),
+						setItem: (k, v) => {
+							m[k] = String(v);
+						},
+						removeItem: (k) => {
+							delete m[k];
+						},
+					};
+				}
+			})();
+
+			let audioCtx = null,
+				muted = false;
+			function beep(freq, dur = 0.09, type = "sine", vol = 0.18) {
+				if (muted) return;
+				try {
+					audioCtx =
+						audioCtx ||
+						new (window.AudioContext || window.webkitAudioContext)();
+					const o = audioCtx.createOscillator(),
+						g = audioCtx.createGain();
+					o.type = type;
+					o.frequency.value = freq;
+					g.gain.setValueAtTime(vol, audioCtx.currentTime);
+					g.gain.exponentialRampToValueAtTime(
+						0.001,
+						audioCtx.currentTime + dur,
+					);
+					o.connect(g);
+					g.connect(audioCtx.destination);
+					o.start();
+					o.stop(audioCtx.currentTime + dur);
+				} catch (e) {}
+			}
+			const sfx = {
+				good() {
+					beep(660, 0.08, "triangle");
+					beep(880, 0.1, "triangle", 0.12);
+				},
+				star() {
+					beep(880, 0.08, "square", 0.14);
+					setTimeout(() => beep(1320, 0.12, "square", 0.12), 70);
+				},
+				bad() {
+					beep(160, 0.2, "sawtooth", 0.2);
+				},
+				end() {
+					beep(520, 0.12);
+					setTimeout(() => beep(660, 0.12), 120);
+					setTimeout(() => beep(880, 0.2), 240);
+				},
+			};
+			document
+				.getElementById("mute-btn")
+				.addEventListener("click", function () {
+					muted = !muted;
+					this.textContent = muted ? "🔇" : "🔊";
+				});
+
+			/* ---------- 2. GAME: ESI DATA RUSH (3 LEVEL) ---------- */
+			(function () {
+				const cv = document.getElementById("game-canvas");
+				const ctx = cv.getContext("2d");
+				const ovStart = document.getElementById("ov-start");
+				const ovLevel = document.getElementById("ov-level");
+				const ovEnd = document.getElementById("ov-end");
+				const hudScore = document.getElementById("hud-score");
+				const hudTime = document.getElementById("hud-time");
+				const hudCombo = document.getElementById("hud-combo");
+				const hudLevel = document.getElementById("hud-level");
+				const hudTarget = document.getElementById("hud-target");
+
+				const esiImg = new Image();
+				esiImg.src = "assets/esi.png";
+
+				/* Tiap level: durasi, target skor KUMULATIF, peluang bug, kecepatan, jeda spawn */
+				const LEVELS = [
+					{
+						time: 30,
+						target: 150,
+						bad: 0.12,
+						speed: 1.0,
+						spawnMin: 520,
+						spawnMax: 700,
+						name: "Level 1 · Warm-Up 🥉",
+					},
+					{
+						time: 30,
+						target: 400,
+						bad: 0.24,
+						speed: 1.4,
+						spawnMin: 380,
+						spawnMax: 540,
+						name: "Level 2 · Data Surge! 🥈",
+					},
+					{
+						time: 30,
+						target: 700,
+						bad: 0.34,
+						speed: 1.85,
+						spawnMin: 280,
+						spawnMax: 420,
+						name: "Level 3 · Data Storm ⛈️🥇",
+					},
+				];
+				const GOOD = ["💾", "📊", "🧩", "💡", "🌐"];
+				const state = {
+					running: false,
+					level: 0,
+					score: 0,
+					time: 30,
+					combo: 1,
+					streak: 0,
+					px: cv.width / 2,
+					targetX: cv.width / 2,
+					items: [],
+					parts: [],
+					floats: [],
+					spawnAt: 0,
+					lastT: 0,
+					shake: 0,
+					won: false,
+				};
+
+				/* -- input -- */
+				const keys = {};
+				addEventListener("keydown", (e) => {
+					if (["ArrowLeft", "ArrowRight", "a", "d", "A", "D"].includes(e.key)) {
+						keys[e.key] = true;
+						if (state.running) e.preventDefault();
+					}
+				});
+				addEventListener("keyup", (e) => {
+					keys[e.key] = false;
+				});
+
+				function pointFromEvent(e) {
+					const r = cv.getBoundingClientRect();
+					/* peta posisi kursor ke koordinat kanvas — akurat juga saat fullscreen (object-fit: contain) */
+					const scale = Math.min(r.width / cv.width, r.height / cv.height);
+					const drawnW = cv.width * scale;
+					const offX = (r.width - drawnW) / 2;
+					const cx =
+						(e.touches ? e.touches[0].clientX : e.clientX) - r.left - offX;
+					return Math.max(0, Math.min(cv.width, (cx / drawnW) * cv.width));
+				}
+				cv.addEventListener("mousemove", (e) => {
+					if (state.running) state.targetX = pointFromEvent(e);
+				});
+				cv.addEventListener(
+					"touchstart",
+					(e) => {
+						if (state.running) {
+							state.targetX = pointFromEvent(e);
+							e.preventDefault();
+						}
+					},
+					{ passive: false },
+				);
+				cv.addEventListener(
+					"touchmove",
+					(e) => {
+						if (state.running) {
+							state.targetX = pointFromEvent(e);
+							e.preventDefault();
+						}
+					},
+					{ passive: false },
+				);
+
+				/* -- spawn -- */
+				function spawnItem() {
+					const lv = LEVELS[state.level];
+					const elapsed = lv.time - state.time;
+					const bad = Math.random() < Math.min(0.42, lv.bad + elapsed / 250);
+					const star = !bad && Math.random() < 0.08;
+					/* Level 2+: sebagian item bergerak zig-zag */
+					const wobble =
+						state.level >= 1 &&
+						Math.random() < (state.level === 1 ? 0.3 : 0.55);
+					state.items.push({
+						x: 40 + Math.random() * (cv.width - 80),
+						y: -30,
+						vy: (2.1 + Math.random() * 1.6) * lv.speed * (star ? 1.3 : 1),
+						wob: wobble
+							? (1.2 + Math.random() * 1.6) * (Math.random() < 0.5 ? -1 : 1)
+							: 0,
+						wobT: Math.random() * 6.28,
+						r: star ? 26 : 24,
+						type: bad ? "bad" : star ? "star" : "good",
+						e: bad
+							? "🐛"
+							: star
+								? "⭐"
+								: GOOD[Math.floor(Math.random() * GOOD.length)],
+						rot: Math.random() * 6.28,
+						vr: (Math.random() - 0.5) * 0.06,
+					});
+				}
+				function burst(x, y, color) {
+					for (let i = 0; i < 14; i++) {
+						const a = Math.random() * 6.28,
+							s = 1.5 + Math.random() * 3.5;
+						state.parts.push({
+							x,
+							y,
+							vx: Math.cos(a) * s,
+							vy: Math.sin(a) * s - 1.5,
+							life: 1,
+							color,
+						});
+					}
+				}
+				function floatText(x, y, txt, color) {
+					state.floats.push({ x, y, txt, color, life: 1 });
+				}
+
+				const EW = 92,
+					EH = 130;
+
+				function update(dt, now) {
+					const lv = LEVELS[state.level];
+
+					const SPD = 640 * dt;
+					if (keys.ArrowLeft || keys.a || keys.A) state.targetX -= SPD;
+					if (keys.ArrowRight || keys.d || keys.D) state.targetX += SPD;
+					state.targetX = Math.max(
+						EW / 2,
+						Math.min(cv.width - EW / 2, state.targetX),
+					);
+					state.px += (state.targetX - state.px) * Math.min(1, dt * 14);
+
+					if (now > state.spawnAt) {
+						spawnItem();
+						state.spawnAt =
+							now + lv.spawnMin + Math.random() * (lv.spawnMax - lv.spawnMin);
+					}
+
+					const catchY = cv.height - EH + 26;
+					for (let i = state.items.length - 1; i >= 0; i--) {
+						const it = state.items[i];
+						it.y += it.vy * dt * 60;
+						if (it.wob) {
+							it.wobT += dt * 3;
+							it.x += Math.sin(it.wobT) * it.wob;
+							it.x = Math.max(20, Math.min(cv.width - 20, it.x));
+						}
+						it.rot += it.vr;
+						const hit =
+							it.y > catchY &&
+							it.y < cv.height - 8 &&
+							Math.abs(it.x - state.px) < EW / 2 + it.r * 0.6;
+						if (hit) {
+							if (it.type === "bad") {
+								state.score = Math.max(0, state.score - 15);
+								state.streak = 0;
+								state.combo = 1;
+								state.shake = 10;
+								burst(it.x, it.y, "#A4468A");
+								floatText(it.x, it.y, "-15", "#C9438F");
+								sfx.bad();
+							} else {
+								const base = it.type === "star" ? 30 : 10;
+								state.streak++;
+								state.combo = Math.min(3, 1 + Math.floor(state.streak / 5));
+								const pts = base * state.combo;
+								state.score += pts;
+								burst(it.x, it.y, it.type === "star" ? "#E0A23B" : "#0FA8A3");
+								floatText(
+									it.x,
+									it.y,
+									"+" + pts,
+									it.type === "star" ? "#D98A00" : "#0FA8A3",
+								);
+								it.type === "star" ? sfx.star() : sfx.good();
+							}
+							state.items.splice(i, 1);
+							continue;
+						}
+						if (it.y > cv.height + 40) state.items.splice(i, 1);
+					}
+
+					for (let i = state.parts.length - 1; i >= 0; i--) {
+						const p = state.parts[i];
+						p.x += p.vx;
+						p.y += p.vy;
+						p.vy += 0.12;
+						p.life -= 0.03;
+						if (p.life <= 0) state.parts.splice(i, 1);
+					}
+					for (let i = state.floats.length - 1; i >= 0; i--) {
+						const f = state.floats[i];
+						f.y -= 1.2;
+						f.life -= 0.02;
+						if (f.life <= 0) state.floats.splice(i, 1);
+					}
+					if (state.shake > 0) state.shake -= dt * 40;
+
+					state.time -= dt;
+					if (state.time <= 0) {
+						state.time = 0;
+						levelDone();
+					}
+
+					hudScore.textContent = state.score;
+					hudTime.textContent = Math.ceil(state.time);
+					hudCombo.textContent = "x" + state.combo;
+					hudTarget.textContent = lv.target;
+					hudScore.style.color = state.score >= lv.target ? "var(--cyan)" : "";
+				}
+
+				function draw() {
+					const lv = LEVELS[state.level];
+					ctx.save();
+					if (state.shake > 0)
+						ctx.translate(
+							(Math.random() - 0.5) * state.shake,
+							(Math.random() - 0.5) * state.shake,
+						);
+					ctx.clearRect(-20, -20, cv.width + 40, cv.height + 40);
+
+					const tw = (state.time / lv.time) * cv.width;
+					const g = ctx.createLinearGradient(0, 0, cv.width, 0);
+					g.addColorStop(0, "#5A4DA8");
+					g.addColorStop(0.55, "#A4468A");
+					g.addColorStop(1, "#F0762B");
+					ctx.fillStyle = g;
+					ctx.fillRect(0, 0, tw, 7);
+
+					/* nama level di kanvas */
+					ctx.fillStyle = "rgba(21,34,70,.45)";
+					ctx.font = '700 15px "Baloo 2", cursive';
+					ctx.textAlign = "left";
+					ctx.fillText(lv.name, 16, 30);
+
+					for (const it of state.items) {
+						ctx.save();
+						ctx.translate(it.x, it.y);
+						ctx.rotate(it.rot);
+						const rg = ctx.createRadialGradient(0, -it.r * 0.4, 2, 0, 0, it.r);
+						if (it.type === "bad") {
+							rg.addColorStop(0, "#C9558F");
+							rg.addColorStop(1, "#5E2050");
+						} else if (it.type === "star") {
+							rg.addColorStop(0, "#FFD97A");
+							rg.addColorStop(1, "#F0762B");
+						} else {
+							rg.addColorStop(0, "#7A6CD4");
+							rg.addColorStop(1, "#3A3170");
+						}
+						ctx.fillStyle = rg;
+						ctx.beginPath();
+						ctx.arc(0, 0, it.r, 0, 7);
+						ctx.fill();
+						ctx.strokeStyle = "rgba(244,248,254,.35)";
+						ctx.lineWidth = 2;
+						ctx.stroke();
+						ctx.font = it.r * 1.1 + "px serif";
+						ctx.textAlign = "center";
+						ctx.textBaseline = "middle";
+						ctx.fillText(it.e, 0, 2);
+						ctx.restore();
+					}
+
+					for (const p of state.parts) {
+						ctx.globalAlpha = Math.max(0, p.life);
+						ctx.fillStyle = p.color;
+						ctx.beginPath();
+						ctx.arc(p.x, p.y, 3.2 * p.life + 0.8, 0, 7);
+						ctx.fill();
+					}
+					ctx.globalAlpha = 1;
+
+					if (esiImg.complete) {
+						const tilt = (state.targetX - state.px) * 0.0022;
+						ctx.save();
+						ctx.translate(state.px, cv.height - EH / 2 - 4);
+						ctx.rotate(Math.max(-0.2, Math.min(0.2, tilt)));
+						ctx.drawImage(esiImg, -EW / 2, -EH / 2, EW, EH);
+						ctx.restore();
+					}
+
+					for (const f of state.floats) {
+						ctx.globalAlpha = Math.max(0, f.life);
+						ctx.fillStyle = f.color;
+						ctx.font = '700 22px "JetBrains Mono", monospace';
+						ctx.textAlign = "center";
+						ctx.fillText(f.txt, f.x, f.y);
+					}
+					ctx.globalAlpha = 1;
+					ctx.restore();
+				}
+
+				function loop(now) {
+					if (!state.running) return;
+					const dt = Math.min(0.05, (now - state.lastT) / 1000 || 0.016);
+					state.lastT = now;
+					update(dt, now);
+					draw();
+					requestAnimationFrame(loop);
+				}
+
+				function beginLevel() {
+					const lv = LEVELS[state.level];
+					Object.assign(state, {
+						running: true,
+						time: lv.time,
+						combo: 1,
+						streak: 0,
+						items: [],
+						parts: [],
+						floats: [],
+						px: cv.width / 2,
+						targetX: cv.width / 2,
+						spawnAt: performance.now() + 400,
+						lastT: performance.now(),
+						shake: 0,
+					});
+					hudLevel.textContent = state.level + 1 + "/3";
+					ovStart.classList.add("hidden");
+					ovLevel.classList.add("hidden");
+					ovEnd.classList.add("hidden");
+					beep(520, 0.08);
+					beep(780, 0.1);
+					requestAnimationFrame(loop);
+				}
+
+				function startGame() {
+					state.level = 0;
+					state.score = 0;
+					state.won = false;
+					beginLevel();
+				}
+
+				function levelDone() {
+					state.running = false;
+					const lv = LEVELS[state.level];
+					if (state.score >= lv.target) {
+						if (state.level < LEVELS.length - 1) {
+							/* naik level */
+							sfx.end();
+							document.getElementById("lv-title").textContent =
+								"LEVEL " + (state.level + 1) + " COMPLETE! 🎉";
+							document.getElementById("lv-score").textContent = state.score;
+							const next = LEVELS[state.level + 1];
+							document.getElementById("lv-next").textContent =
+								next.name +
+								" — target " +
+								next.target +
+								" points. More bugs, faster data!";
+							ovLevel.classList.remove("hidden");
+						} else {
+							state.won = true;
+							endGame();
+						}
+					} else {
+						endGame();
+					}
+				}
+
+				function endGame() {
+					state.running = false;
+					sfx.end();
+					document.getElementById("end-score").textContent = state.score;
+					const best = getBoard()[0];
+					document.getElementById("end-title").textContent = state.won
+						? "🏆 YOU CONQUERED ALL 3 LEVELS!"
+						: "💥 Game Over at Level " + (state.level + 1);
+					document.getElementById("end-sub").textContent = state.won
+						? !best || state.score > best.s
+							? "NEW BOOTH RECORD! Your final score:"
+							: "Amazing! Your final score:"
+						: "Target not reached. Your score:";
+					renderBoard();
+					ovEnd.classList.remove("hidden");
+					document.getElementById("name-input").value = "";
+					document.getElementById("btn-save").disabled = false;
+					document.getElementById("btn-save").textContent = "💾 Save Score";
+					document.getElementById("name-input").focus();
+				}
+
+				/* ---------- 3. LEADERBOARD DATA RUSH ---------- */
+				function getBoard() {
+					try {
+						return JSON.parse(store.getItem("esi_board") || "[]");
+					} catch (e) {
+						return [];
+					}
+				}
+				function renderBoard() {
+					const board = getBoard();
+					const rows = board.length
+						? board
+								.map(
+									(r) =>
+										"<li><span>" +
+										r.n +
+										' <small style="color:var(--muted)">Lv' +
+										(r.lv || 1) +
+										"</small></span><span>" +
+										r.s +
+										"</span></li>",
+								)
+								.join("")
+						: "<li><span>No scores yet—be the first!</span><span>—</span></li>";
+					document.getElementById("board-list").innerHTML = rows;
+					const pub = document.getElementById("lb-rush-list");
+					if (pub) pub.innerHTML = rows;
+				}
+				/* reset khusus petugas booth: klik dua kali judul papan skor */
+				document
+					.getElementById("lb-rush-title")
+					.addEventListener("dblclick", function () {
+						if (
+							confirm("Reset the ESI Data Rush leaderboard? (booth staff only)")
+						) {
+							store.removeItem("esi_board");
+							renderBoard();
+						}
+					});
+				document
+					.getElementById("btn-save")
+					.addEventListener("click", function () {
+						const name = (
+							document.getElementById("name-input").value.trim() || "ANON"
+						)
+							.toUpperCase()
+							.slice(0, 10)
+							.replace(/[<>&"]/g, "");
+						const board = getBoard();
+						board.push({
+							n: name,
+							s: state.score,
+							lv: state.won ? 3 : state.level + 1,
+						});
+						board.sort((a, b) => b.s - a.s);
+						store.setItem("esi_board", JSON.stringify(board.slice(0, 5)));
+						renderBoard();
+						this.disabled = true;
+						this.textContent = "✅ Saved!";
+						beep(700, 0.1);
+						beep(1050, 0.12);
+					});
+				document
+					.getElementById("btn-start")
+					.addEventListener("click", startGame);
+				document
+					.getElementById("btn-retry")
+					.addEventListener("click", startGame);
+				document
+					.getElementById("btn-next")
+					.addEventListener("click", function () {
+						state.level++;
+						beginLevel();
+					});
+				renderBoard();
+			})();
+
+			/* ---------- 3b. TYPING CHALLENGE (3 LEVEL) ---------- */
+			(function () {
+				const TLEVELS = [
+					{
+						time: 30,
+						target: 8,
+						label: "Level 1 · Warm-Up 🥉",
+						pts: 5,
+						words: [
+							"data",
+							"web",
+							"apps",
+							"code",
+							"click",
+							"game",
+							"chat",
+							"file",
+							"user",
+							"login",
+							"cloud",
+							"wifi",
+							"email",
+							"pixel",
+							"server",
+							"mouse",
+						],
+					},
+					{
+						time: 30,
+						target: 7,
+						label: "Level 2 · IS Terms 🥈",
+						pts: 8,
+						words: [
+							"database",
+							"algorithm",
+							"network",
+							"analysis",
+							"startup",
+							"innovation",
+							"digital",
+							"laravel",
+							"python",
+							"frontend",
+							"backend",
+							"framework",
+							"prototype",
+							"dashboard",
+							"encryption",
+							"interface",
+						],
+					},
+					{
+						time: 30,
+						target: 6,
+						label: "Level 3 · Technology Phrases 🥇",
+						pts: 12,
+						words: [
+							"information systems",
+							"machine learning",
+							"data analytics",
+							"business analyst",
+							"user experience",
+							"artificial intelligence",
+							"digital innovation",
+							"product manager",
+							"immersive technology",
+							"internet of things",
+							"process mining",
+							"cyber security",
+						],
+					},
+				];
+				const st = {
+					running: false,
+					level: 0,
+					score: 0,
+					words: 0,
+					time: 30,
+					word: "",
+					pool: [],
+					errs: 0,
+					timer: null,
+				};
+
+				const elWord = document.getElementById("ty-word");
+				const elInput = document.getElementById("ty-input");
+				const elBar = document.getElementById("ty-bar");
+				const hudL = document.getElementById("ty-hud-level");
+				const hudS = document.getElementById("ty-hud-score");
+				const hudW = document.getElementById("ty-hud-words");
+				const hudT = document.getElementById("ty-hud-time");
+				const lvLabel = document.getElementById("ty-level-label");
+				const ovStart = document.getElementById("ty-ov-start");
+				const ovLevel = document.getElementById("ty-ov-level");
+				const ovEnd = document.getElementById("ty-ov-end");
+
+				function shuffle(a) {
+					for (let i = a.length - 1; i > 0; i--) {
+						const j = Math.floor(Math.random() * (i + 1));
+						[a[i], a[j]] = [a[j], a[i]];
+					}
+					return a;
+				}
+				function nextWord() {
+					const lv = TLEVELS[st.level];
+					if (!st.pool.length) st.pool = shuffle(lv.words.slice());
+					st.word = st.pool.pop();
+					elInput.value = "";
+					renderWord("");
+				}
+				function renderWord(typed) {
+					let html = "";
+					for (let i = 0; i < st.word.length; i++) {
+						const ch = st.word[i] === " " ? "&nbsp;" : st.word[i];
+						if (i < typed.length && typed[i] === st.word[i])
+							html += "<b>" + ch + "</b>";
+						else if (i === typed.length) html += "<u>" + ch + "</u>";
+						else html += ch;
+					}
+					elWord.innerHTML = html;
+				}
+				function updateHud() {
+					const lv = TLEVELS[st.level];
+					hudL.textContent = st.level + 1 + "/3";
+					hudS.textContent = st.score;
+					hudW.textContent = st.words + "/" + lv.target;
+					hudT.textContent = Math.ceil(st.time);
+					lvLabel.textContent = lv.label;
+					elBar.style.width = (st.time / lv.time) * 100 + "%";
+				}
+
+				function tick() {
+					if (!st.running) return;
+					st.time -= 0.1;
+					if (st.time <= 0) {
+						st.time = 0;
+						updateHud();
+						endGame(false);
+						return;
+					}
+					updateHud();
+				}
+
+				elInput.addEventListener("input", function () {
+					if (!st.running) return;
+					const typed = elInput.value;
+					if (st.word.startsWith(typed)) {
+						elInput.classList.remove("err");
+						elWord.classList.remove("err");
+						renderWord(typed);
+						if (typed === st.word) {
+							const lv = TLEVELS[st.level];
+							st.words++;
+							st.score += st.word.replace(/ /g, "").length * lv.pts;
+							sfx.good();
+							if (st.words >= lv.target) {
+								levelClear();
+								return;
+							}
+							nextWord();
+						}
+					} else {
+						st.errs++;
+						elInput.classList.add("err");
+						elWord.classList.add("err");
+						beep(180, 0.12, "sawtooth", 0.12);
+						setTimeout(() => {
+							elWord.classList.remove("err");
+						}, 260);
+					}
+					updateHud();
+				});
+
+				function beginLevel() {
+					const lv = TLEVELS[st.level];
+					st.running = true;
+					st.words = 0;
+					st.time = lv.time;
+					st.pool = [];
+					ovStart.classList.add("hidden");
+					ovLevel.classList.add("hidden");
+					ovEnd.classList.add("hidden");
+					nextWord();
+					updateHud();
+					clearInterval(st.timer);
+					st.timer = setInterval(tick, 100);
+					beep(520, 0.08);
+					beep(780, 0.1);
+					elInput.focus();
+				}
+				function startGame() {
+					st.level = 0;
+					st.score = 0;
+					st.errs = 0;
+					beginLevel();
+				}
+				function levelClear() {
+					st.running = false;
+					clearInterval(st.timer);
+					const bonus = Math.ceil(st.time) * 5;
+					st.score += bonus;
+					sfx.end();
+					if (st.level < TLEVELS.length - 1) {
+						document.getElementById("ty-lv-title").textContent =
+							"LEVEL " + (st.level + 1) + " COMPLETE! 🎉";
+						document.getElementById("ty-lv-sub").textContent =
+							"⏱️ Remaining-time bonus: +" + bonus + " points";
+						document.getElementById("ty-lv-score").textContent = st.score;
+						const next = TLEVELS[st.level + 1];
+						document.getElementById("ty-lv-next").textContent =
+							next.label +
+							" — " +
+							next.target +
+							" words. Longer phrases, greater challenge!";
+						ovLevel.classList.remove("hidden");
+					} else {
+						endGame(true);
+					}
+				}
+				function endGame(won) {
+					st.running = false;
+					clearInterval(st.timer);
+					sfx.end();
+					const best = getBoard()[0];
+					document.getElementById("ty-end-title").textContent = won
+						? "🏆 LIGHTNING-FAST FINGERS!"
+						: "⏰ Time’s Up at Level " + (st.level + 1);
+					document.getElementById("ty-end-sub").textContent = won
+						? !best || st.score > best.s
+							? "NEW TYPING RECORD! Your score:"
+							: "All levels complete! Your score:"
+						: "Your score:";
+					document.getElementById("ty-end-score").textContent = st.score;
+					renderBoard();
+					ovEnd.classList.remove("hidden");
+					document.getElementById("ty-name-input").value = "";
+					const btn = document.getElementById("ty-btn-save");
+					btn.disabled = false;
+					btn.textContent = "💾 Save Score";
+					st.won = won;
+					document.getElementById("ty-name-input").focus();
+				}
+
+				function getBoard() {
+					try {
+						return JSON.parse(store.getItem("esi_typing_board") || "[]");
+					} catch (e) {
+						return [];
+					}
+				}
+				function renderBoard() {
+					const board = getBoard();
+					const rows = board.length
+						? board
+								.map(
+									(r) =>
+										"<li><span>" +
+										r.n +
+										' <small style="color:var(--muted)">Lv' +
+										(r.lv || 1) +
+										"</small></span><span>" +
+										r.s +
+										"</span></li>",
+								)
+								.join("")
+						: "<li><span>No scores yet—be the first!</span><span>—</span></li>";
+					document.getElementById("ty-board-list").innerHTML = rows;
+					const pub = document.getElementById("lb-ty-list");
+					if (pub) pub.innerHTML = rows;
+				}
+				document
+					.getElementById("lb-ty-title")
+					.addEventListener("dblclick", function () {
+						if (
+							confirm(
+								"Reset the Typing Challenge leaderboard? (booth staff only)",
+							)
+						) {
+							store.removeItem("esi_typing_board");
+							renderBoard();
+						}
+					});
+				document
+					.getElementById("ty-btn-save")
+					.addEventListener("click", function () {
+						const name = (
+							document.getElementById("ty-name-input").value.trim() || "ANON"
+						)
+							.toUpperCase()
+							.slice(0, 10)
+							.replace(/[<>&"]/g, "");
+						const board = getBoard();
+						board.push({ n: name, s: st.score, lv: st.won ? 3 : st.level + 1 });
+						board.sort((a, b) => b.s - a.s);
+						store.setItem(
+							"esi_typing_board",
+							JSON.stringify(board.slice(0, 5)),
+						);
+						renderBoard();
+						this.disabled = true;
+						this.textContent = "✅ Saved!";
+						beep(700, 0.1);
+						beep(1050, 0.12);
+					});
+				document
+					.getElementById("ty-btn-start")
+					.addEventListener("click", startGame);
+				document
+					.getElementById("ty-btn-retry")
+					.addEventListener("click", startGame);
+				document
+					.getElementById("ty-btn-next")
+					.addEventListener("click", function () {
+						st.level++;
+						beginLevel();
+					});
+				renderBoard();
+			})();
+
+			/* ---------- 3c. FULLSCREEN TIAP GAME ---------- */
+			(function () {
+				function setupFS(btnId, shellSel) {
+					const btn = document.getElementById(btnId);
+					const shell = document.querySelector(shellSel);
+					if (!btn || !shell) return;
+					btn.addEventListener("click", function () {
+						const fsEl =
+							document.fullscreenElement || document.webkitFullscreenElement;
+						if (fsEl === shell) {
+							(document.exitFullscreen || document.webkitExitFullscreen).call(
+								document,
+							);
+						} else {
+							(shell.requestFullscreen || shell.webkitRequestFullscreen).call(
+								shell,
+							);
+						}
+					});
+					function sync() {
+						const fsEl =
+							document.fullscreenElement || document.webkitFullscreenElement;
+						const active = fsEl === shell;
+						btn.textContent = active ? "\u2715" : "\u26F6";
+						btn.title = active ? "Exit fullscreen (Esc)" : "Fullscreen";
+					}
+					document.addEventListener("fullscreenchange", sync);
+					document.addEventListener("webkitfullscreenchange", sync);
+				}
+				setupFS("fs-rush", "#game .game-shell");
+				setupFS("fs-ty", "#typing .game-shell");
+			})();
+
+			/* ---------- 4. KUIS ---------- */
+			(function () {
+				const QUESTIONS = [
+					{
+						q: "Information Systems combines knowledge from…",
+						opts: [
+							"Business + Technology 💼💻",
+							"Physics + Chemistry",
+							"Law + Art",
+							"Sports + Music",
+						],
+						a: 0,
+						react:
+							"Correct! Information Systems bridges the worlds of business and technology. 🌉",
+					},
+					{
+						q: "Which is NOT a career for an Information Systems graduate?",
+						opts: [
+							"Business Analyst",
+							"Product Manager",
+							"Data Analyst",
+							"Dentist 🦷",
+						],
+						a: 3,
+						react:
+							"Exactly! The other options are exciting careers available to Information Systems graduates. 🚀",
+					},
+					{
+						q: "UPH Information Systems is part of which faculty?",
+						opts: [
+							"Faculty of Medicine",
+							"FAIDAS — Faculty of Artificial Intelligence and Data Sciences 🤖",
+							"Faculty of Law",
+							"Faculty of Music",
+						],
+						a: 1,
+						react: "That’s right! We are part of FAIDAS. 🤖📊",
+					},
+					{
+						q: "In Information Systems, you will learn…",
+						opts: [
+							"Only coding",
+							"Only business theory",
+							"Coding, data analysis, AND business processes ✨",
+							"How to cook",
+						],
+						a: 2,
+						react:
+							"Exactly! That is the strength of Information Systems graduates: understanding both technology and business. 💪",
+					},
+					{
+						q: "Last question… what is the name of this adorable penguin mascot? 🐧",
+						opts: ["UPI", "ESI ⭐", "ISI", "OSI"],
+						a: 1,
+						react:
+							"Yay, that’s me! Don’t forget to take a photo with ESI at the booth! 📸",
+					},
+				];
+				let idx = 0,
+					score = 0;
+				const elQ = document.getElementById("quiz-q");
+				const elOpts = document.getElementById("quiz-opts");
+				const elReact = document.getElementById("quiz-react");
+				const elProg = document.getElementById("quiz-progress");
+				const elBody = document.getElementById("quiz-body");
+				const elFinal = document.getElementById("quiz-final");
+
+				function renderProgress() {
+					elProg.innerHTML = QUESTIONS.map(
+						(_, i) => '<i class="' + (i < idx ? "done" : "") + '"></i>',
+					).join("");
+				}
+				function renderQ() {
+					renderProgress();
+					const item = QUESTIONS[idx];
+					elQ.textContent = idx + 1 + ". " + item.q;
+					elReact.textContent = "";
+					elOpts.innerHTML = "";
+					item.opts.forEach((opt, i) => {
+						const b = document.createElement("button");
+						b.textContent = opt;
+						b.addEventListener("click", () => answer(i, b));
+						elOpts.appendChild(b);
+					});
+				}
+				function answer(i, btn) {
+					const item = QUESTIONS[idx];
+					[...elOpts.children].forEach((b) => (b.disabled = true));
+					if (i === item.a) {
+						btn.classList.add("right");
+						elReact.textContent = "✅ " + item.react;
+						score++;
+						beep(660, 0.08, "triangle");
+						beep(880, 0.1, "triangle", 0.12);
+					} else {
+						btn.classList.add("wrong");
+						elOpts.children[item.a].classList.add("right");
+						elReact.textContent = "❌ Almost! " + item.react;
+						beep(180, 0.18, "sawtooth", 0.16);
+					}
+					setTimeout(() => {
+						idx++;
+						idx < QUESTIONS.length ? renderQ() : finish();
+					}, 1700);
+				}
+				function finish() {
+					renderProgress();
+					elBody.style.display = "none";
+					elFinal.style.display = "block";
+					document.getElementById("quiz-score").textContent =
+						score + "/" + QUESTIONS.length;
+					const msg =
+						score === 5
+							? "Perfect! You are a true future Information Systems student. Claim a high five from ESI at the booth! 🙌"
+							: score >= 3
+								? "Great job! You already know Information Systems. Come learn even more at the booth! 😄"
+								: "No worries! That is the perfect reason to visit the booth and ask us directly. 😉";
+					document.getElementById("quiz-msg").textContent = msg;
+					beep(520, 0.12);
+					setTimeout(() => beep(660, 0.12), 120);
+					setTimeout(() => beep(880, 0.2), 240);
+				}
+				document.getElementById("quiz-retry").addEventListener("click", () => {
+					idx = 0;
+					score = 0;
+					elFinal.style.display = "none";
+					elBody.style.display = "block";
+					renderQ();
+				});
+				renderQ();
+			})();
+		</script>
+	</body>
+</html>
