@@ -3,6 +3,7 @@
 
   **An interactive booth experience for the UPH Information Systems Program**  
   Faculty of Artificial Intelligence and Data Sciences — Universitas Pelita Harapan
+  github page: <a href="https://callenid.github.io/informationsystemsbooth/">https://callenid.github.io/informationsystemsbooth/</a>
 
   <br>
 
