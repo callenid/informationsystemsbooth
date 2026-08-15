@@ -403,7 +403,8 @@
 			.hud .val.combo {
 				color: var(--orange);
 			}
-			#game-canvas {
+			#game-canvas,
+			#voice-canvas {
 				display: block;
 				width: 100%;
 				height: auto;
@@ -577,7 +578,8 @@
 				min-height: 0;
 				position: relative;
 			}
-			.game-shell:fullscreen #game-canvas {
+			.game-shell:fullscreen #game-canvas,
+			.game-shell:fullscreen #voice-canvas {
 				width: 100%;
 				height: 100%;
 				object-fit: contain;
@@ -611,7 +613,9 @@
 				position: absolute;
 				right: 14px;
 				top: 14px;
-				width: 190px;
+				width: 240px;
+				cursor: pointer;
+				transition: width 0.2s ease;
 				border-radius: 16px;
 				overflow: hidden;
 				border: 1px solid var(--glass-border);
@@ -623,6 +627,18 @@
 			}
 			.pip.hidden {
 				display: none;
+			}
+			.pip.pip-lg {
+				width: min(360px, 40%);
+			}
+			.pip.pip-xl {
+				width: min(520px, 58%);
+			}
+			.game-shell:fullscreen .pip.pip-lg {
+				width: min(30vw, 460px);
+			}
+			.game-shell:fullscreen .pip.pip-xl {
+				width: min(42vw, 660px);
 			}
 			.pip canvas {
 				display: block;
@@ -720,9 +736,15 @@
 			}
 			@media (max-width: 640px) {
 				.pip {
-					width: 128px;
+					width: 130px;
 					right: 8px;
 					top: 8px;
+				}
+				.pip.pip-lg {
+					width: 44%;
+				}
+				.pip.pip-xl {
+					width: 62%;
 				}
 			}
 
@@ -1196,6 +1218,7 @@
 				<nav class="nav-links" aria-label="Navigation">
 					<a href="#game">🎮 Data Rush</a>
 					<a href="#typing">⌨️ Typing</a>
+					<a href="#voice">🎤 Sound Rocket</a>
 					<a href="#leaderboard">🏆 Leaderboard</a>
 					<a href="#quiz">🧠 Quiz</a>
 					<a href="#prodi">📚 Specializations</a>
@@ -1309,8 +1332,12 @@
 								aria-label="ESI Data Rush game"
 							></canvas>
 
-							<div class="pip hidden" id="pip-rush">
-								<canvas id="pip-rush-cv" width="200" height="150"></canvas>
+							<div
+								class="pip pip-lg hidden"
+								id="pip-rush"
+								title="Click to resize the camera view"
+							>
+								<canvas id="pip-rush-cv" width="400" height="300"></canvas>
 								<span class="pip-tag" id="pip-rush-tag">Starting camera…</span>
 							</div>
 							<div class="cam-toast hidden" id="toast-rush"></div>
@@ -1478,8 +1505,12 @@
 								</p>
 							</div>
 
-							<div class="pip hidden" id="pip-ty">
-								<canvas id="pip-ty-cv" width="200" height="150"></canvas>
+							<div
+								class="pip hidden"
+								id="pip-ty"
+								title="Click to resize the camera view"
+							>
+								<canvas id="pip-ty-cv" width="400" height="300"></canvas>
 								<span class="pip-tag" id="pip-ty-tag">Starting camera…</span>
 							</div>
 							<div class="cam-toast hidden" id="toast-ty"></div>
@@ -1557,6 +1588,157 @@
 				</div>
 			</section>
 
+			<!-- ============ VOICE GAME ============ -->
+			<section id="voice">
+				<div class="wrap">
+					<div class="sec-head">
+						<h2>🎤 ESI <span>Sound Rocket</span></h2>
+						<p>
+							Your voice is the fuel! Shout, sing or cheer to fire ESI's jetpack
+							and fly through the firewalls. Louder = higher, quiet = ESI drops.
+							Collect the data, dodge the walls, survive three levels.
+						</p>
+					</div>
+					<div class="game-shell">
+						<div class="game-top">
+							<div class="hud">
+								<div class="stat">
+									<span class="lab">Level</span
+									><span class="val" id="v-hud-level" style="color: var(--cyan)"
+										>1/3</span
+									>
+								</div>
+								<div class="stat">
+									<span class="lab">Score</span
+									><span class="val" id="v-hud-score">0</span>
+								</div>
+								<div class="stat">
+									<span class="lab">Target</span
+									><span class="val" id="v-hud-target">130</span>
+								</div>
+								<div class="stat">
+									<span class="lab">Time</span
+									><span class="val" id="v-hud-time">35</span>
+								</div>
+								<div class="stat">
+									<span class="lab">Combo</span
+									><span class="val combo" id="v-hud-combo">x1</span>
+								</div>
+							</div>
+							<div class="top-btns">
+								<button
+									id="mic-voice"
+									class="fs-btn cam-btn"
+									aria-label="Toggle microphone control"
+									title="Voice control (microphone)"
+								>
+									🎤 Mic
+								</button>
+								<button
+									id="fs-voice"
+									class="fs-btn"
+									aria-label="Fullscreen"
+									title="Fullscreen"
+								>
+									⛶
+								</button>
+							</div>
+						</div>
+						<div class="game-wrap">
+							<canvas
+								id="voice-canvas"
+								width="960"
+								height="520"
+								aria-label="ESI Sound Rocket game"
+							></canvas>
+
+							<div
+								class="pip pip-lg hidden"
+								id="pip-voice"
+								title="Click to resize the microphone panel"
+							>
+								<canvas id="pip-voice-cv" width="400" height="230"></canvas>
+								<span class="pip-tag" id="pip-voice-tag">Starting mic…</span>
+							</div>
+							<div class="cam-toast hidden" id="toast-voice"></div>
+
+							<div class="game-overlay" id="v-ov-start">
+								<img src="assets/esi.png" alt="" />
+								<h3>ESI Sound Rocket</h3>
+								<p>
+									Turn on the <b>🎤 Mic</b>, then make some noise! The louder you
+									are, the higher ESI flies. Go quiet and ESI falls. Fly through
+									the gaps in the <b>firewalls</b> and grab the data.
+								</p>
+								<div class="legend">
+									<span>💾 +10</span>
+									<span>⭐ +30</span>
+									<span>🚪 Pass a wall +15</span>
+									<span>🧱 Crash −15</span>
+								</div>
+								<button class="btn btn-primary" id="v-btn-start">
+									▶ Start Level 1
+								</button>
+								<p class="hint" style="margin-top: 14px" id="v-ctrl-hint">
+									🎤 Turn on the mic to fly with your voice &nbsp;·&nbsp; ⌨️ or
+									hold <b>Space</b> / click the canvas
+								</p>
+								<span class="cam-note"
+									>💡 Booth tip: cheering as a group works great — the meter
+									calibrates to the room noise automatically.</span
+								>
+							</div>
+
+							<div class="game-overlay hidden" id="v-ov-level">
+								<img src="assets/esi.png" alt="" />
+								<h3 id="v-lv-title">LEVEL 1 COMPLETE! 🎉</h3>
+								<p id="v-lv-sub">Your score so far:</p>
+								<div class="quiz-done">
+									<div class="big" id="v-lv-score">0</div>
+								</div>
+								<p class="hint" id="v-lv-next" style="margin-bottom: 16px"></p>
+								<button class="btn btn-primary" id="v-btn-next">
+									⚡ Continue to the Next Level
+								</button>
+							</div>
+
+							<div class="game-overlay hidden" id="v-ov-end">
+								<h3 id="v-end-title">Time's Up!</h3>
+								<p id="v-end-sub">Your score:</p>
+								<div class="quiz-done">
+									<div class="big" id="v-end-score">0</div>
+								</div>
+								<input
+									id="v-name-input"
+									maxlength="10"
+									placeholder="YOUR NAME"
+									aria-label="Enter your name for the voice leaderboard"
+								/>
+								<div
+									style="
+										display: flex;
+										gap: 12px;
+										flex-wrap: wrap;
+										justify-content: center;
+									"
+								>
+									<button class="btn btn-primary" id="v-btn-save">
+										💾 Save Score
+									</button>
+									<button class="btn btn-ghost" id="v-btn-retry">
+										🔁 Play Again
+									</button>
+								</div>
+								<div class="board">
+									<h4>🏆 LEADERBOARD SOUND ROCKET</h4>
+									<ol id="v-board-list"></ol>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
 			<!-- ============ LEADERBOARD ============ -->
 			<section id="leaderboard">
 				<div class="wrap">
@@ -1585,6 +1767,15 @@
 								⌨️ Typing Challenge
 							</h3>
 							<ol id="lb-ty-list" class="lb-list"></ol>
+						</div>
+						<div class="lb-card">
+							<h3
+								id="lb-voice-title"
+								title="Double-click to reset (booth staff only)"
+							>
+								🎤 ESI Sound Rocket
+							</h3>
+							<ol id="lb-voice-list" class="lb-list"></ol>
 						</div>
 					</div>
 				</div>
@@ -2114,6 +2305,75 @@
 					else if (H.status === "motion") stepMotion();
 				}
 
+				/* -------- gambar video (mirror, cover) ke context apa pun -------- */
+				function drawVideo(c, w, h, alpha) {
+					if (!video.videoWidth) return false;
+					const vr = video.videoWidth / video.videoHeight,
+						cr = w / h;
+					let dw = w,
+						dh = h,
+						dx = 0,
+						dy = 0;
+					if (vr > cr) {
+						dw = h * vr;
+						dx = (w - dw) / 2;
+					} else {
+						dh = w / vr;
+						dy = (h - dh) / 2;
+					}
+					c.save();
+					c.globalAlpha = alpha === undefined ? 1 : alpha;
+					c.translate(w, 0);
+					c.scale(-1, 1);
+					c.drawImage(video, w - dx - dw, dy, dw, dh);
+					c.restore();
+					return true;
+				}
+
+				/* -------- rangka 21 titik tangan, bisa digambar di kanvas game -------- */
+				function drawSkeleton(c, w, h, lw, dot) {
+					if (H.status !== "ready" || !H.lm) return;
+					const PAIRS = [
+						[0, 1], [1, 2], [2, 3], [3, 4],
+						[0, 5], [5, 6], [6, 7], [7, 8],
+						[5, 9], [9, 10], [10, 11], [11, 12],
+						[9, 13], [13, 14], [14, 15], [15, 16],
+						[13, 17], [17, 18], [18, 19], [19, 20],
+						[0, 17],
+					];
+					const px = (p) => (1 - p.x) * w,
+						py = (p) => p.y * h;
+					c.save();
+					c.lineCap = "round";
+					c.strokeStyle = H.pinch
+						? "rgba(15,168,163,.95)"
+						: "rgba(255,255,255,.9)";
+					c.lineWidth = lw || 2;
+					c.beginPath();
+					for (const pr of PAIRS) {
+						c.moveTo(px(H.lm[pr[0]]), py(H.lm[pr[0]]));
+						c.lineTo(px(H.lm[pr[1]]), py(H.lm[pr[1]]));
+					}
+					c.stroke();
+					c.fillStyle = H.pinch ? "#0FA8A3" : "#F0762B";
+					for (const idx of [4, 8]) {
+						c.beginPath();
+						c.arc(px(H.lm[idx]), py(H.lm[idx]), dot || 4.5, 0, 7);
+						c.fill();
+					}
+					c.restore();
+				}
+
+				/* -------- latar kamera besar di dalam kanvas game -------- */
+				function paintBackdrop(c, w, h, alpha, veil) {
+					if (!drawVideo(c, w, h, alpha === undefined ? 0.55 : alpha)) return;
+					c.save();
+					c.fillStyle =
+						"rgba(240,245,252," + (veil === undefined ? 0.5 : veil) + ")";
+					c.fillRect(0, 0, w, h);
+					c.restore();
+				}
+
 				/* -------- gambar preview kamera + rangka tangan -------- */
 				function paint(canvas) {
 					if (!canvas) return;
@@ -2122,71 +2382,12 @@
 						h = canvas.height;
 					c.save();
 					c.clearRect(0, 0, w, h);
-					if (video.videoWidth) {
-						/* mirror + cover */
-						const vr = video.videoWidth / video.videoHeight,
-							cr = w / h;
-						let dw = w,
-							dh = h,
-							dx = 0,
-							dy = 0;
-						if (vr > cr) {
-							dw = h * vr;
-							dx = (w - dw) / 2;
-						} else {
-							dh = w / vr;
-							dy = (h - dh) / 2;
-						}
-						c.translate(w, 0);
-						c.scale(-1, 1);
-						c.drawImage(video, w - dx - dw, dy, dw, dh);
-						c.setTransform(1, 0, 0, 1, 0, 0);
-					} else {
+					if (!drawVideo(c, w, h, 1)) {
 						c.fillStyle = "#0e1730";
 						c.fillRect(0, 0, w, h);
 					}
 					if (H.status === "ready" && H.lm) {
-						const P = [
-							[0, 1],
-							[1, 2],
-							[2, 3],
-							[3, 4],
-							[0, 5],
-							[5, 6],
-							[6, 7],
-							[7, 8],
-							[5, 9],
-							[9, 10],
-							[10, 11],
-							[11, 12],
-							[9, 13],
-							[13, 14],
-							[14, 15],
-							[15, 16],
-							[13, 17],
-							[17, 18],
-							[18, 19],
-							[19, 20],
-							[0, 17],
-						];
-						const px = (p) => (1 - p.x) * w,
-							py = (p) => p.y * h;
-						c.strokeStyle = H.pinch
-							? "rgba(15,168,163,.95)"
-							: "rgba(255,255,255,.85)";
-						c.lineWidth = 2;
-						c.beginPath();
-						for (const [a, b] of P) {
-							c.moveTo(px(H.lm[a]), py(H.lm[a]));
-							c.lineTo(px(H.lm[b]), py(H.lm[b]));
-						}
-						c.stroke();
-						c.fillStyle = H.pinch ? "#0FA8A3" : "#F0762B";
-						for (const idx of [4, 8]) {
-							c.beginPath();
-							c.arc(px(H.lm[idx]), py(H.lm[idx]), 4.5, 0, 7);
-							c.fill();
-						}
+						drawSkeleton(c, w, h, Math.max(2, w / 130), Math.max(4, w / 70));
 					} else if (H.status === "motion" && H.seen) {
 						c.strokeStyle = "#F0762B";
 						c.lineWidth = 3;
@@ -2269,8 +2470,252 @@
 				H.request = request;
 				H.release = release;
 				H.paint = paint;
+				H.paintBackdrop = paintBackdrop;
+				H.drawSkeleton = drawSkeleton;
 				H.label = label;
 				return H;
+			})();
+
+			/* ================================================================
+			   1c. ESIVoice — PENGUKUR SUARA LEWAT MIKROFON
+			   ----------------------------------------------------------------
+			   Mengukur kekerasan suara (RMS -> dB), lalu dinormalkan terhadap
+			   kebisingan ruangan yang diukur otomatis 1,5 detik pertama.
+			   Jadi tetap jalan di booth yang ramai. Tidak butuh internet.
+			   ================================================================ */
+			const ESIVoice = (function () {
+				const V = {
+					status: "off" /* off | starting | calibrating | ready | error */,
+					msg: "",
+					active: false,
+					level: 0 /* 0..1 hasil normalisasi */,
+					peak: 0,
+					db: -100,
+					floorDb: -55,
+					owner: null,
+				};
+				const RANGE_DB = 24; /* selisih dB di atas ambient = tenaga penuh */
+				let stream = null,
+					analyser = null,
+					srcNode = null,
+					data = null,
+					raf = 0,
+					smooth = 0,
+					calStart = 0,
+					calSum = 0,
+					calN = 0;
+				const wave = new Array(64).fill(0);
+
+				function label() {
+					if (V.status === "starting") return "Starting mic…";
+					if (V.status === "calibrating") return "Calibrating — stay quiet 🤫";
+					if (V.status === "ready")
+						return V.level > 0.6
+							? "🔊 LOUD!"
+							: V.level > 0.15
+								? "🎤 Listening"
+								: "🎤 Make some noise!";
+					if (V.status === "error") return "Microphone unavailable";
+					return "Mic off";
+				}
+
+				function loop(now) {
+					raf = requestAnimationFrame(loop);
+					if (!analyser) return;
+					analyser.getByteTimeDomainData(data);
+					let sum = 0;
+					for (let i = 0; i < data.length; i++) {
+						const v = (data[i] - 128) / 128;
+						sum += v * v;
+					}
+					const rms = Math.sqrt(sum / data.length);
+					const db = 20 * Math.log10(rms + 1e-7);
+					V.db = db;
+					if (V.status === "calibrating") {
+						calSum += db;
+						calN++;
+						if (now - calStart > 1500 && calN > 10) {
+							V.floorDb = Math.min(-22, calSum / calN + 5);
+							V.status = "ready";
+						}
+						V.level = 0;
+						return;
+					}
+					let lv = (db - V.floorDb) / RANGE_DB;
+					lv = Math.max(0, Math.min(1, lv));
+					/* naik cepat, turun halus — biar terasa responsif tapi tidak gemetar */
+					smooth += (lv - smooth) * (lv > smooth ? 0.55 : 0.14);
+					V.level = smooth;
+					V.peak = Math.max(V.peak * 0.96, smooth);
+					wave.shift();
+					wave.push(smooth);
+				}
+
+				async function request(owner) {
+					if (V.owner && V.owner !== owner) {
+						try {
+							V.owner.disable();
+						} catch (e) {}
+					}
+					V.owner = owner;
+					if (V.status === "ready" || V.status === "calibrating") {
+						V.active = true;
+						return true;
+					}
+					V.status = "starting";
+					V.msg = "";
+					try {
+						if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia)
+							throw new Error(
+								"This browser has no microphone access. Open the page over https:// or on localhost.",
+							);
+						stream = await navigator.mediaDevices.getUserMedia({
+							audio: {
+								echoCancellation: false,
+								noiseSuppression: false,
+								autoGainControl: false,
+							},
+							video: false,
+						});
+						audioCtx =
+							audioCtx ||
+							new (window.AudioContext || window.webkitAudioContext)();
+						if (audioCtx.state === "suspended") await audioCtx.resume();
+						srcNode = audioCtx.createMediaStreamSource(stream);
+						analyser = audioCtx.createAnalyser();
+						analyser.fftSize = 1024;
+						analyser.smoothingTimeConstant = 0.1;
+						data = new Uint8Array(analyser.fftSize);
+						/* sengaja TIDAK disambung ke destination -> tidak ada feedback/howling */
+						srcNode.connect(analyser);
+					} catch (e) {
+						V.status = "error";
+						V.active = false;
+						V.msg =
+							e && e.name === "NotAllowedError"
+								? "Microphone permission was blocked. Allow it in the browser address bar, then tap 🎤 Mic again."
+								: (e && e.message) ||
+									"The microphone could not be opened. Make sure the page runs over https:// (or localhost) and no other app is using it.";
+						return false;
+					}
+					calibrate();
+					V.active = true;
+					cancelAnimationFrame(raf);
+					raf = requestAnimationFrame(loop);
+					return true;
+				}
+
+				function calibrate() {
+					calStart = performance.now();
+					calSum = 0;
+					calN = 0;
+					smooth = 0;
+					V.level = 0;
+					V.peak = 0;
+					V.status = "calibrating";
+				}
+
+				function release(owner) {
+					if (V.owner && V.owner !== owner) return;
+					V.owner = null;
+					V.active = false;
+					V.level = 0;
+					V.peak = 0;
+					V.status = "off";
+					cancelAnimationFrame(raf);
+					raf = 0;
+					try {
+						if (srcNode) srcNode.disconnect();
+					} catch (e) {}
+					srcNode = null;
+					analyser = null;
+					if (stream) {
+						stream.getTracks().forEach((t) => t.stop());
+						stream = null;
+					}
+				}
+
+				/* panel meter suara untuk PIP */
+				function paint(canvas) {
+					if (!canvas) return;
+					const c = canvas.getContext("2d");
+					const w = canvas.width,
+						h = canvas.height;
+					c.save();
+					c.clearRect(0, 0, w, h);
+					const bg = c.createLinearGradient(0, 0, 0, h);
+					bg.addColorStop(0, "#16224a");
+					bg.addColorStop(1, "#0d1533");
+					c.fillStyle = bg;
+					c.fillRect(0, 0, w, h);
+
+					/* riwayat gelombang */
+					c.strokeStyle = "rgba(122,108,212,.85)";
+					c.lineWidth = 2;
+					c.beginPath();
+					for (let i = 0; i < wave.length; i++) {
+						const x = (i / (wave.length - 1)) * w;
+						const y = h * 0.58 - wave[i] * h * 0.42;
+						i ? c.lineTo(x, y) : c.moveTo(x, y);
+					}
+					c.stroke();
+
+					/* bar level */
+					const bx = w * 0.08,
+						bw = w * 0.84,
+						by = h * 0.68,
+						bh = h * 0.16;
+					c.fillStyle = "rgba(255,255,255,.14)";
+					c.fillRect(bx, by, bw, bh);
+					const g = c.createLinearGradient(bx, 0, bx + bw, 0);
+					g.addColorStop(0, "#0FA8A3");
+					g.addColorStop(0.6, "#A4468A");
+					g.addColorStop(1, "#F0762B");
+					c.fillStyle = g;
+					c.fillRect(bx, by, bw * V.level, bh);
+					/* garis "cukup untuk melayang" */
+					c.strokeStyle = "rgba(255,255,255,.75)";
+					c.lineWidth = 2;
+					c.beginPath();
+					c.moveTo(bx + bw * 0.43, by - 4);
+					c.lineTo(bx + bw * 0.43, by + bh + 4);
+					c.stroke();
+					/* penanda puncak */
+					c.fillStyle = "#FFD97A";
+					c.fillRect(bx + bw * V.peak - 2, by - 3, 3, bh + 6);
+
+					c.fillStyle = "rgba(255,255,255,.75)";
+					c.font = '700 ' + Math.round(h * 0.1) + 'px "Baloo 2", cursive';
+					c.textAlign = "center";
+					c.fillText(
+						V.status === "calibrating"
+							? "measuring room noise…"
+							: "hover line = enough to float",
+						w / 2,
+						h * 0.28,
+					);
+					c.restore();
+				}
+
+				V.request = request;
+				V.release = release;
+				V.paint = paint;
+				V.label = label;
+				V.calibrate = calibrate;
+				return V;
+			})();
+
+			/* klik panel kamera/mic untuk memperbesar–memperkecil */
+			(function () {
+				const SIZES = ["", "pip-lg", "pip-xl"];
+				document.querySelectorAll(".pip").forEach(function (pip) {
+					pip.addEventListener("click", function () {
+						const cur = SIZES.findIndex((c) => c && pip.classList.contains(c));
+						const next = SIZES[(cur + 1 + (cur < 0 ? 1 : 0)) % SIZES.length];
+						SIZES.forEach((c) => c && pip.classList.remove(c));
+						if (next) pip.classList.add(next);
+					});
+				});
 			})();
 
 			/* ---------- 2. GAME: ESI DATA RUSH (3 LEVEL) ---------- */
@@ -2339,6 +2784,7 @@
 					lastT: 0,
 					shake: 0,
 					won: false,
+					raf: 0,
 				};
 
 				/* -- input -- */
@@ -2415,7 +2861,7 @@
 						return "⌨️ Arrow keys / A-D &nbsp;·&nbsp; 🖱️ Move the mouse &nbsp;·&nbsp; 📱 Touch &amp; drag";
 					if (ESIHand.status === "motion")
 						return "🌀 Motion mode — move your hand to steer ESI, touch the data to collect it.";
-					return "✋ Move your hand to steer ESI &nbsp;·&nbsp; 🤏 <b>pinch</b> your thumb + index finger to grab the data &nbsp;·&nbsp; keep the hand open to dodge 🐛";
+					return "✋ Move your hand to steer ESI &nbsp;·&nbsp; 🤏 <b>pinch</b> your thumb + index finger to grab the data &nbsp;·&nbsp; click the camera panel to resize it";
 				}
 				function refreshHint() {
 					ctrlHint.innerHTML = ctrlText();
@@ -2644,6 +3090,7 @@
 
 				function draw() {
 					const lv = LEVELS[state.level];
+					const camOn = state.hand && ESIHand.active;
 					ctx.save();
 					if (state.shake > 0)
 						ctx.translate(
@@ -2651,6 +3098,12 @@
 							(Math.random() - 0.5) * state.shake,
 						);
 					ctx.clearRect(-20, -20, cv.width + 40, cv.height + 40);
+
+					/* kamera tampil BESAR sebagai latar kanvas saat mode tangan aktif */
+					if (camOn) {
+						ESIHand.paintBackdrop(ctx, cv.width, cv.height, 0.85, 0.52);
+						ESIHand.drawSkeleton(ctx, cv.width, cv.height, 5, 9);
+					}
 
 					const tw = (state.time / lv.time) * cv.width;
 					const g = ctx.createLinearGradient(0, 0, cv.width, 0);
@@ -2759,7 +3212,7 @@
 					state.lastT = now;
 					update(dt, now);
 					draw();
-					requestAnimationFrame(loop);
+					state.raf = requestAnimationFrame(loop);
 				}
 
 				function beginLevel() {
@@ -2786,7 +3239,10 @@
 					ovEnd.classList.add("hidden");
 					beep(520, 0.08);
 					beep(780, 0.1);
-					requestAnimationFrame(loop);
+					/* batalkan frame sisa dari level sebelumnya supaya game
+					   tidak berjalan dobel kecepatan di level 2 dan 3 */
+					cancelAnimationFrame(state.raf);
+					state.raf = requestAnimationFrame(loop);
 				}
 
 				function startGame() {
@@ -3320,6 +3776,10 @@
 					const lv = TLEVELS[st.level];
 					actx.save();
 					actx.clearRect(0, 0, AW, AH);
+					if (ESIHand.active) {
+						ESIHand.paintBackdrop(actx, AW, AH, 0.85, 0.6);
+						ESIHand.drawSkeleton(actx, AW, AH, 4, 7);
+					}
 					if (st.shake > 0)
 						actx.translate(
 							(Math.random() - 0.5) * st.shake,
@@ -3698,6 +4158,715 @@
 				renderBoard();
 			})();
 
+			/* ---------- 3b2. GAME SUARA: ESI SOUND ROCKET (3 LEVEL) ---------- */
+			(function () {
+				const cv = document.getElementById("voice-canvas");
+				const ctx = cv.getContext("2d");
+				const W = cv.width,
+					Hh = cv.height;
+				const ovStart = document.getElementById("v-ov-start");
+				const ovLevel = document.getElementById("v-ov-level");
+				const ovEnd = document.getElementById("v-ov-end");
+				const hudScore = document.getElementById("v-hud-score");
+				const hudTime = document.getElementById("v-hud-time");
+				const hudCombo = document.getElementById("v-hud-combo");
+				const hudLevel = document.getElementById("v-hud-level");
+				const hudTarget = document.getElementById("v-hud-target");
+				const ctrlHint = document.getElementById("v-ctrl-hint");
+
+				const esiImg = new Image();
+				esiImg.src = "assets/esi.png";
+
+				const LEVELS = [
+					{
+						time: 35,
+						target: 130,
+						speed: 170,
+						gap: 235,
+						wallEvery: 1700,
+						orbEvery: 900,
+						name: "Level 1 · Lift Off 🥉",
+					},
+					{
+						time: 35,
+						target: 360,
+						speed: 218,
+						gap: 200,
+						wallEvery: 1400,
+						orbEvery: 780,
+						name: "Level 2 · Sound Surge 🥈",
+					},
+					{
+						time: 35,
+						target: 660,
+						speed: 268,
+						gap: 172,
+						wallEvery: 1150,
+						orbEvery: 680,
+						name: "Level 3 · Sonic Storm ⛈️🥇",
+					},
+				];
+
+				const EX = 190, /* posisi tetap ESI di sumbu x */
+					ER = 40; /* radius tabrakan */
+				const GRAV = 880,
+					THRUST = 2150;
+
+				const st = {
+					running: false,
+					level: 0,
+					score: 0,
+					time: 35,
+					combo: 1,
+					streak: 0,
+					y: Hh / 2,
+					vy: 0,
+					walls: [],
+					orbs: [],
+					parts: [],
+					floats: [],
+					stars: [],
+					wallAt: 0,
+					orbAt: 0,
+					lastT: 0,
+					shake: 0,
+					invuln: 0,
+					won: false,
+					mic: false,
+					keyThrust: false,
+					loud: 0,
+					raf: 0,
+				};
+
+				for (let i = 0; i < 46; i++)
+					st.stars.push({
+						x: Math.random() * W,
+						y: Math.random() * Hh,
+						r: 1 + Math.random() * 2.2,
+						sp: 12 + Math.random() * 46,
+					});
+
+				/* ---------- kontrol cadangan: Space / klik ---------- */
+				addEventListener("keydown", (e) => {
+					if (e.code === "Space" && st.running) {
+						st.keyThrust = true;
+						e.preventDefault();
+					}
+				});
+				addEventListener("keyup", (e) => {
+					if (e.code === "Space") st.keyThrust = false;
+				});
+				cv.addEventListener("mousedown", () => {
+					if (st.running) st.keyThrust = true;
+				});
+				addEventListener("mouseup", () => {
+					st.keyThrust = false;
+				});
+				cv.addEventListener(
+					"touchstart",
+					(e) => {
+						if (st.running) {
+							st.keyThrust = true;
+							e.preventDefault();
+						}
+					},
+					{ passive: false },
+				);
+				addEventListener("touchend", () => {
+					st.keyThrust = false;
+				});
+
+				/* ---------- tombol mikrofon ---------- */
+				const micBtn = document.getElementById("mic-voice");
+				const pipBox = document.getElementById("pip-voice");
+				const pipCv = document.getElementById("pip-voice-cv");
+				const pipTag = document.getElementById("pip-voice-tag");
+				const toast = document.getElementById("toast-voice");
+				const OWNER = { id: "voice", disable: () => disableMic(true) };
+				let pipRaf = 0;
+
+				function showToast(msg) {
+					if (!msg) {
+						toast.classList.add("hidden");
+						return;
+					}
+					toast.textContent = msg;
+					toast.classList.remove("hidden");
+					clearTimeout(toast._t);
+					toast._t = setTimeout(
+						() => toast.classList.add("hidden"),
+						msg.length > 90 ? 9000 : 6000,
+					);
+				}
+				function refreshHint() {
+					ctrlHint.innerHTML = st.mic
+						? "🎤 <b>Shout, sing or cheer</b> to fly &nbsp;·&nbsp; go quiet and ESI drops &nbsp;·&nbsp; ⌨️ Space still works"
+						: "🎤 Turn on the mic to fly with your voice &nbsp;·&nbsp; ⌨️ or hold <b>Space</b> / click the canvas";
+					pipTag.textContent = ESIVoice.label();
+					pipTag.className =
+						"pip-tag " +
+						(ESIVoice.status === "ready"
+							? "ready"
+							: ESIVoice.status === "calibrating"
+								? "motion"
+								: ESIVoice.status);
+				}
+				function pipLoop() {
+					ESIVoice.paint(pipCv);
+					refreshHint();
+					pipRaf = requestAnimationFrame(pipLoop);
+				}
+				async function enableMic() {
+					st.mic = true;
+					micBtn.classList.add("on");
+					pipBox.classList.remove("hidden");
+					cancelAnimationFrame(pipRaf);
+					pipLoop();
+					showToast("Starting the microphone… please allow access 🎤");
+					const ok = await ESIVoice.request(OWNER);
+					refreshHint();
+					if (!ok) {
+						showToast(ESIVoice.msg);
+						disableMic();
+						return;
+					}
+					showToast(
+						"Measuring the room noise for 1.5 seconds — stay quiet, then shout! 🤫→🔊",
+					);
+				}
+				function disableMic(silent) {
+					st.mic = false;
+					micBtn.classList.remove("on");
+					pipBox.classList.add("hidden");
+					cancelAnimationFrame(pipRaf);
+					pipRaf = 0;
+					ESIVoice.release(OWNER);
+					refreshHint();
+					if (!silent) showToast("");
+				}
+				micBtn.addEventListener("click", function () {
+					if (st.mic) disableMic();
+					else enableMic();
+				});
+				/* klik dua kali panel mic = kalibrasi ulang (misal booth jadi lebih ramai) */
+				pipBox.addEventListener("dblclick", function (e) {
+					e.stopPropagation();
+					if (st.mic && ESIVoice.active) {
+						ESIVoice.calibrate();
+						showToast("Recalibrating — stay quiet for a moment 🤫");
+					}
+				});
+				refreshHint();
+
+				/* ---------- spawn ---------- */
+				function spawnWall() {
+					const lv = LEVELS[st.level];
+					const gap = lv.gap;
+					const gy = 90 + Math.random() * (Hh - 180);
+					st.walls.push({
+						x: W + 40,
+						w: 58,
+						gy: Math.max(gap / 2 + 30, Math.min(Hh - gap / 2 - 30, gy)),
+						gap: gap,
+						passed: false,
+						hit: false,
+					});
+				}
+				function spawnOrb() {
+					const star = Math.random() < 0.14;
+					st.orbs.push({
+						x: W + 30,
+						y: 60 + Math.random() * (Hh - 120),
+						r: star ? 24 : 21,
+						star: star,
+						e: star ? "⭐" : ["💾", "📊", "🧩", "💡"][Math.floor(Math.random() * 4)],
+						bob: Math.random() * 6.28,
+					});
+				}
+				function burst(x, y, color) {
+					for (let i = 0; i < 15; i++) {
+						const a = Math.random() * 6.28,
+							sp = 60 + Math.random() * 190;
+						st.parts.push({
+							x: x,
+							y: y,
+							vx: Math.cos(a) * sp,
+							vy: Math.sin(a) * sp,
+							life: 1,
+							color: color,
+						});
+					}
+				}
+				function floatText(x, y, txt, color) {
+					st.floats.push({ x: x, y: y, txt: txt, color: color, life: 1 });
+				}
+
+				/* ---------- update ---------- */
+				function update(dt, now) {
+					const lv = LEVELS[st.level];
+
+					/* tenaga dorong: suara atau tombol */
+					const voice = st.mic && ESIVoice.status === "ready" ? ESIVoice.level : 0;
+					const loud = Math.max(voice, st.keyThrust ? 1 : 0);
+					st.loud = loud;
+
+					st.vy += (GRAV - THRUST * loud) * dt;
+					st.vy = Math.max(-560, Math.min(680, st.vy));
+					st.y += st.vy * dt;
+					if (st.y < ER) {
+						st.y = ER;
+						st.vy = Math.max(0, st.vy);
+					}
+					if (st.y > Hh - ER) {
+						st.y = Hh - ER;
+						st.vy = Math.min(0, st.vy);
+					}
+
+					for (const s2 of st.stars) {
+						s2.x -= s2.sp * dt;
+						if (s2.x < -4) {
+							s2.x = W + 4;
+							s2.y = Math.random() * Hh;
+						}
+					}
+
+					if (now > st.wallAt) {
+						spawnWall();
+						st.wallAt = now + lv.wallEvery * (0.85 + Math.random() * 0.3);
+					}
+					if (now > st.orbAt) {
+						spawnOrb();
+						st.orbAt = now + lv.orbEvery * (0.8 + Math.random() * 0.5);
+					}
+
+					if (st.invuln > 0) st.invuln -= dt;
+
+					/* dinding */
+					for (let i = st.walls.length - 1; i >= 0; i--) {
+						const wl = st.walls[i];
+						wl.x -= lv.speed * dt;
+						const overlapX = EX + ER > wl.x && EX - ER < wl.x + wl.w;
+						const inGap =
+							st.y - ER * 0.72 > wl.gy - wl.gap / 2 &&
+							st.y + ER * 0.72 < wl.gy + wl.gap / 2;
+						if (overlapX && !inGap && !wl.hit && st.invuln <= 0) {
+							wl.hit = true;
+							st.invuln = 1.0;
+							st.score = Math.max(0, st.score - 15);
+							st.streak = 0;
+							st.combo = 1;
+							st.shake = 13;
+							burst(EX + ER, st.y, "#A4468A");
+							floatText(EX, st.y - 40, "-15", "#C9438F");
+							sfx.bad();
+						}
+						if (!wl.passed && wl.x + wl.w < EX - ER) {
+							wl.passed = true;
+							if (!wl.hit) {
+								st.score += 15;
+								floatText(EX + 60, st.y - 30, "+15 pass!", "#0FA8A3");
+								beep(760, 0.07, "triangle", 0.12);
+							}
+						}
+						if (wl.x < -90) st.walls.splice(i, 1);
+					}
+
+					/* data */
+					for (let i = st.orbs.length - 1; i >= 0; i--) {
+						const o = st.orbs[i];
+						o.x -= lv.speed * dt;
+						o.bob += dt * 2.4;
+						const dy = o.y + Math.sin(o.bob) * 9;
+						if (Math.hypot(o.x - EX, dy - st.y) < o.r + ER * 0.68) {
+							st.streak++;
+							st.combo = Math.min(3, 1 + Math.floor(st.streak / 5));
+							const pts = (o.star ? 30 : 10) * st.combo;
+							st.score += pts;
+							burst(o.x, dy, o.star ? "#E0A23B" : "#0FA8A3");
+							floatText(o.x, dy, "+" + pts, o.star ? "#D98A00" : "#0FA8A3");
+							o.star ? sfx.star() : sfx.good();
+							st.orbs.splice(i, 1);
+							continue;
+						}
+						if (o.x < -50) st.orbs.splice(i, 1);
+					}
+
+					for (let i = st.parts.length - 1; i >= 0; i--) {
+						const p = st.parts[i];
+						p.x += p.vx * dt;
+						p.y += p.vy * dt;
+						p.vy += 260 * dt;
+						p.life -= dt * 1.7;
+						if (p.life <= 0) st.parts.splice(i, 1);
+					}
+					for (let i = st.floats.length - 1; i >= 0; i--) {
+						const f = st.floats[i];
+						f.y -= 44 * dt;
+						f.life -= dt * 1.2;
+						if (f.life <= 0) st.floats.splice(i, 1);
+					}
+					if (st.shake > 0) st.shake -= dt * 40;
+
+					st.time -= dt;
+					if (st.time <= 0) {
+						st.time = 0;
+						levelDone();
+					}
+
+					hudScore.textContent = st.score;
+					hudTime.textContent = Math.ceil(st.time);
+					hudCombo.textContent = "x" + st.combo;
+					hudTarget.textContent = lv.target;
+					hudScore.style.color = st.score >= lv.target ? "var(--cyan)" : "";
+				}
+
+				/* ---------- draw ---------- */
+				function draw() {
+					const lv = LEVELS[st.level];
+					ctx.save();
+					if (st.shake > 0)
+						ctx.translate(
+							(Math.random() - 0.5) * st.shake,
+							(Math.random() - 0.5) * st.shake,
+						);
+					ctx.clearRect(-20, -20, W + 40, Hh + 40);
+
+					/* bintang latar */
+					for (const s2 of st.stars) {
+						ctx.fillStyle = "rgba(90,77,168,.22)";
+						ctx.beginPath();
+						ctx.arc(s2.x, s2.y, s2.r, 0, 7);
+						ctx.fill();
+					}
+
+					/* bar waktu */
+					const tw = (st.time / lv.time) * W;
+					const g = ctx.createLinearGradient(0, 0, W, 0);
+					g.addColorStop(0, "#5A4DA8");
+					g.addColorStop(0.55, "#A4468A");
+					g.addColorStop(1, "#F0762B");
+					ctx.fillStyle = g;
+					ctx.fillRect(0, 0, tw, 7);
+
+					ctx.fillStyle = "rgba(21,34,70,.45)";
+					ctx.font = '700 15px "Baloo 2", cursive';
+					ctx.textAlign = "left";
+					ctx.fillText(lv.name, 16, 30);
+
+					/* dinding firewall */
+					for (const wl of st.walls) {
+						const top = wl.gy - wl.gap / 2,
+							bot = wl.gy + wl.gap / 2;
+						const wg = ctx.createLinearGradient(wl.x, 0, wl.x + wl.w, 0);
+						if (wl.hit) {
+							wg.addColorStop(0, "#C9558F");
+							wg.addColorStop(1, "#5E2050");
+						} else {
+							wg.addColorStop(0, "#6C5FC0");
+							wg.addColorStop(1, "#3A3170");
+						}
+						ctx.fillStyle = wg;
+						roundRect(wl.x, -10, wl.w, top + 10, 12);
+						roundRect(wl.x, bot, wl.w, Hh - bot + 10, 12);
+						ctx.strokeStyle = "rgba(244,248,254,.4)";
+						ctx.lineWidth = 2;
+						ctx.beginPath();
+						ctx.moveTo(wl.x, top);
+						ctx.lineTo(wl.x + wl.w, top);
+						ctx.moveTo(wl.x, bot);
+						ctx.lineTo(wl.x + wl.w, bot);
+						ctx.stroke();
+						ctx.fillStyle = "rgba(244,248,254,.85)";
+						ctx.font = '700 17px "Baloo 2", cursive';
+						ctx.textAlign = "center";
+						ctx.fillText("🔥", wl.x + wl.w / 2, top - 14);
+					}
+
+					/* data */
+					for (const o of st.orbs) {
+						const dy = o.y + Math.sin(o.bob) * 9;
+						ctx.save();
+						ctx.translate(o.x, dy);
+						const rg = ctx.createRadialGradient(0, -o.r * 0.4, 2, 0, 0, o.r);
+						if (o.star) {
+							rg.addColorStop(0, "#FFD97A");
+							rg.addColorStop(1, "#F0762B");
+						} else {
+							rg.addColorStop(0, "#7A6CD4");
+							rg.addColorStop(1, "#3A3170");
+						}
+						ctx.fillStyle = rg;
+						ctx.beginPath();
+						ctx.arc(0, 0, o.r, 0, 7);
+						ctx.fill();
+						ctx.strokeStyle = "rgba(244,248,254,.35)";
+						ctx.lineWidth = 2;
+						ctx.stroke();
+						ctx.font = o.r * 1.1 + "px serif";
+						ctx.textAlign = "center";
+						ctx.textBaseline = "middle";
+						ctx.fillText(o.e, 0, 2);
+						ctx.restore();
+					}
+
+					/* semburan jet — panjangnya mengikuti kerasnya suara */
+					const fl = 26 + st.loud * 90;
+					if (st.loud > 0.04) {
+						const fg = ctx.createLinearGradient(EX - 26, 0, EX - 26 - fl, 0);
+						fg.addColorStop(0, "rgba(240,118,43,.95)");
+						fg.addColorStop(0.5, "rgba(224,162,59,.7)");
+						fg.addColorStop(1, "rgba(255,217,122,0)");
+						ctx.fillStyle = fg;
+						ctx.beginPath();
+						ctx.moveTo(EX - 22, st.y - 16 - st.loud * 6);
+						ctx.lineTo(EX - 22 - fl, st.y + (Math.random() - 0.5) * 12);
+						ctx.lineTo(EX - 22, st.y + 16 + st.loud * 6);
+						ctx.closePath();
+						ctx.fill();
+					}
+
+					/* ESI */
+					if (esiImg.complete) {
+						const tilt = Math.max(-0.42, Math.min(0.42, st.vy * 0.0009));
+						ctx.save();
+						ctx.globalAlpha =
+							st.invuln > 0 ? (Math.floor(st.invuln * 12) % 2 ? 0.35 : 1) : 1;
+						ctx.translate(EX, st.y);
+						ctx.rotate(tilt);
+						ctx.drawImage(esiImg, -38, -54, 76, 108);
+						ctx.restore();
+					}
+
+					/* meter suara di kanvas */
+					const mx = 20,
+						my = Hh - 34,
+						mw = 250,
+						mh = 16;
+					ctx.fillStyle = "rgba(21,34,70,.12)";
+					roundRect(mx, my, mw, mh, 8);
+					const lg = ctx.createLinearGradient(mx, 0, mx + mw, 0);
+					lg.addColorStop(0, "#0FA8A3");
+					lg.addColorStop(0.6, "#A4468A");
+					lg.addColorStop(1, "#F0762B");
+					ctx.fillStyle = lg;
+					roundRect(mx, my, mw * st.loud, mh, 8);
+					ctx.strokeStyle = "rgba(21,34,70,.55)";
+					ctx.lineWidth = 2;
+					ctx.beginPath();
+					ctx.moveTo(mx + mw * 0.41, my - 4);
+					ctx.lineTo(mx + mw * 0.41, my + mh + 4);
+					ctx.stroke();
+					ctx.fillStyle = "rgba(21,34,70,.5)";
+					ctx.font = '700 12px "JetBrains Mono", monospace';
+					ctx.textAlign = "left";
+					ctx.fillText(
+						st.mic ? "🎤 VOICE POWER" : "⌨️ SPACE / CLICK",
+						mx,
+						my - 8,
+					);
+
+					for (const p of st.parts) {
+						ctx.globalAlpha = Math.max(0, p.life);
+						ctx.fillStyle = p.color;
+						ctx.beginPath();
+						ctx.arc(p.x, p.y, 3.2 * p.life + 0.8, 0, 7);
+						ctx.fill();
+					}
+					ctx.globalAlpha = 1;
+					for (const f of st.floats) {
+						ctx.globalAlpha = Math.max(0, f.life);
+						ctx.fillStyle = f.color;
+						ctx.font = '700 22px "JetBrains Mono", monospace';
+						ctx.textAlign = "center";
+						ctx.fillText(f.txt, f.x, f.y);
+					}
+					ctx.globalAlpha = 1;
+
+					if (st.mic && ESIVoice.status === "calibrating") {
+						ctx.fillStyle = "rgba(21,34,70,.6)";
+						ctx.font = '700 24px "Baloo 2", cursive';
+						ctx.textAlign = "center";
+						ctx.fillText("🤫 Measuring room noise…", W / 2, 70);
+					}
+					ctx.restore();
+				}
+
+				function roundRect(x, y, w, h, r) {
+					if (h <= 0 || w <= 0) return;
+					const rr = Math.min(r, w / 2, h / 2);
+					ctx.beginPath();
+					ctx.moveTo(x + rr, y);
+					ctx.arcTo(x + w, y, x + w, y + h, rr);
+					ctx.arcTo(x + w, y + h, x, y + h, rr);
+					ctx.arcTo(x, y + h, x, y, rr);
+					ctx.arcTo(x, y, x + w, y, rr);
+					ctx.closePath();
+					ctx.fill();
+				}
+
+				function loop(now) {
+					if (!st.running) return;
+					const dt = Math.min(0.05, (now - st.lastT) / 1000 || 0.016);
+					st.lastT = now;
+					update(dt, now);
+					draw();
+					st.raf = requestAnimationFrame(loop);
+				}
+
+				function beginLevel() {
+					const lv = LEVELS[st.level];
+					st.running = true;
+					st.time = lv.time;
+					st.combo = 1;
+					st.streak = 0;
+					st.walls = [];
+					st.orbs = [];
+					st.parts = [];
+					st.floats = [];
+					st.y = Hh / 2;
+					st.vy = 0;
+					st.invuln = 0;
+					st.shake = 0;
+					st.wallAt = performance.now() + 1200;
+					st.orbAt = performance.now() + 500;
+					st.lastT = performance.now();
+					hudLevel.textContent = st.level + 1 + "/3";
+					ovStart.classList.add("hidden");
+					ovLevel.classList.add("hidden");
+					ovEnd.classList.add("hidden");
+					beep(520, 0.08);
+					beep(780, 0.1);
+					cancelAnimationFrame(st.raf);
+					st.raf = requestAnimationFrame(loop);
+				}
+				function startGame() {
+					st.level = 0;
+					st.score = 0;
+					st.won = false;
+					beginLevel();
+				}
+				function levelDone() {
+					st.running = false;
+					const lv = LEVELS[st.level];
+					if (st.score >= lv.target) {
+						if (st.level < LEVELS.length - 1) {
+							sfx.end();
+							document.getElementById("v-lv-title").textContent =
+								"LEVEL " + (st.level + 1) + " COMPLETE! 🎉";
+							document.getElementById("v-lv-score").textContent = st.score;
+							const next = LEVELS[st.level + 1];
+							document.getElementById("v-lv-next").textContent =
+								next.name +
+								" — target " +
+								next.target +
+								" points. Faster walls, narrower gaps!";
+							ovLevel.classList.remove("hidden");
+						} else {
+							st.won = true;
+							endGame();
+						}
+					} else {
+						endGame();
+					}
+				}
+				function endGame() {
+					st.running = false;
+					sfx.end();
+					document.getElementById("v-end-score").textContent = st.score;
+					const best = getBoard()[0];
+					document.getElementById("v-end-title").textContent = st.won
+						? "🏆 LOUDEST PILOT IN THE BOOTH!"
+						: "💥 Grounded at Level " + (st.level + 1);
+					document.getElementById("v-end-sub").textContent = st.won
+						? !best || st.score > best.s
+							? "NEW BOOTH RECORD! Your final score:"
+							: "All three levels cleared! Your score:"
+						: "Target not reached. Your score:";
+					renderBoard();
+					ovEnd.classList.remove("hidden");
+					document.getElementById("v-name-input").value = "";
+					const btn = document.getElementById("v-btn-save");
+					btn.disabled = false;
+					btn.textContent = "💾 Save Score";
+					document.getElementById("v-name-input").focus();
+				}
+
+				function getBoard() {
+					try {
+						return JSON.parse(store.getItem("esi_voice_board") || "[]");
+					} catch (e) {
+						return [];
+					}
+				}
+				function renderBoard() {
+					const board = getBoard();
+					const rows = board.length
+						? board
+								.map(
+									(r) =>
+										"<li><span>" +
+										r.n +
+										' <small style="color:var(--muted)">Lv' +
+										(r.lv || 1) +
+										"</small></span><span>" +
+										r.s +
+										"</span></li>",
+								)
+								.join("")
+						: "<li><span>No scores yet—be the first!</span><span>—</span></li>";
+					document.getElementById("v-board-list").innerHTML = rows;
+					const pub = document.getElementById("lb-voice-list");
+					if (pub) pub.innerHTML = rows;
+				}
+				document
+					.getElementById("lb-voice-title")
+					.addEventListener("dblclick", function () {
+						if (
+							confirm("Reset the ESI Sound Rocket leaderboard? (booth staff only)")
+						) {
+							store.removeItem("esi_voice_board");
+							renderBoard();
+						}
+					});
+				document
+					.getElementById("v-btn-save")
+					.addEventListener("click", function () {
+						const name = (
+							document.getElementById("v-name-input").value.trim() || "ANON"
+						)
+							.toUpperCase()
+							.slice(0, 10)
+							.replace(/[<>&"]/g, "");
+						const board = getBoard();
+						board.push({
+							n: name,
+							s: st.score,
+							lv: st.won ? 3 : st.level + 1,
+						});
+						board.sort((a, b) => b.s - a.s);
+						store.setItem("esi_voice_board", JSON.stringify(board.slice(0, 5)));
+						renderBoard();
+						this.disabled = true;
+						this.textContent = "✅ Saved!";
+						beep(700, 0.1);
+						beep(1050, 0.12);
+					});
+				document
+					.getElementById("v-btn-start")
+					.addEventListener("click", startGame);
+				document
+					.getElementById("v-btn-retry")
+					.addEventListener("click", startGame);
+				document
+					.getElementById("v-btn-next")
+					.addEventListener("click", function () {
+						st.level++;
+						beginLevel();
+					});
+				renderBoard();
+				draw();
+			})();
+
 			/* ---------- 3c. FULLSCREEN TIAP GAME ---------- */
 			(function () {
 				function setupFS(btnId, shellSel) {
@@ -3729,6 +4898,7 @@
 				}
 				setupFS("fs-rush", "#game .game-shell");
 				setupFS("fs-ty", "#typing .game-shell");
+				setupFS("fs-voice", "#voice .game-shell");
 			})();
 
 			/* ---------- 4. KUIS ---------- */
