@@ -588,6 +588,144 @@
 				min-height: 100%;
 			}
 
+
+			/* ---------- kamera / hand tracking ---------- */
+			#cam-video {
+				position: fixed;
+				width: 2px;
+				height: 2px;
+				opacity: 0;
+				pointer-events: none;
+				top: -10px;
+				left: -10px;
+			}
+			.cam-btn.on {
+				background: var(--grad);
+				color: #fff;
+				border-color: transparent;
+			}
+			.cam-btn.on:hover {
+				color: #fff;
+			}
+			.pip {
+				position: absolute;
+				right: 14px;
+				top: 14px;
+				width: 190px;
+				border-radius: 16px;
+				overflow: hidden;
+				border: 1px solid var(--glass-border);
+				box-shadow: var(--shadow);
+				background: rgba(255, 255, 255, 0.6);
+				-webkit-backdrop-filter: blur(10px);
+				backdrop-filter: blur(10px);
+				z-index: 6;
+			}
+			.pip.hidden {
+				display: none;
+			}
+			.pip canvas {
+				display: block;
+				width: 100%;
+				height: auto;
+				background: #0e1730;
+			}
+			.pip .pip-tag {
+				display: block;
+				font-size: 0.7rem;
+				font-weight: 800;
+				letter-spacing: 0.06em;
+				text-transform: uppercase;
+				text-align: center;
+				padding: 6px 8px;
+				color: var(--muted);
+				background: rgba(255, 255, 255, 0.75);
+			}
+			.pip .pip-tag.ready {
+				color: var(--cyan);
+			}
+			.pip .pip-tag.motion {
+				color: var(--orange);
+			}
+			.pip .pip-tag.error {
+				color: var(--plum);
+			}
+			.cam-toast {
+				position: absolute;
+				left: 50%;
+				top: 16px;
+				transform: translateX(-50%);
+				z-index: 7;
+				max-width: min(420px, 86%);
+				text-align: center;
+				font-size: 0.86rem;
+				font-weight: 700;
+				line-height: 1.45;
+				color: var(--ink);
+				background: rgba(255, 255, 255, 0.92);
+				border: 1px solid var(--glass-border);
+				box-shadow: var(--shadow);
+				border-radius: 14px;
+				padding: 10px 16px;
+			}
+			.cam-toast.hidden {
+				display: none;
+			}
+			.cam-note {
+				display: inline-block;
+				margin-top: 10px;
+				font-size: 0.8rem;
+				font-weight: 700;
+				color: var(--indigo);
+				background: rgba(255, 255, 255, 0.7);
+				border: 1px solid var(--glass-border);
+				border-radius: 999px;
+				padding: 6px 14px;
+			}
+			#ty-canvas {
+				display: none;
+				width: 100%;
+				height: auto;
+				border-radius: 18px;
+				background:
+					radial-gradient(
+						520px 260px at 50% 108%,
+						rgba(15, 168, 163, 0.12),
+						transparent 60%
+					),
+					linear-gradient(180deg, #ffffff 0%, #eef3fb 100%);
+				border: 1px solid var(--glass-border);
+				box-shadow: var(--shadow-soft);
+				touch-action: none;
+			}
+			.ty-stage.air #ty-canvas {
+				display: block;
+			}
+			.ty-stage.air #ty-input,
+			.ty-stage.air #ty-hint {
+				display: none;
+			}
+			.ty-stage.air {
+				gap: 14px;
+				padding: 18px 16px 20px;
+			}
+			.game-shell:fullscreen .ty-stage.air {
+				justify-content: flex-start;
+			}
+			.game-shell:fullscreen #ty-canvas {
+				flex: 1;
+				min-height: 0;
+				height: 100%;
+				object-fit: contain;
+			}
+			@media (max-width: 640px) {
+				.pip {
+					width: 128px;
+					right: 8px;
+					top: 8px;
+				}
+			}
+
 			/* ---------- papan skor publik ---------- */
 			.lb-grid {
 				display: grid;
@@ -1048,6 +1186,7 @@
 	</head>
 	<body>
 		<canvas id="bg-net" aria-hidden="true"></canvas>
+		<video id="cam-video" playsinline autoplay muted aria-hidden="true"></video>
 
 		<header>
 			<div class="wrap nav">
@@ -1110,7 +1249,8 @@
 						<p>
 							Help ESI catch data falling from the cloud! Reach the target score
 							in each level to advance—conquer all three levels and claim the
-							top spot on the booth leaderboard.
+							top spot on the booth leaderboard. Turn on <b>📷 Hand</b> to steer
+							ESI with your hand in the air and 🤏 <b>pinch</b> to grab the data.
 						</p>
 					</div>
 					<div class="game-shell">
@@ -1140,6 +1280,14 @@
 								</div>
 							</div>
 							<div class="top-btns">
+								<button
+									id="cam-rush"
+									class="fs-btn cam-btn"
+									aria-label="Toggle hand-camera mode"
+									title="Hand control (camera)"
+								>
+									📷 Hand
+								</button>
 								<button id="mute-btn" aria-label="Toggle sound" title="Sound">
 									🔊
 								</button>
@@ -1161,6 +1309,12 @@
 								aria-label="ESI Data Rush game"
 							></canvas>
 
+							<div class="pip hidden" id="pip-rush">
+								<canvas id="pip-rush-cv" width="200" height="150"></canvas>
+								<span class="pip-tag" id="pip-rush-tag">Starting camera…</span>
+							</div>
+							<div class="cam-toast hidden" id="toast-rush"></div>
+
 							<div class="game-overlay" id="ov-start">
 								<img src="assets/esi.png" alt="" />
 								<h3>ESI Data Rush</h3>
@@ -1179,10 +1333,14 @@
 								<button class="btn btn-primary" id="btn-start">
 									▶ Start Level 1
 								</button>
-								<p class="hint" style="margin-top: 14px">
+								<p class="hint" style="margin-top: 14px" id="rush-ctrl-hint">
 									⌨️ Arrow keys / A-D &nbsp;·&nbsp; 🖱️ Move the mouse
 									&nbsp;·&nbsp; 📱 Touch &amp; drag
 								</p>
+								<span class="cam-note"
+									>✋ Want to play with your hand? Tap
+									<b>📷 Hand</b> at the top.</span
+								>
 							</div>
 
 							<div class="game-overlay hidden" id="ov-level">
@@ -1245,7 +1403,9 @@
 						<p>
 							How fast can you type? Enter Information Systems terms before time
 							runs out. Three levels take you from simple words to challenging
-							technology phrases!
+							technology phrases — or tap <b>📷 Hand</b> to switch to
+							<b>Air Spelling</b> and pluck the letters out of the air with your
+							hand.
 						</p>
 					</div>
 					<div class="game-shell">
@@ -1276,6 +1436,14 @@
 							<div class="top-btns">
 								<span class="hint" id="ty-level-label">Level 1 · Warm-Up</span>
 								<button
+									id="cam-ty"
+									class="fs-btn cam-btn"
+									aria-label="Toggle hand-camera mode"
+									title="Air Spelling with your hand (camera)"
+								>
+									📷 Hand
+								</button>
+								<button
 									id="fs-ty"
 									class="fs-btn"
 									aria-label="Fullscreen"
@@ -1298,19 +1466,32 @@
 									placeholder="type here…"
 									aria-label="Type the displayed word"
 								/>
+								<canvas
+									id="ty-canvas"
+									width="960"
+									height="430"
+									aria-label="ESI Air Spelling game"
+								></canvas>
 								<p class="hint" id="ty-hint">
 									Type the word above—the game continues automatically when you
 									are correct!
 								</p>
 							</div>
 
+							<div class="pip hidden" id="pip-ty">
+								<canvas id="pip-ty-cv" width="200" height="150"></canvas>
+								<span class="pip-tag" id="pip-ty-tag">Starting camera…</span>
+							</div>
+							<div class="cam-toast hidden" id="toast-ty"></div>
+
 							<div class="game-overlay" id="ty-ov-start">
 								<img src="assets/esi.png" alt="" />
 								<h3>ESI Typing Challenge</h3>
 								<p>
-									Type each word as quickly as possible. Complete the
-									<b>target number of words</b> before time runs out to advance.
-									Your remaining time becomes <b>bonus points</b>!
+									Complete the <b>target number of words</b> before time runs out
+									to advance—your remaining time becomes <b>bonus points</b>. Play
+									with the keyboard, or switch on <b>📷 Hand</b> and spell each
+									word by pinching letters out of the air.
 								</p>
 								<div class="legend">
 									<span>🥉 Lv 1 · short words</span>
@@ -1320,6 +1501,10 @@
 								<button class="btn btn-primary" id="ty-btn-start">
 									▶ Start Typing
 								</button>
+								<span class="cam-note"
+									>✋ Tap <b>📷 Hand</b> to switch to <b>Air Spelling</b> — grab
+									letters out of the air with a pinch.</span
+								>
 							</div>
 
 							<div class="game-overlay hidden" id="ty-ov-level">
@@ -1720,6 +1905,374 @@
 					this.textContent = muted ? "🔇" : "🔊";
 				});
 
+			/* ================================================================
+			   1b. ESIHand — PELACAK TANGAN LEWAT KAMERA (dipakai 2 game)
+			   ----------------------------------------------------------------
+			   Mode utama  : MediaPipe Hand Landmarker (21 titik, deteksi PINCH).
+			   Mode cadangan: "motion mode" — deteksi gerakan sederhana dari
+			                  beda antar-frame; jalan penuh tanpa internet.
+			   Ganti URL di CDN{} kalau file MediaPipe mau di-host sendiri
+			   (mis. "assets/mediapipe/…") supaya booth aman tanpa internet.
+			   ================================================================ */
+			const ESIHand = (function () {
+				const CDN = {
+					lib: "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14",
+					wasm: "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm",
+					model:
+						"https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task",
+				};
+				const video = document.getElementById("cam-video");
+
+				const H = {
+					status: "off" /* off | starting | ready | motion | error */,
+					msg: "",
+					active: false /* kamera hidup & koordinat valid */,
+					hasPinch: false /* true hanya di mode MediaPipe */,
+					seen: false /* tangan/gerakan terdeteksi saat ini */,
+					x: 0.5,
+					y: 0.5,
+					pinch: false,
+					pinchCount: 0,
+					lm: null,
+					owner: null,
+				};
+
+				let stream = null,
+					landmarker = null,
+					raf = 0,
+					lastVideoTime = -1,
+					sx = 0.5,
+					sy = 0.5,
+					noHandT = 0;
+
+				/* motion fallback */
+				const MW = 96,
+					MH = 72;
+				let mCv = null,
+					mCtx = null,
+					prevFrame = null;
+
+				/* peta area tengah kamera -> seluruh layar biar gerakan tak perlu ekstrem */
+				const GAIN_LO = 0.16,
+					GAIN_HI = 0.84;
+				function gain(v) {
+					return Math.max(
+						0,
+						Math.min(1, (v - GAIN_LO) / (GAIN_HI - GAIN_LO)),
+					);
+				}
+
+				function label() {
+					if (H.status === "starting") return "Starting camera…";
+					if (H.status === "ready")
+						return H.seen ? "✋ Tracking — pinch to grab" : "Show your hand ✋";
+					if (H.status === "motion")
+						return H.seen ? "🌀 Motion mode" : "Wave your hand 👋";
+					if (H.status === "error") return "Camera unavailable";
+					return "Camera off";
+				}
+
+				async function openCamera() {
+					if (stream) return;
+					if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia)
+						throw new Error(
+							"This browser has no camera access. Open the page over https:// or on localhost.",
+						);
+					stream = await navigator.mediaDevices.getUserMedia({
+						video: {
+							width: { ideal: 640 },
+							height: { ideal: 480 },
+							facingMode: "user",
+						},
+						audio: false,
+					});
+					video.srcObject = stream;
+					await video.play();
+					await new Promise((res) => {
+						if (video.videoWidth) return res();
+						video.onloadedmetadata = res;
+						setTimeout(res, 2500);
+					});
+				}
+
+				async function loadLandmarker() {
+					const vision = await import(/* @vite-ignore */ CDN.lib);
+					const fileset = await vision.FilesetResolver.forVisionTasks(CDN.wasm);
+					const opts = (delegate) => ({
+						baseOptions: { modelAssetPath: CDN.model, delegate: delegate },
+						numHands: 1,
+						runningMode: "VIDEO",
+						minHandDetectionConfidence: 0.5,
+						minTrackingConfidence: 0.5,
+					});
+					try {
+						landmarker = await vision.HandLandmarker.createFromOptions(
+							fileset,
+							opts("GPU"),
+						);
+					} catch (e) {
+						/* beberapa laptop booth tak punya WebGPU/WebGL yang cocok -> pakai CPU */
+						landmarker = await vision.HandLandmarker.createFromOptions(
+							fileset,
+							opts("CPU"),
+						);
+					}
+				}
+
+				function initMotion() {
+					mCv = document.createElement("canvas");
+					mCv.width = MW;
+					mCv.height = MH;
+					mCtx = mCv.getContext("2d", { willReadFrequently: true });
+					prevFrame = null;
+				}
+
+				const PINCH_DOWN = 0.45,
+					PINCH_UP = 0.62;
+
+				function stepHand(now) {
+					if (video.currentTime === lastVideoTime) return;
+					lastVideoTime = video.currentTime;
+					let res = null;
+					try {
+						res = landmarker.detectForVideo(video, now);
+					} catch (e) {
+						return;
+					}
+					const hands = res && res.landmarks ? res.landmarks : [];
+					if (!hands.length) {
+						noHandT++;
+						if (noHandT > 12) {
+							H.seen = false;
+							H.lm = null;
+						}
+						return;
+					}
+					noHandT = 0;
+					H.seen = true;
+					const lm = hands[0];
+					H.lm = lm;
+					/* titik "jepit" = tengah antara ujung jempol (4) dan telunjuk (8) */
+					const midX = (lm[4].x + lm[8].x) / 2,
+						midY = (lm[4].y + lm[8].y) / 2;
+					const nx = gain(1 - midX),
+						ny = gain(midY);
+					sx += (nx - sx) * 0.45;
+					sy += (ny - sy) * 0.45;
+					H.x = sx;
+					H.y = sy;
+					/* rasio jepit dinormalisasi ke ukuran telapak biar jarak ke kamera tak berpengaruh */
+					const d = Math.hypot(lm[4].x - lm[8].x, lm[4].y - lm[8].y);
+					const palm = Math.hypot(lm[0].x - lm[9].x, lm[0].y - lm[9].y) || 0.001;
+					const ratio = d / palm;
+					const was = H.pinch;
+					if (!was && ratio < PINCH_DOWN) H.pinch = true;
+					else if (was && ratio > PINCH_UP) H.pinch = false;
+					if (H.pinch && !was) H.pinchCount++;
+				}
+
+				function stepMotion() {
+					if (!video.videoWidth) return;
+					mCtx.drawImage(video, 0, 0, MW, MH);
+					const cur = mCtx.getImageData(0, 0, MW, MH).data;
+					if (prevFrame) {
+						let sum = 0,
+							ax = 0,
+							ay = 0;
+						for (let y = 0; y < MH; y++) {
+							for (let x = 0; x < MW; x++) {
+								const i = (y * MW + x) * 4;
+								const d =
+									Math.abs(cur[i] - prevFrame[i]) +
+									Math.abs(cur[i + 1] - prevFrame[i + 1]) +
+									Math.abs(cur[i + 2] - prevFrame[i + 2]);
+								if (d > 70) {
+									sum += d;
+									ax += x * d;
+									ay += y * d;
+								}
+							}
+						}
+						if (sum > 9000) {
+							const nx = gain(1 - ax / sum / MW),
+								ny = gain(ay / sum / MH);
+							sx += (nx - sx) * 0.3;
+							sy += (ny - sy) * 0.3;
+							H.x = sx;
+							H.y = sy;
+							H.seen = true;
+						} else {
+							H.seen = false;
+						}
+					}
+					prevFrame = cur;
+				}
+
+				function loop(now) {
+					raf = requestAnimationFrame(loop);
+					if (H.status === "ready") stepHand(now);
+					else if (H.status === "motion") stepMotion();
+				}
+
+				/* -------- gambar preview kamera + rangka tangan -------- */
+				function paint(canvas) {
+					if (!canvas) return;
+					const c = canvas.getContext("2d");
+					const w = canvas.width,
+						h = canvas.height;
+					c.save();
+					c.clearRect(0, 0, w, h);
+					if (video.videoWidth) {
+						/* mirror + cover */
+						const vr = video.videoWidth / video.videoHeight,
+							cr = w / h;
+						let dw = w,
+							dh = h,
+							dx = 0,
+							dy = 0;
+						if (vr > cr) {
+							dw = h * vr;
+							dx = (w - dw) / 2;
+						} else {
+							dh = w / vr;
+							dy = (h - dh) / 2;
+						}
+						c.translate(w, 0);
+						c.scale(-1, 1);
+						c.drawImage(video, w - dx - dw, dy, dw, dh);
+						c.setTransform(1, 0, 0, 1, 0, 0);
+					} else {
+						c.fillStyle = "#0e1730";
+						c.fillRect(0, 0, w, h);
+					}
+					if (H.status === "ready" && H.lm) {
+						const P = [
+							[0, 1],
+							[1, 2],
+							[2, 3],
+							[3, 4],
+							[0, 5],
+							[5, 6],
+							[6, 7],
+							[7, 8],
+							[5, 9],
+							[9, 10],
+							[10, 11],
+							[11, 12],
+							[9, 13],
+							[13, 14],
+							[14, 15],
+							[15, 16],
+							[13, 17],
+							[17, 18],
+							[18, 19],
+							[19, 20],
+							[0, 17],
+						];
+						const px = (p) => (1 - p.x) * w,
+							py = (p) => p.y * h;
+						c.strokeStyle = H.pinch
+							? "rgba(15,168,163,.95)"
+							: "rgba(255,255,255,.85)";
+						c.lineWidth = 2;
+						c.beginPath();
+						for (const [a, b] of P) {
+							c.moveTo(px(H.lm[a]), py(H.lm[a]));
+							c.lineTo(px(H.lm[b]), py(H.lm[b]));
+						}
+						c.stroke();
+						c.fillStyle = H.pinch ? "#0FA8A3" : "#F0762B";
+						for (const idx of [4, 8]) {
+							c.beginPath();
+							c.arc(px(H.lm[idx]), py(H.lm[idx]), 4.5, 0, 7);
+							c.fill();
+						}
+					} else if (H.status === "motion" && H.seen) {
+						c.strokeStyle = "#F0762B";
+						c.lineWidth = 3;
+						c.beginPath();
+						c.arc(H.x * w, H.y * h, 14, 0, 7);
+						c.stroke();
+					}
+					c.restore();
+				}
+
+				/* -------- API -------- */
+				async function request(owner) {
+					if (H.owner && H.owner !== owner) {
+						try {
+							H.owner.disable();
+						} catch (e) {}
+					}
+					H.owner = owner;
+					if (H.status === "ready" || H.status === "motion") {
+						H.active = true;
+						return true;
+					}
+					H.status = "starting";
+					H.msg = "";
+					try {
+						await openCamera();
+					} catch (e) {
+						H.status = "error";
+						H.active = false;
+						H.msg =
+							e && e.name === "NotAllowedError"
+								? "Camera permission was blocked. Allow it in the browser address bar, then tap 📷 Hand again."
+								: (e && e.message) ||
+									"Camera could not be opened. Make sure the page runs over https:// (or localhost) and no other app is using the webcam.";
+						return false;
+					}
+					/* coba MediaPipe; kalau gagal / lambat -> motion mode */
+					try {
+						await Promise.race([
+							loadLandmarker(),
+							new Promise((_, rej) =>
+								setTimeout(() => rej(new Error("timeout")), 15000),
+							),
+						]);
+						H.status = "ready";
+						H.hasPinch = true;
+					} catch (e) {
+						initMotion();
+						H.status = "motion";
+						H.hasPinch = false;
+						H.msg =
+							"Full finger tracking could not load (no internet, or an older browser). Running simple motion mode instead — just move your hand, no pinch needed.";
+					}
+					H.active = true;
+					cancelAnimationFrame(raf);
+					raf = requestAnimationFrame(loop);
+					return true;
+				}
+
+				function release(owner) {
+					if (H.owner && H.owner !== owner) return;
+					H.owner = null;
+					H.active = false;
+					H.seen = false;
+					H.pinch = false;
+					H.lm = null;
+					H.status = "off";
+					cancelAnimationFrame(raf);
+					raf = 0;
+					if (stream) {
+						stream.getTracks().forEach((t) => t.stop());
+						stream = null;
+						video.srcObject = null;
+					}
+					landmarker = null;
+					lastVideoTime = -1;
+					prevFrame = null;
+				}
+
+				H.request = request;
+				H.release = release;
+				H.paint = paint;
+				H.label = label;
+				return H;
+			})();
+
 			/* ---------- 2. GAME: ESI DATA RUSH (3 LEVEL) ---------- */
 			(function () {
 				const cv = document.getElementById("game-canvas");
@@ -1775,7 +2328,10 @@
 					combo: 1,
 					streak: 0,
 					px: cv.width / 2,
+					py: cv.height - 69,
 					targetX: cv.width / 2,
+					targetY: cv.height - 69,
+					hand: false,
 					items: [],
 					parts: [],
 					floats: [],
@@ -1831,6 +2387,86 @@
 					{ passive: false },
 				);
 
+				/* -- kontrol kamera / tangan -- */
+				const camBtn = document.getElementById("cam-rush");
+				const pipBox = document.getElementById("pip-rush");
+				const pipCv = document.getElementById("pip-rush-cv");
+				const pipTag = document.getElementById("pip-rush-tag");
+				const toast = document.getElementById("toast-rush");
+				const ctrlHint = document.getElementById("rush-ctrl-hint");
+				const OWNER = { id: "rush", disable: () => disableCam(true) };
+				let pipRaf = 0;
+
+				function showToast(msg) {
+					if (!msg) {
+						toast.classList.add("hidden");
+						return;
+					}
+					toast.textContent = msg;
+					toast.classList.remove("hidden");
+					clearTimeout(toast._t);
+					toast._t = setTimeout(
+						() => toast.classList.add("hidden"),
+						msg.length > 90 ? 9000 : 6000,
+					);
+				}
+				function ctrlText() {
+					if (!state.hand)
+						return "⌨️ Arrow keys / A-D &nbsp;·&nbsp; 🖱️ Move the mouse &nbsp;·&nbsp; 📱 Touch &amp; drag";
+					if (ESIHand.status === "motion")
+						return "🌀 Motion mode — move your hand to steer ESI, touch the data to collect it.";
+					return "✋ Move your hand to steer ESI &nbsp;·&nbsp; 🤏 <b>pinch</b> your thumb + index finger to grab the data &nbsp;·&nbsp; keep the hand open to dodge 🐛";
+				}
+				function refreshHint() {
+					ctrlHint.innerHTML = ctrlText();
+					pipTag.textContent = ESIHand.label();
+					pipTag.className = "pip-tag " + ESIHand.status;
+				}
+				function pipLoop() {
+					ESIHand.paint(pipCv);
+					pipTag.textContent = ESIHand.label();
+					pipTag.className = "pip-tag " + ESIHand.status;
+					pipRaf = requestAnimationFrame(pipLoop);
+				}
+				async function enableCam() {
+					state.hand = true;
+					camBtn.classList.add("on");
+					pipBox.classList.remove("hidden");
+					cancelAnimationFrame(pipRaf);
+					pipLoop();
+					refreshHint();
+					showToast("Starting the camera… please allow access ✋");
+					const ok = await ESIHand.request(OWNER);
+					refreshHint();
+					if (!ok) {
+						showToast(ESIHand.msg);
+						disableCam();
+						return;
+					}
+					showToast(
+						ESIHand.msg ||
+							(ESIHand.hasPinch
+								? "Ready! Hold your hand up — pinch 🤏 to grab the falling data."
+								: "Ready! Move your hand to steer ESI."),
+					);
+				}
+				function disableCam(silent) {
+					state.hand = false;
+					camBtn.classList.remove("on");
+					pipBox.classList.add("hidden");
+					cancelAnimationFrame(pipRaf);
+					pipRaf = 0;
+					ESIHand.release(OWNER);
+					state.targetX = state.px;
+					refreshHint();
+					if (!silent) showToast("");
+				}
+				camBtn.addEventListener("click", function () {
+					if (state.hand) disableCam();
+					else enableCam();
+				});
+				refreshHint();
+
 				/* -- spawn -- */
 				function spawnItem() {
 					const lv = LEVELS[state.level];
@@ -1880,18 +2516,41 @@
 
 				const EW = 92,
 					EH = 130;
+				/* ukuran ESI saat dikendalikan tangan (setengah lebar / tinggi) */
+				const HW = 40,
+					HH = 56;
 
 				function update(dt, now) {
 					const lv = LEVELS[state.level];
 
-					const SPD = 640 * dt;
-					if (keys.ArrowLeft || keys.a || keys.A) state.targetX -= SPD;
-					if (keys.ArrowRight || keys.d || keys.D) state.targetX += SPD;
-					state.targetX = Math.max(
-						EW / 2,
-						Math.min(cv.width - EW / 2, state.targetX),
-					);
-					state.px += (state.targetX - state.px) * Math.min(1, dt * 14);
+					const HANDING = state.hand && ESIHand.active;
+					if (HANDING) {
+						/* ESI mengikuti tangan bebas di 2 sumbu */
+						if (ESIHand.seen) {
+							state.targetX = ESIHand.x * cv.width;
+							state.targetY = ESIHand.y * cv.height;
+						}
+						state.targetX = Math.max(
+							HW,
+							Math.min(cv.width - HW, state.targetX),
+						);
+						state.targetY = Math.max(
+							HH,
+							Math.min(cv.height - HH, state.targetY),
+						);
+						state.px += (state.targetX - state.px) * Math.min(1, dt * 13);
+						state.py += (state.targetY - state.py) * Math.min(1, dt * 13);
+					} else {
+						const SPD = 640 * dt;
+						if (keys.ArrowLeft || keys.a || keys.A) state.targetX -= SPD;
+						if (keys.ArrowRight || keys.d || keys.D) state.targetX += SPD;
+						state.targetX = Math.max(
+							EW / 2,
+							Math.min(cv.width - EW / 2, state.targetX),
+						);
+						state.px += (state.targetX - state.px) * Math.min(1, dt * 14);
+						state.targetY = state.py = cv.height - EH / 2 - 4;
+					}
 
 					if (now > state.spawnAt) {
 						spawnItem();
@@ -1900,6 +2559,9 @@
 					}
 
 					const catchY = cv.height - EH + 26;
+					/* mode tangan: harus "menjepit" untuk mengambil data;
+					   bug tetap kena walau tangan terbuka -> pemain harus menghindar */
+					const grabbing = ESIHand.hasPinch ? ESIHand.pinch : true;
 					for (let i = state.items.length - 1; i >= 0; i--) {
 						const it = state.items[i];
 						it.y += it.vy * dt * 60;
@@ -1909,10 +2571,18 @@
 							it.x = Math.max(20, Math.min(cv.width - 20, it.x));
 						}
 						it.rot += it.vr;
-						const hit =
-							it.y > catchY &&
-							it.y < cv.height - 8 &&
-							Math.abs(it.x - state.px) < EW / 2 + it.r * 0.6;
+						let hit;
+						if (HANDING) {
+							const near =
+								Math.abs(it.x - state.px) < HW * 0.86 + it.r * 0.55 &&
+								Math.abs(it.y - state.py) < HH * 0.82 + it.r * 0.55;
+							hit = near && (it.type === "bad" ? true : grabbing);
+						} else {
+							hit =
+								it.y > catchY &&
+								it.y < cv.height - 8 &&
+								Math.abs(it.x - state.px) < EW / 2 + it.r * 0.6;
+						}
 						if (hit) {
 							if (it.type === "bad") {
 								state.score = Math.max(0, state.score - 15);
@@ -2034,13 +2704,42 @@
 					}
 					ctx.globalAlpha = 1;
 
+					const handing = state.hand && ESIHand.active;
+					if (handing) {
+						const pinching = ESIHand.hasPinch ? ESIHand.pinch : true;
+						ctx.save();
+						ctx.beginPath();
+						ctx.arc(state.px, state.py, pinching ? HW + 14 : HW + 26, 0, 7);
+						ctx.strokeStyle = pinching
+							? "rgba(15,168,163,.9)"
+							: "rgba(74,63,143,.35)";
+						ctx.lineWidth = pinching ? 5 : 3;
+						ctx.setLineDash(pinching ? [] : [9, 9]);
+						ctx.stroke();
+						ctx.setLineDash([]);
+						ctx.restore();
+					}
 					if (esiImg.complete) {
 						const tilt = (state.targetX - state.px) * 0.0022;
+						const w = handing ? HW * 2 : EW,
+							h = handing ? HH * 2 : EH;
 						ctx.save();
-						ctx.translate(state.px, cv.height - EH / 2 - 4);
+						ctx.translate(state.px, handing ? state.py : cv.height - EH / 2 - 4);
 						ctx.rotate(Math.max(-0.2, Math.min(0.2, tilt)));
-						ctx.drawImage(esiImg, -EW / 2, -EH / 2, EW, EH);
+						ctx.drawImage(esiImg, -w / 2, -h / 2, w, h);
 						ctx.restore();
+					}
+					if (handing && !ESIHand.seen) {
+						ctx.fillStyle = "rgba(21,34,70,.55)";
+						ctx.font = '700 22px "Baloo 2", cursive';
+						ctx.textAlign = "center";
+						ctx.fillText(
+							ESIHand.hasPinch
+								? "✋ Hold your hand up to the camera"
+								: "👋 Wave your hand at the camera",
+							cv.width / 2,
+							cv.height / 2,
+						);
 					}
 
 					for (const f of state.floats) {
@@ -2074,7 +2773,9 @@
 						parts: [],
 						floats: [],
 						px: cv.width / 2,
+						py: cv.height - EH / 2 - 4,
 						targetX: cv.width / 2,
+						targetY: cv.height - EH / 2 - 4,
 						spawnAt: performance.now() + 400,
 						lastT: performance.now(),
 						shake: 0,
@@ -2301,6 +3002,19 @@
 					pool: [],
 					errs: 0,
 					timer: null,
+					/* --- mode kamera "Air Spelling" --- */
+					air: false,
+					typed: "",
+					bubbles: [],
+					parts: [],
+					cur: { x: 480, y: 215 },
+					lastPinch: -1,
+					dwellId: null,
+					dwellT: 0,
+					lastT: 0,
+					shake: 0,
+					raf: 0,
+					seq: 0,
 				};
 
 				const elWord = document.getElementById("ty-word");
@@ -2314,6 +3028,11 @@
 				const ovStart = document.getElementById("ty-ov-start");
 				const ovLevel = document.getElementById("ty-ov-level");
 				const ovEnd = document.getElementById("ty-ov-end");
+				const stage = document.getElementById("ty-stage");
+				const acv = document.getElementById("ty-canvas");
+				const actx = acv.getContext("2d");
+				const AW = acv.width,
+					AH = acv.height;
 
 				function shuffle(a) {
 					for (let i = a.length - 1; i > 0; i--) {
@@ -2327,7 +3046,13 @@
 					if (!st.pool.length) st.pool = shuffle(lv.words.slice());
 					st.word = st.pool.pop();
 					elInput.value = "";
-					renderWord("");
+					st.typed = "";
+					if (st.air) {
+						resetBubbles();
+						renderAirWord();
+					} else {
+						renderWord("");
+					}
 				}
 				function renderWord(typed) {
 					let html = "";
@@ -2363,7 +3088,7 @@
 				}
 
 				elInput.addEventListener("input", function () {
-					if (!st.running) return;
+					if (!st.running || st.air) return;
 					const typed = elInput.value;
 					if (st.word.startsWith(typed)) {
 						elInput.classList.remove("err");
@@ -2392,6 +3117,437 @@
 					updateHud();
 				});
 
+				/* ================================================================
+				   AIR SPELLING — eja kata dengan tangan di depan kamera
+				   Huruf melayang; jepit (pinch) huruf yang benar sesuai urutan.
+				   ================================================================ */
+				const ALPHA = "abcdefghijklmnopqrstuvwxyz";
+				function plainWord() {
+					return st.word.replace(/ /g, "");
+				}
+				function needChar() {
+					return plainWord()[st.typed.length];
+				}
+				function bubbleCount() {
+					return [8, 10, 12][st.level] || 9;
+				}
+				function pickChar() {
+					const p = plainWord() || "sisteminformasi";
+					const need = needChar();
+					const r = Math.random();
+					if (need && r < 0.3) return need;
+					if (r < 0.68) return p[Math.floor(Math.random() * p.length)];
+					return ALPHA[Math.floor(Math.random() * 26)];
+				}
+				function makeBubble(ch) {
+					const r = 34;
+					const a = Math.random() * 6.28,
+						sp = 22 + Math.random() * 34;
+					return {
+						id: ++st.seq,
+						ch: ch || pickChar() || "a",
+						x: r + 20 + Math.random() * (AW - 2 * r - 40),
+						y: r + 20 + Math.random() * (AH - 2 * r - 40),
+						vx: Math.cos(a) * sp,
+						vy: Math.sin(a) * sp,
+						r: r,
+						pop: 0,
+						wrong: 0,
+						born: 0,
+					};
+				}
+				function ensureNeed() {
+					const need = needChar();
+					if (!need) return;
+					if (!st.bubbles.some((b) => b.ch === need && b.pop <= 0)) {
+						const pool = st.bubbles.filter((b) => b.pop <= 0);
+						if (pool.length)
+							pool[Math.floor(Math.random() * pool.length)].ch = need;
+					}
+				}
+				function resetBubbles() {
+					st.bubbles = [];
+					st.parts = [];
+					st.dwellId = null;
+					st.dwellT = 0;
+					const n = bubbleCount();
+					for (let i = 0; i < n; i++) st.bubbles.push(makeBubble());
+					ensureNeed();
+				}
+				function renderAirWord() {
+					let html = "",
+						k = 0;
+					const n = st.typed.length;
+					for (let i = 0; i < st.word.length; i++) {
+						const c = st.word[i];
+						if (c === " ") {
+							html += "&nbsp;·&nbsp;";
+							continue;
+						}
+						if (k < n) html += "<b>" + c + "</b>";
+						else if (k === n) html += "<u>" + c + "</u>";
+						else html += c;
+						k++;
+					}
+					elWord.innerHTML = html;
+				}
+				function burstA(x, y, color) {
+					for (let i = 0; i < 16; i++) {
+						const a = Math.random() * 6.28,
+							sp = 60 + Math.random() * 160;
+						st.parts.push({
+							x: x,
+							y: y,
+							vx: Math.cos(a) * sp,
+							vy: Math.sin(a) * sp,
+							life: 1,
+							color: color,
+						});
+					}
+				}
+				function grabBubble(b) {
+					const lv = TLEVELS[st.level];
+					/* jeda antar kata: abaikan input supaya tak dihitung salah */
+					if (!needChar()) return;
+					if (b.ch === needChar()) {
+						st.typed += b.ch;
+						st.score += lv.pts;
+						b.pop = 1;
+						burstA(b.x, b.y, "#0FA8A3");
+						sfx.good();
+						renderAirWord();
+						if (st.typed.length >= plainWord().length) {
+							st.words++;
+							if (st.words >= lv.target) {
+								levelClear();
+								return;
+							}
+							setTimeout(function () {
+								if (st.running) nextWord();
+							}, 260);
+						} else {
+							ensureNeed();
+						}
+					} else {
+						st.errs++;
+						st.time = Math.max(0.2, st.time - 1);
+						b.wrong = 0.55;
+						st.shake = 9;
+						beep(180, 0.12, "sawtooth", 0.12);
+					}
+					st.dwellId = null;
+					st.dwellT = 0;
+					updateHud();
+				}
+				function airStep(dt) {
+					/* posisi kursor */
+					if (ESIHand.active && ESIHand.seen) {
+						st.cur.x += (ESIHand.x * AW - st.cur.x) * Math.min(1, dt * 14);
+						st.cur.y += (ESIHand.y * AH - st.cur.y) * Math.min(1, dt * 14);
+					}
+					/* gerak gelembung */
+					for (let i = st.bubbles.length - 1; i >= 0; i--) {
+						const b = st.bubbles[i];
+						if (b.pop > 0) {
+							b.pop -= dt * 3.2;
+							if (b.pop <= 0) {
+								st.bubbles[i] = makeBubble();
+								ensureNeed();
+							}
+							continue;
+						}
+						b.born = Math.min(1, b.born + dt * 4);
+						b.x += b.vx * dt;
+						b.y += b.vy * dt;
+						if (b.x < b.r) {
+							b.x = b.r;
+							b.vx = Math.abs(b.vx);
+						}
+						if (b.x > AW - b.r) {
+							b.x = AW - b.r;
+							b.vx = -Math.abs(b.vx);
+						}
+						if (b.y < b.r) {
+							b.y = b.r;
+							b.vy = Math.abs(b.vy);
+						}
+						if (b.y > AH - b.r) {
+							b.y = AH - b.r;
+							b.vy = -Math.abs(b.vy);
+						}
+						if (b.wrong > 0) b.wrong -= dt;
+					}
+					/* partikel */
+					for (let i = st.parts.length - 1; i >= 0; i--) {
+						const p = st.parts[i];
+						p.x += p.vx * dt;
+						p.y += p.vy * dt;
+						p.vy += 240 * dt;
+						p.life -= dt * 1.8;
+						if (p.life <= 0) st.parts.splice(i, 1);
+					}
+					if (st.shake > 0) st.shake -= dt * 40;
+
+					/* deteksi ambil */
+					let over = null,
+						bd = 1e9;
+					for (const b of st.bubbles) {
+						if (b.pop > 0) continue;
+						const d = Math.hypot(b.x - st.cur.x, b.y - st.cur.y);
+						if (d < b.r + 16 && d < bd) {
+							bd = d;
+							over = b;
+						}
+					}
+					st.over = over;
+					if (ESIHand.hasPinch && ESIHand.active) {
+						if (ESIHand.pinchCount !== st.lastPinch) {
+							st.lastPinch = ESIHand.pinchCount;
+							if (over) grabBubble(over);
+						}
+					} else if (ESIHand.active) {
+						/* motion mode / tanpa pinch: tahan di atas huruf sebentar */
+						if (over && over.id === st.dwellId) {
+							st.dwellT += dt;
+							if (st.dwellT > 0.55) grabBubble(over);
+						} else {
+							st.dwellId = over ? over.id : null;
+							st.dwellT = 0;
+						}
+					}
+				}
+				function airDraw() {
+					const lv = TLEVELS[st.level];
+					actx.save();
+					actx.clearRect(0, 0, AW, AH);
+					if (st.shake > 0)
+						actx.translate(
+							(Math.random() - 0.5) * st.shake,
+							(Math.random() - 0.5) * st.shake,
+						);
+					const need = needChar();
+					for (const b of st.bubbles) {
+						const sc = b.pop > 0 ? 1 + (1 - b.pop) * 0.6 : 0.6 + b.born * 0.4;
+						const al = b.pop > 0 ? Math.max(0, b.pop) : 1;
+						const isHot = st.level === 0 && b.ch === need;
+						const isOver = st.over === b;
+						actx.save();
+						actx.globalAlpha = al;
+						actx.translate(b.x, b.y);
+						actx.scale(sc, sc);
+						const g = actx.createRadialGradient(
+							0,
+							-b.r * 0.45,
+							3,
+							0,
+							0,
+							b.r,
+						);
+						if (b.wrong > 0) {
+							g.addColorStop(0, "#D77BB0");
+							g.addColorStop(1, "#8E2A6E");
+						} else if (isHot) {
+							g.addColorStop(0, "#6FD9D4");
+							g.addColorStop(1, "#0B7C78");
+						} else {
+							g.addColorStop(0, "#8477DC");
+							g.addColorStop(1, "#3C3374");
+						}
+						actx.fillStyle = g;
+						actx.beginPath();
+						actx.arc(0, 0, b.r, 0, 7);
+						actx.fill();
+						actx.strokeStyle = isOver
+							? "rgba(240,118,43,.95)"
+							: "rgba(255,255,255,.5)";
+						actx.lineWidth = isOver ? 4 : 2;
+						actx.stroke();
+						actx.fillStyle = "#fff";
+						actx.font = '700 30px "JetBrains Mono", monospace';
+						actx.textAlign = "center";
+						actx.textBaseline = "middle";
+						actx.fillText((b.ch || "?").toUpperCase(), 0, 2);
+						/* cincin dwell */
+						if (isOver && !ESIHand.hasPinch && st.dwellT > 0.02) {
+							actx.beginPath();
+							actx.arc(
+								0,
+								0,
+								b.r + 9,
+								-1.57,
+								-1.57 + (st.dwellT / 0.55) * 6.283,
+							);
+							actx.strokeStyle = "#F0762B";
+							actx.lineWidth = 5;
+							actx.stroke();
+						}
+						actx.restore();
+					}
+					for (const p of st.parts) {
+						actx.globalAlpha = Math.max(0, p.life);
+						actx.fillStyle = p.color;
+						actx.beginPath();
+						actx.arc(p.x, p.y, 3.4 * p.life + 0.8, 0, 7);
+						actx.fill();
+					}
+					actx.globalAlpha = 1;
+
+					/* kursor tangan */
+					if (ESIHand.active && ESIHand.seen) {
+						const pinching = ESIHand.hasPinch ? ESIHand.pinch : false;
+						actx.save();
+						actx.translate(st.cur.x, st.cur.y);
+						actx.beginPath();
+						actx.arc(0, 0, pinching ? 13 : 22, 0, 7);
+						actx.strokeStyle = pinching
+							? "rgba(15,168,163,.95)"
+							: "rgba(21,34,70,.45)";
+						actx.lineWidth = pinching ? 6 : 3;
+						actx.setLineDash(pinching ? [] : [7, 7]);
+						actx.stroke();
+						actx.setLineDash([]);
+						actx.fillStyle = pinching ? "#0FA8A3" : "rgba(21,34,70,.5)";
+						actx.beginPath();
+						actx.arc(0, 0, 3.5, 0, 7);
+						actx.fill();
+						actx.restore();
+					} else if (ESIHand.active) {
+						actx.fillStyle = "rgba(21,34,70,.5)";
+						actx.font = '700 22px "Baloo 2", cursive';
+						actx.textAlign = "center";
+						actx.fillText(
+							ESIHand.hasPinch
+								? "✋ Hold your hand up to the camera"
+								: "👋 Wave your hand at the camera",
+							AW / 2,
+							AH / 2,
+						);
+					}
+					actx.restore();
+				}
+				function airLoop(now) {
+					if (!st.running || !st.air) return;
+					const dt = Math.min(0.05, (now - st.lastT) / 1000 || 0.016);
+					st.lastT = now;
+					airStep(dt);
+					airDraw();
+					st.raf = requestAnimationFrame(airLoop);
+				}
+				function startAirLoop() {
+					cancelAnimationFrame(st.raf);
+					st.lastT = performance.now();
+					st.lastPinch = ESIHand.pinchCount;
+					st.raf = requestAnimationFrame(airLoop);
+				}
+				/* mouse / sentuh sebagai cadangan di mode Air Spelling */
+				function airPoint(e) {
+					const r = acv.getBoundingClientRect();
+					const scale = Math.min(r.width / AW, r.height / AH);
+					const dw = AW * scale,
+						dh = AH * scale;
+					const ox = (r.width - dw) / 2,
+						oy = (r.height - dh) / 2;
+					const cx = (e.touches ? e.touches[0].clientX : e.clientX) - r.left - ox;
+					const cy = (e.touches ? e.touches[0].clientY : e.clientY) - r.top - oy;
+					st.cur.x = Math.max(0, Math.min(AW, (cx / dw) * AW));
+					st.cur.y = Math.max(0, Math.min(AH, (cy / dh) * AH));
+				}
+				acv.addEventListener("mousemove", function (e) {
+					if (st.air && (!ESIHand.active || !ESIHand.seen)) airPoint(e);
+				});
+				acv.addEventListener("click", function (e) {
+					if (!st.air || !st.running) return;
+					airPoint(e);
+					const b = st.bubbles.find(
+						(x) =>
+							x.pop <= 0 && Math.hypot(x.x - st.cur.x, x.y - st.cur.y) < x.r + 14,
+					);
+					if (b) grabBubble(b);
+				});
+
+				/* ---- tombol kamera game ketik ---- */
+				const tyCamBtn = document.getElementById("cam-ty");
+				const tyPip = document.getElementById("pip-ty");
+				const tyPipCv = document.getElementById("pip-ty-cv");
+				const tyPipTag = document.getElementById("pip-ty-tag");
+				const tyToast = document.getElementById("toast-ty");
+				const TY_OWNER = { id: "typing", disable: () => tyDisableCam(true) };
+				let tyPipRaf = 0;
+
+				function tyToastMsg(msg) {
+					if (!msg) {
+						tyToast.classList.add("hidden");
+						return;
+					}
+					tyToast.textContent = msg;
+					tyToast.classList.remove("hidden");
+					clearTimeout(tyToast._t);
+					tyToast._t = setTimeout(
+						() => tyToast.classList.add("hidden"),
+						msg.length > 90 ? 9000 : 6000,
+					);
+				}
+				function tyPipLoop() {
+					ESIHand.paint(tyPipCv);
+					tyPipTag.textContent = ESIHand.label();
+					tyPipTag.className = "pip-tag " + ESIHand.status;
+					tyPipRaf = requestAnimationFrame(tyPipLoop);
+				}
+				function setAirUI(on) {
+					stage.classList.toggle("air", on);
+					tyCamBtn.classList.toggle("on", on);
+					tyPip.classList.toggle("hidden", !on);
+					document.querySelector("#typing .sec-head h2").innerHTML = on
+						? "🖐️ ESI <span>Air Spelling</span>"
+						: "⌨️ ESI <span>Typing Challenge</span>";
+				}
+				async function tyEnableCam() {
+					st.air = true;
+					setAirUI(true);
+					cancelAnimationFrame(tyPipRaf);
+					tyPipLoop();
+					tyToastMsg("Starting the camera… please allow access ✋");
+					if (st.running) {
+						st.typed = "";
+						resetBubbles();
+						renderAirWord();
+						startAirLoop();
+					}
+					const ok = await ESIHand.request(TY_OWNER);
+					if (!ok) {
+						tyToastMsg(ESIHand.msg);
+						tyDisableCam();
+						return;
+					}
+					st.lastPinch = ESIHand.pinchCount;
+					tyToastMsg(
+						ESIHand.msg ||
+							(ESIHand.hasPinch
+								? "Spell the word: move your hand over a letter and 🤏 pinch to grab it."
+								: "Motion mode: hover over a letter and hold still for a moment to grab it."),
+					);
+				}
+				function tyDisableCam(silent) {
+					st.air = false;
+					setAirUI(false);
+					cancelAnimationFrame(tyPipRaf);
+					tyPipRaf = 0;
+					cancelAnimationFrame(st.raf);
+					st.raf = 0;
+					ESIHand.release(TY_OWNER);
+					if (st.running) {
+						st.typed = "";
+						elInput.value = "";
+						renderWord("");
+						elInput.focus();
+					}
+					if (!silent) tyToastMsg("");
+				}
+				tyCamBtn.addEventListener("click", function () {
+					if (st.air) tyDisableCam();
+					else tyEnableCam();
+				});
+
 				function beginLevel() {
 					const lv = TLEVELS[st.level];
 					st.running = true;
@@ -2407,7 +3563,8 @@
 					st.timer = setInterval(tick, 100);
 					beep(520, 0.08);
 					beep(780, 0.1);
-					elInput.focus();
+					if (st.air) startAirLoop();
+					else elInput.focus();
 				}
 				function startGame() {
 					st.level = 0;
@@ -2418,6 +3575,7 @@
 				function levelClear() {
 					st.running = false;
 					clearInterval(st.timer);
+					cancelAnimationFrame(st.raf);
 					const bonus = Math.ceil(st.time) * 5;
 					st.score += bonus;
 					sfx.end();
@@ -2441,6 +3599,7 @@
 				function endGame(won) {
 					st.running = false;
 					clearInterval(st.timer);
+					cancelAnimationFrame(st.raf);
 					sfx.end();
 					const best = getBoard()[0];
 					document.getElementById("ty-end-title").textContent = won
@@ -2460,6 +3619,7 @@
 					btn.textContent = "💾 Save Score";
 					st.won = won;
 					document.getElementById("ty-name-input").focus();
+					if (st.air) tyToastMsg("");
 				}
 
 				function getBoard() {
