@@ -139,22 +139,185 @@
 			}
 			.nav-links {
 				display: flex;
-				gap: 6px;
-				flex-wrap: wrap;
+				align-items: center;
+				gap: 2px;
 			}
-			.nav-links a {
+			.nav-links > a,
+			.nav-drop-btn {
+				display: inline-flex;
+				align-items: center;
+				gap: 6px;
+				white-space: nowrap;
+				text-decoration: none;
+				font: inherit;
+				font-weight: 700;
+				font-size: 0.9rem;
+				color: var(--muted);
+				background: none;
+				border: none;
+				cursor: pointer;
+				padding: 9px 13px;
+				border-radius: 999px;
+				transition:
+					color 0.18s,
+					background 0.18s;
+			}
+			.nav-links > a:hover,
+			.nav-links > a:focus-visible,
+			.nav-drop-btn:hover,
+			.nav-drop:hover .nav-drop-btn,
+			.nav-drop.open .nav-drop-btn {
+				color: var(--ink);
+				background: rgba(255, 255, 255, 0.8);
+			}
+			.nav-links > a.active,
+			.nav-drop.active .nav-drop-btn {
+				color: #fff;
+				background: var(--grad);
+				box-shadow: var(--shadow-soft);
+			}
+			.nav-drop {
+				position: relative;
+			}
+			.nav-drop-btn .caret {
+				font-size: 0.7em;
+				opacity: 0.7;
+				transition: transform 0.2s;
+			}
+			.nav-drop:hover .caret,
+			.nav-drop.open .caret {
+				transform: rotate(180deg);
+			}
+			.nav-drop-menu {
+				position: absolute;
+				top: calc(100% + 8px);
+				left: 50%;
+				transform: translateX(-50%) translateY(-6px);
+				min-width: 216px;
+				display: flex;
+				flex-direction: column;
+				gap: 2px;
+				padding: 8px;
+				border-radius: 16px;
+				background: rgba(255, 255, 255, 0.92);
+				-webkit-backdrop-filter: blur(16px);
+				backdrop-filter: blur(16px);
+				border: 1px solid var(--glass-border);
+				box-shadow: var(--shadow);
+				opacity: 0;
+				visibility: hidden;
+				transition:
+					opacity 0.18s,
+					transform 0.18s,
+					visibility 0.18s;
+			}
+			.nav-drop:hover .nav-drop-menu,
+			.nav-drop.open .nav-drop-menu {
+				opacity: 1;
+				visibility: visible;
+				transform: translateX(-50%) translateY(0);
+			}
+			.nav-drop-menu a {
 				text-decoration: none;
 				font-weight: 700;
-				font-size: 0.92rem;
+				font-size: 0.9rem;
 				color: var(--muted);
-				padding: 8px 14px;
-				border-radius: 999px;
-				transition: 0.2s;
+				padding: 9px 13px;
+				border-radius: 11px;
+				white-space: nowrap;
+				transition: 0.16s;
 			}
-			.nav-links a:hover,
-			.nav-links a:focus-visible {
+			.nav-drop-menu a:hover,
+			.nav-drop-menu a:focus-visible {
 				color: var(--ink);
-				background: rgba(255, 255, 255, 0.75);
+				background: rgba(21, 34, 70, 0.06);
+			}
+			.nav-drop-menu a.active {
+				color: var(--indigo);
+				background: rgba(74, 63, 143, 0.12);
+			}
+			.nav-toggle {
+				display: none;
+				font: inherit;
+				font-weight: 800;
+				font-size: 0.9rem;
+				cursor: pointer;
+				align-items: center;
+				gap: 8px;
+				padding: 9px 16px;
+				border-radius: 999px;
+				border: 1px solid var(--glass-border);
+				background: rgba(255, 255, 255, 0.8);
+				color: var(--ink);
+				box-shadow: var(--shadow-soft);
+			}
+			@media (max-width: 980px) {
+				.nav-toggle {
+					display: inline-flex;
+				}
+				.nav-links {
+					position: absolute;
+					top: 100%;
+					left: 0;
+					right: 0;
+					flex-direction: column;
+					align-items: stretch;
+					gap: 4px;
+					padding: 12px;
+					margin: 0 14px;
+					border-radius: 18px;
+					background: rgba(255, 255, 255, 0.96);
+					-webkit-backdrop-filter: blur(16px);
+					backdrop-filter: blur(16px);
+					border: 1px solid var(--glass-border);
+					box-shadow: var(--shadow);
+					opacity: 0;
+					visibility: hidden;
+					transform: translateY(-10px);
+					transition:
+						opacity 0.2s,
+						transform 0.2s,
+						visibility 0.2s;
+					max-height: 76vh;
+					overflow-y: auto;
+				}
+				.nav-links.open {
+					opacity: 1;
+					visibility: visible;
+					transform: translateY(0);
+				}
+				.nav-links > a,
+				.nav-drop-btn {
+					width: 100%;
+					justify-content: flex-start;
+					font-size: 0.96rem;
+					padding: 11px 14px;
+				}
+				.nav-drop-menu {
+					position: static;
+					transform: none;
+					opacity: 1;
+					visibility: visible;
+					background: rgba(21, 34, 70, 0.04);
+					border: none;
+					box-shadow: none;
+					padding: 4px 4px 4px 18px;
+					min-width: 0;
+					display: none;
+				}
+				.nav-drop.open .nav-drop-menu {
+					display: flex;
+					transform: none;
+				}
+				.nav-drop:hover .nav-drop-menu {
+					display: none;
+				}
+				.nav-drop.open:hover .nav-drop-menu {
+					display: flex;
+				}
+				.nav {
+					position: relative;
+				}
 			}
 
 			/* ---------- hero ---------- */
@@ -278,6 +441,45 @@
 				filter: drop-shadow(0 24px 26px rgba(21, 34, 70, 0.28));
 				animation: bob 3.4s ease-in-out infinite;
 			}
+			#hero-esi {
+				cursor: pointer;
+				transition: filter 0.25s;
+				-webkit-tap-highlight-color: transparent;
+			}
+			#hero-esi:hover,
+			#hero-esi:focus-visible {
+				filter: drop-shadow(0 24px 30px rgba(15, 168, 163, 0.5));
+				outline: none;
+			}
+			.tap-hint {
+				position: absolute;
+				left: 50%;
+				bottom: -14px;
+				transform: translateX(-50%);
+				white-space: nowrap;
+				font-family: "Baloo 2", cursive;
+				font-weight: 700;
+				font-size: 0.82rem;
+				color: var(--indigo);
+				background: rgba(255, 255, 255, 0.85);
+				border: 1px solid var(--glass-border);
+				border-radius: 999px;
+				padding: 5px 14px;
+				box-shadow: var(--shadow-soft);
+				pointer-events: none;
+				animation: tapPulse 2.6s ease-in-out infinite;
+			}
+			@keyframes tapPulse {
+				0%,
+				100% {
+					transform: translateX(-50%) translateY(0);
+					opacity: 0.85;
+				}
+				50% {
+					transform: translateX(-50%) translateY(-5px);
+					opacity: 1;
+				}
+			}
 			@keyframes bob {
 				0%,
 				100% {
@@ -304,6 +506,8 @@
 				z-index: -1;
 			}
 			.bubble {
+				text-decoration: none;
+				cursor: pointer;
 				position: absolute;
 				top: -34px;
 				right: -8px;
@@ -404,7 +608,9 @@
 				color: var(--orange);
 			}
 			#game-canvas,
-			#voice-canvas {
+			#voice-canvas,
+			#pose-canvas,
+			#photo-canvas {
 				display: block;
 				width: 100%;
 				height: auto;
@@ -579,7 +785,9 @@
 				position: relative;
 			}
 			.game-shell:fullscreen #game-canvas,
-			.game-shell:fullscreen #voice-canvas {
+			.game-shell:fullscreen #voice-canvas,
+			.game-shell:fullscreen #pose-canvas,
+			.game-shell:fullscreen #photo-canvas {
 				width: 100%;
 				height: 100%;
 				object-fit: contain;
@@ -590,6 +798,394 @@
 				min-height: 100%;
 			}
 
+
+
+			/* ---------- Ngobrol dengan ESI ---------- */
+			.chat-shell {
+				max-width: 860px;
+				margin: 0 auto;
+				background: var(--glass);
+				-webkit-backdrop-filter: blur(18px) saturate(1.15);
+				backdrop-filter: blur(18px) saturate(1.15);
+				border: 1px solid var(--glass-border);
+				border-radius: var(--radius);
+				box-shadow:
+					var(--shadow),
+					inset 0 1px 0 rgba(255, 255, 255, 0.9);
+				overflow: hidden;
+			}
+			.chat-top {
+				display: flex;
+				align-items: center;
+				gap: 12px;
+				padding: 14px 18px;
+				border-bottom: 1px solid var(--glass-edge);
+				background: rgba(255, 255, 255, 0.45);
+			}
+			.chat-top img {
+				width: 40px;
+				height: 40px;
+				object-fit: contain;
+				object-position: top;
+			}
+			.chat-who {
+				flex: 1;
+				min-width: 0;
+			}
+			.chat-who b {
+				display: block;
+				font-family: "Baloo 2", cursive;
+				font-size: 1.05rem;
+				line-height: 1.2;
+			}
+			.chat-who span {
+				font-size: 0.78rem;
+				color: var(--cyan);
+				font-weight: 700;
+			}
+			.chat-who span::before {
+				content: "";
+				display: inline-block;
+				width: 7px;
+				height: 7px;
+				border-radius: 50%;
+				background: var(--cyan);
+				margin-right: 6px;
+				vertical-align: middle;
+			}
+			.chat-tools {
+				display: flex;
+				gap: 8px;
+				flex-shrink: 0;
+			}
+			.chat-tools button {
+				font: inherit;
+				font-size: 0.78rem;
+				font-weight: 800;
+				cursor: pointer;
+				padding: 7px 12px;
+				border-radius: 999px;
+				border: 1px solid var(--glass-border);
+				background: rgba(255, 255, 255, 0.7);
+				color: var(--muted);
+				transition:
+					background 0.18s,
+					color 0.18s;
+			}
+			.chat-tools button:hover {
+				color: var(--ink);
+			}
+			.chat-tools button.on {
+				background: var(--grad);
+				color: #fff;
+				border-color: transparent;
+			}
+			.chat-log {
+				height: 380px;
+				overflow-y: auto;
+				padding: 18px;
+				display: flex;
+				flex-direction: column;
+				gap: 12px;
+				scroll-behavior: smooth;
+			}
+			.msg {
+				display: flex;
+				gap: 10px;
+				max-width: 84%;
+				animation: msgIn 0.28s ease both;
+			}
+			@keyframes msgIn {
+				from {
+					opacity: 0;
+					transform: translateY(8px);
+				}
+			}
+			.msg.me {
+				align-self: flex-end;
+				flex-direction: row-reverse;
+			}
+			.msg .av {
+				width: 34px;
+				height: 34px;
+				border-radius: 50%;
+				flex-shrink: 0;
+				background: rgba(255, 255, 255, 0.8);
+				border: 1px solid var(--glass-border);
+				display: grid;
+				place-items: center;
+				overflow: hidden;
+			}
+			.msg .av img {
+				width: 32px;
+				margin-top: 5px;
+			}
+			.msg .txt {
+				background: rgba(255, 255, 255, 0.86);
+				border: 1px solid var(--glass-border);
+				border-radius: 16px 16px 16px 5px;
+				padding: 11px 15px;
+				font-size: 0.94rem;
+				line-height: 1.6;
+				color: var(--ink);
+				box-shadow: var(--shadow-soft);
+			}
+			.msg.me .txt {
+				background: var(--grad);
+				color: #fff;
+				border-color: transparent;
+				border-radius: 16px 16px 5px 16px;
+			}
+			.msg .txt b {
+				color: var(--indigo);
+			}
+			.msg.me .txt b {
+				color: #fff;
+			}
+			.msg .txt ul {
+				margin: 8px 0 2px;
+				padding-left: 18px;
+			}
+			.msg .txt li {
+				margin-bottom: 4px;
+			}
+			.dots span {
+				display: inline-block;
+				width: 7px;
+				height: 7px;
+				margin-right: 4px;
+				border-radius: 50%;
+				background: var(--muted);
+				animation: dot 1.1s infinite;
+			}
+			.dots span:nth-child(2) {
+				animation-delay: 0.18s;
+			}
+			.dots span:nth-child(3) {
+				animation-delay: 0.36s;
+			}
+			@keyframes dot {
+				0%,
+				60%,
+				100% {
+					opacity: 0.25;
+					transform: translateY(0);
+				}
+				30% {
+					opacity: 1;
+					transform: translateY(-4px);
+				}
+			}
+			.chat-chips {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 8px;
+				padding: 0 18px 12px;
+			}
+			.chat-chips button {
+				font: inherit;
+				font-size: 0.82rem;
+				font-weight: 700;
+				cursor: pointer;
+				padding: 8px 14px;
+				border-radius: 999px;
+				border: 1px dashed rgba(74, 63, 143, 0.4);
+				background: rgba(255, 255, 255, 0.6);
+				color: var(--indigo);
+				transition:
+					background 0.18s,
+					transform 0.18s;
+			}
+			.chat-chips button:hover {
+				background: #fff;
+				transform: translateY(-2px);
+			}
+			.chat-form {
+				display: flex;
+				gap: 10px;
+				padding: 14px 18px 18px;
+				border-top: 1px solid var(--glass-edge);
+			}
+			.chat-form input {
+				flex: 1;
+				min-width: 0;
+				font: inherit;
+				font-size: 0.95rem;
+				padding: 12px 16px;
+				border-radius: 999px;
+				border: 1px solid var(--glass-border);
+				background: rgba(255, 255, 255, 0.8);
+				color: var(--ink);
+				outline: none;
+			}
+			.chat-form input:focus {
+				border-color: var(--cyan);
+				box-shadow: 0 0 0 3px rgba(15, 168, 163, 0.16);
+			}
+			.chat-form button {
+				font: inherit;
+				font-weight: 800;
+				cursor: pointer;
+				padding: 12px 20px;
+				border-radius: 999px;
+				border: none;
+				background: var(--grad);
+				color: #fff;
+				box-shadow: var(--shadow-soft);
+			}
+			.chat-note {
+				text-align: center;
+				font-size: 0.78rem;
+				color: var(--muted);
+				margin-top: 14px;
+			}
+			@media (max-width: 640px) {
+				.chat-log {
+					height: 320px;
+					padding: 14px;
+				}
+				.msg {
+					max-width: 92%;
+				}
+				.chat-top {
+					flex-wrap: wrap;
+				}
+			}
+
+
+			/* ---------- tombol ke halaman program UPH ---------- */
+			.prog-link {
+				display: inline-flex;
+				align-items: center;
+				gap: 8px;
+				margin-top: 18px;
+				text-decoration: none;
+				font-weight: 800;
+				font-size: 0.9rem;
+				padding: 11px 18px;
+				border-radius: 999px;
+				color: #fff;
+				background: var(--grad);
+				box-shadow: var(--shadow-soft);
+				transition:
+					transform 0.18s,
+					box-shadow 0.18s;
+			}
+			.prog-link:hover,
+			.prog-link:focus-visible {
+				transform: translateY(-2px);
+				box-shadow: var(--shadow);
+			}
+			.prog-link .arrow {
+				font-size: 0.85em;
+				opacity: 0.85;
+			}
+			.msg .txt a.chat-link {
+				display: inline-block;
+				margin-top: 10px;
+				font-weight: 800;
+				color: var(--indigo);
+				text-decoration: none;
+				border-bottom: 2px solid rgba(74, 63, 143, 0.35);
+			}
+			.msg .txt a.chat-link:hover {
+				border-bottom-color: var(--indigo);
+			}
+
+			/* ---------- photo booth ---------- */
+			/* Hasil foto ditampilkan berdampingan dengan tombolnya: strip
+			   polaroid itu tinggi, kalau ditumpuk vertikal pasti terpotong. */
+			#ph-ov-done {
+				justify-content: flex-start;
+				overflow-y: auto;
+				padding: 18px;
+			}
+			#ph-ov-done h3 {
+				font-size: 1.4rem;
+				margin-bottom: 12px;
+			}
+			.strip-box {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				gap: 26px;
+				flex-wrap: wrap;
+				width: 100%;
+			}
+			.strip-view {
+				display: block;
+				flex-shrink: 0;
+				line-height: 0;
+				border-radius: 10px;
+				overflow: hidden;
+				box-shadow: var(--shadow);
+				transition: transform 0.2s;
+			}
+			.strip-view:hover {
+				transform: translateY(-3px) scale(1.01);
+			}
+			.strip-box img#ph-strip {
+				display: block;
+				width: auto;
+				max-width: min(300px, 42vw);
+				max-height: 62vh;
+				border-radius: 10px;
+				background: #fff;
+				animation: none;
+				filter: none;
+				margin: 0;
+			}
+			.strip-actions {
+				display: flex;
+				flex-direction: column;
+				gap: 10px;
+				min-width: 210px;
+			}
+			.strip-actions .btn {
+				width: 100%;
+				justify-content: center;
+			}
+			.strip-actions .hint {
+				margin-top: 2px;
+			}
+			@media (max-width: 700px) {
+				.strip-box img#ph-strip {
+					max-width: 62vw;
+					max-height: 42vh;
+				}
+				.strip-actions {
+					min-width: 0;
+					flex-direction: row;
+					flex-wrap: wrap;
+					justify-content: center;
+				}
+				.strip-actions .btn {
+					width: auto;
+				}
+			}
+			.theme-row {
+				display: flex;
+				gap: 8px;
+				flex-wrap: wrap;
+				justify-content: center;
+				margin: 4px 0 14px;
+			}
+			.theme-row button {
+				font: inherit;
+				font-size: 0.82rem;
+				font-weight: 800;
+				cursor: pointer;
+				padding: 8px 14px;
+				border-radius: 999px;
+				border: 1px solid var(--glass-border);
+				background: rgba(255, 255, 255, 0.7);
+				color: var(--muted);
+			}
+			.theme-row button.on {
+				background: var(--grad);
+				color: #fff;
+				border-color: transparent;
+			}
 
 			/* ---------- kamera / hand tracking ---------- */
 			#cam-video {
@@ -1187,9 +1783,8 @@
 					width: 64px;
 					top: -40px;
 				}
-				.nav-links a {
-					padding: 7px 10px;
-					font-size: 0.85rem;
+				.nav-logo img {
+					height: 26px;
 				}
 			}
 			@media (prefers-reduced-motion: reduce) {
@@ -1215,13 +1810,36 @@
 				<div class="nav-logo">
 					<img src="assets/si-horizontal.png" alt="Information Systems Logo" />
 				</div>
-				<nav class="nav-links" aria-label="Navigation">
-					<a href="#game">🎮 Data Rush</a>
-					<a href="#typing">⌨️ Typing</a>
-					<a href="#voice">🎤 Sound Rocket</a>
-					<a href="#leaderboard">🏆 Leaderboard</a>
-					<a href="#quiz">🧠 Quiz</a>
+				<button
+					class="nav-toggle"
+					id="nav-toggle"
+					aria-expanded="false"
+					aria-controls="nav-menu"
+				>
+					☰ <span>Menu</span>
+				</button>
+				<nav class="nav-links" id="nav-menu" aria-label="Navigation">
+					<a href="#tanya">💬 Ask ESI</a>
+					<div class="nav-drop" id="nav-play">
+						<button
+							class="nav-drop-btn"
+							id="nav-play-btn"
+							aria-expanded="false"
+							aria-controls="nav-play-menu"
+						>
+							🎮 Play <span class="caret">▾</span>
+						</button>
+						<div class="nav-drop-menu" id="nav-play-menu">
+							<a href="#game">🎮 Data Rush</a>
+							<a href="#typing">⌨️ Air Spelling</a>
+							<a href="#voice">🎤 Sound Rocket</a>
+							<a href="#pose">🕺 Pose Party</a>
+							<a href="#photo">📸 Photo Booth</a>
+						</div>
+					</div>
 					<a href="#prodi">📚 Specializations</a>
+					<a href="#quiz">🧠 Quiz</a>
+					<a href="#leaderboard">🏆 Leaderboard</a>
 					<a href="#booth">📍 Booth</a>
 				</nav>
 			</div>
@@ -1244,25 +1862,87 @@
 						three exciting specializations that could shape your future!
 					</p>
 					<div class="cta-row">
-						<a class="btn btn-primary" href="#game">🎮 Play with ESI</a>
-						<a class="btn btn-ghost" href="#prodi"
-							>Discover Information Systems</a
-						>
+						<a class="btn btn-primary" href="#tanya">💬 Chat with ESI</a>
+						<a class="btn btn-ghost" href="#game">🎮 Play with ESI</a>
 					</div>
 				</div>
 				<div class="hero-esi">
 					<div class="esi-stage">
 						<div class="esi-ring"></div>
-						<div class="bubble">
-							Ready to enter the world of data? Let’s play! 🚀
-						</div>
+						<a class="bubble" href="#tanya">
+							Hi! Ask me anything about Information Systems 💬
+						</a>
 						<img
+							id="hero-esi"
 							src="assets/esi.png"
-							alt="ESI — the Information Systems penguin mascot wearing a VR headset"
+							alt="ESI — the Information Systems penguin mascot wearing a VR headset. Tap to talk to ESI."
+							role="button"
+							tabindex="0"
+							title="Tap ESI to say hello"
 						/>
+						<span class="tap-hint" id="hero-esi-hint">👆 Tap me to talk!</span>
 					</div>
 				</div>
 			</div>
+
+			<!-- ============ CHAT WITH ESI ============ -->
+			<section id="tanya">
+				<div class="wrap">
+					<div class="sec-head">
+						<h2>💬 Ask <span>ESI</span> Anything</h2>
+						<p>
+							Curious about Information Systems at UPH? Ask ESI directly — what
+							the program is, what you will study, where it can take you, and
+							the three specializations you can choose from.
+						</p>
+					</div>
+
+					<div class="chat-shell">
+						<div class="chat-top">
+							<img src="assets/esi.png" alt="ESI the penguin mascot" />
+							<div class="chat-who">
+								<b>ESI</b>
+								<span>Information Systems guide · FAIDAS UPH</span>
+							</div>
+							<div class="chat-tools">
+								<button id="chat-lang" title="Ganti bahasa / switch language">
+									🇮🇩 Bahasa
+								</button>
+								<button id="chat-voice" title="Let ESI read the answers aloud">
+									🔈 Voice
+								</button>
+							</div>
+						</div>
+
+						<div
+							class="chat-log"
+							id="chat-log"
+							role="log"
+							aria-live="polite"
+							aria-label="Conversation with ESI"
+						></div>
+
+						<div class="chat-chips" id="chat-chips"></div>
+
+						<div class="chat-form">
+							<input
+								id="chat-input"
+								maxlength="160"
+								autocomplete="off"
+								placeholder="Type your question here…"
+								aria-label="Type your question for ESI"
+							/>
+							<button id="chat-send">Send</button>
+						</div>
+					</div>
+
+					<p class="chat-note" id="chat-note">
+						ESI is a friendly guide with pre-written answers—not a live AI. For
+						admission, fees and anything personal, please talk to the team at the
+						booth. 🐧
+					</p>
+				</div>
+			</section>
 
 			<!-- ============ GAME ============ -->
 			<section id="game">
@@ -1594,9 +2274,10 @@
 					<div class="sec-head">
 						<h2>🎤 ESI <span>Sound Rocket</span></h2>
 						<p>
-							Your voice is the fuel! Shout, sing or cheer to fire ESI's jetpack
-							and fly through the firewalls. Louder = higher, quiet = ESI drops.
-							Collect the data, dodge the walls, survive three levels.
+							Your voice is the fuel! Shout, sing or cheer to fire ESI's jetpack.
+							Louder sends ESI higher <i>and</i> further forward, so you can chase
+							the data down instead of waiting for it. The sky has no limit — just
+							keep ESI off the ice.
 						</p>
 					</div>
 					<div class="game-shell">
@@ -1614,15 +2295,15 @@
 								</div>
 								<div class="stat">
 									<span class="lab">Target</span
-									><span class="val" id="v-hud-target">130</span>
+									><span class="val" id="v-hud-target">150</span>
 								</div>
 								<div class="stat">
 									<span class="lab">Time</span
 									><span class="val" id="v-hud-time">35</span>
 								</div>
 								<div class="stat">
-									<span class="lab">Combo</span
-									><span class="val combo" id="v-hud-combo">x1</span>
+									<span class="lab">Lives</span
+									><span class="val combo" id="v-hud-combo">❤❤❤</span>
 								</div>
 							</div>
 							<div class="top-btns">
@@ -1666,15 +2347,18 @@
 								<img src="assets/esi.png" alt="" />
 								<h3>ESI Sound Rocket</h3>
 								<p>
-									Turn on the <b>🎤 Mic</b>, then make some noise! The louder you
-									are, the higher ESI flies. Go quiet and ESI falls. Fly through
-									the gaps in the <b>firewalls</b> and grab the data.
+									Turn on the <b>🎤 Mic</b> and make some noise — your voice is
+									the jetpack. Louder means ESI flies <b>higher and further
+									forward</b>, so you can go out and meet the data instead of
+									waiting for it. There is <b>no ceiling</b>, so climb as high as
+									you like; go quiet and ESI drifts back down and to the left.
+									Whatever you do — <b>don't hit the ice</b>. Three lives.
 								</p>
 								<div class="legend">
 									<span>💾 +10</span>
-									<span>⭐ +30</span>
-									<span>🚪 Pass a wall +15</span>
-									<span>🧱 Crash −15</span>
+									<span>⭐ +30 (fly high!)</span>
+									<span>🔊 Louder = higher &amp; further right</span>
+									<span>❄️ Hitting the ground costs a life</span>
 								</div>
 								<button class="btn btn-primary" id="v-btn-start">
 									▶ Start Level 1
@@ -1739,6 +2423,280 @@
 				</div>
 			</section>
 
+			<!-- ============ POSE GAME ============ -->
+			<section id="pose">
+				<div class="wrap">
+					<div class="sec-head">
+						<h2>🕺 ESI <span>Pose Party</span></h2>
+						<p>
+							ESI pulls a silly pose — copy it with your whole body! Your camera
+							turns you into a giant penguin on screen, wobbly flippers and all.
+							Match enough poses before the music stops to clear each level.
+						</p>
+					</div>
+					<div class="game-shell">
+						<div class="game-top">
+							<div class="hud">
+								<div class="stat">
+									<span class="lab">Level</span
+									><span class="val" id="p-hud-level" style="color: var(--cyan)"
+										>1/3</span
+									>
+								</div>
+								<div class="stat">
+									<span class="lab">Score</span
+									><span class="val" id="p-hud-score">0</span>
+								</div>
+								<div class="stat">
+									<span class="lab">Poses</span
+									><span class="val" id="p-hud-poses">0/5</span>
+								</div>
+								<div class="stat">
+									<span class="lab">Time</span
+									><span class="val" id="p-hud-time">45</span>
+								</div>
+								<div class="stat">
+									<span class="lab">Match</span
+									><span class="val combo" id="p-hud-match">0%</span>
+								</div>
+							</div>
+							<div class="top-btns">
+								<button
+									id="cam-pose"
+									class="fs-btn cam-btn"
+									aria-label="Toggle body tracking camera"
+									title="Body tracking (camera)"
+								>
+									🕺 Body
+								</button>
+								<button
+									id="fs-pose"
+									class="fs-btn"
+									aria-label="Fullscreen"
+									title="Fullscreen"
+								>
+									⛶
+								</button>
+							</div>
+						</div>
+						<div class="game-wrap">
+							<canvas
+								id="pose-canvas"
+								width="960"
+								height="540"
+								aria-label="ESI Pose Party game"
+							></canvas>
+
+							<div
+								class="pip hidden"
+								id="pip-pose"
+								title="Click to resize the camera view"
+							>
+								<canvas id="pip-pose-cv" width="400" height="300"></canvas>
+								<span class="pip-tag" id="pip-pose-tag">Starting camera…</span>
+							</div>
+							<div class="cam-toast hidden" id="toast-pose"></div>
+
+							<div class="game-overlay" id="p-ov-start">
+								<img src="assets/esi.png" alt="" />
+								<h3>ESI Pose Party</h3>
+								<p>
+									Turn on <b>🕺 Body</b>, stand back so your arms fit in frame,
+									then copy the pose ESI shows. Hold it for a moment and it
+									counts — the closer you match, the more points you get.
+								</p>
+								<div class="legend">
+									<span>🙌 Copy the pose</span>
+									<span>⏱️ Hold it briefly</span>
+									<span>💯 Accuracy = points</span>
+									<span>🥉🥈🥇 3 Levels</span>
+								</div>
+								<button class="btn btn-primary" id="p-btn-start">
+									▶ Start Level 1
+								</button>
+								<p class="hint" style="margin-top: 14px" id="p-ctrl-hint">
+									🕺 Turn on the camera to play — upper body only, legs are not
+									needed.
+								</p>
+								<span class="cam-note"
+									>💡 Booth tip: stand about 2 metres back so both arms stay in
+									frame.</span
+								>
+							</div>
+
+							<div class="game-overlay hidden" id="p-ov-level">
+								<img src="assets/esi.png" alt="" />
+								<h3 id="p-lv-title">LEVEL 1 COMPLETE! 🎉</h3>
+								<p id="p-lv-sub">Your score so far:</p>
+								<div class="quiz-done">
+									<div class="big" id="p-lv-score">0</div>
+								</div>
+								<p class="hint" id="p-lv-next" style="margin-bottom: 16px"></p>
+								<button class="btn btn-primary" id="p-btn-next">
+									⚡ Continue to the Next Level
+								</button>
+							</div>
+
+							<div class="game-overlay hidden" id="p-ov-end">
+								<h3 id="p-end-title">Time's Up!</h3>
+								<p id="p-end-sub">Your score:</p>
+								<div class="quiz-done">
+									<div class="big" id="p-end-score">0</div>
+								</div>
+								<input
+									id="p-name-input"
+									maxlength="10"
+									placeholder="YOUR NAME"
+									aria-label="Enter your name for the pose leaderboard"
+								/>
+								<div
+									style="
+										display: flex;
+										gap: 12px;
+										flex-wrap: wrap;
+										justify-content: center;
+									"
+								>
+									<button class="btn btn-primary" id="p-btn-save">
+										💾 Save Score
+									</button>
+									<button class="btn btn-ghost" id="p-btn-retry">
+										🔁 Play Again
+									</button>
+								</div>
+								<div class="board">
+									<h4>🏆 LEADERBOARD POSE PARTY</h4>
+									<ol id="p-board-list"></ol>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- ============ PHOTO BOOTH ============ -->
+			<section id="photo">
+				<div class="wrap">
+					<div class="sec-head">
+						<h2>📸 ESI <span>Photo Booth</span></h2>
+						<p>
+							Strike a pose with ESI! Three shots, three silly poses, one photo
+							strip you can save and post. ESI even puts his VR goggles and
+							scarf on you while the music counts you down. 🎵
+						</p>
+					</div>
+					<div class="game-shell">
+						<div class="game-top">
+							<div class="hud">
+								<div class="stat">
+									<span class="lab">Shot</span
+									><span class="val" id="ph-hud-shot" style="color: var(--cyan)"
+										>0/3</span
+									>
+								</div>
+								<div class="stat">
+									<span class="lab">Pose</span
+									><span class="val" id="ph-hud-pose">—</span>
+								</div>
+							</div>
+							<div class="top-btns">
+								<button
+									id="cam-photo"
+									class="fs-btn cam-btn"
+									aria-label="Toggle camera"
+									title="Camera"
+								>
+									📷 Camera
+								</button>
+								<button
+									id="props-photo"
+									class="fs-btn"
+									aria-label="Toggle ESI props"
+									title="ESI goggles and scarf (uses body tracking)"
+								>
+									🥽 Props
+								</button>
+								<button
+									id="fs-photo"
+									class="fs-btn"
+									aria-label="Fullscreen"
+									title="Fullscreen"
+								>
+									⛶
+								</button>
+							</div>
+						</div>
+						<div class="game-wrap">
+							<canvas
+								id="photo-canvas"
+								width="960"
+								height="540"
+								aria-label="ESI Photo Booth camera preview"
+							></canvas>
+
+							<div class="cam-toast hidden" id="toast-photo"></div>
+
+							<div class="game-overlay" id="ph-ov-start">
+								<img src="assets/esi.png" alt="" />
+								<h3>ESI Photo Booth</h3>
+								<p>
+									Turn on the camera, then hit start. ESI will call out a pose,
+									count you down with a little jingle, and snap
+									<b>three photos</b>. At the end you get one photo strip to
+									save and share.
+								</p>
+								<span class="mini-lab" style="margin-top: 4px">🖼️ Layout</span>
+								<div class="theme-row" id="ph-layouts"></div>
+								<span class="mini-lab">🎨 Frame colour</span>
+								<div class="theme-row" id="ph-themes"></div>
+								<span class="mini-lab">✨ Effects</span>
+								<div class="theme-row" id="ph-effects"></div>
+								<button class="btn btn-primary" id="ph-btn-start">
+									▶ Start Photo Session
+								</button>
+								<p class="hint" style="margin-top: 14px" id="ph-hint">
+									📷 Turn on the camera first · grab a friend, it is more fun
+									with two!
+								</p>
+							</div>
+
+							<div class="game-overlay hidden" id="ph-ov-done">
+								<h3 id="ph-done-title">Your polaroid strip is ready! 📸</h3>
+								<div class="strip-box">
+									<a
+										class="strip-view"
+										id="ph-strip-link"
+										target="_blank"
+										rel="noopener"
+										title="Open the full-size photo in a new tab"
+									>
+										<img id="ph-strip" alt="Your ESI polaroid photo strip" />
+									</a>
+									<div class="strip-actions">
+										<button class="btn btn-primary" id="ph-btn-save">
+											💾 Save Photo
+										</button>
+										<button class="btn btn-ghost" id="ph-btn-share">
+											📤 Share
+										</button>
+										<button class="btn btn-primary" id="ph-btn-again">
+											📷 Take New Photos
+										</button>
+										<button class="btn btn-ghost" id="ph-btn-style">
+											🎨 Change Style
+										</button>
+										<p class="hint">
+											🔍 Tap the strip to see it full size<br />Tag us
+											<b>@sisteminformasi.uph</b> 🐧
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
 			<!-- ============ LEADERBOARD ============ -->
 			<section id="leaderboard">
 				<div class="wrap">
@@ -1776,6 +2734,15 @@
 								🎤 ESI Sound Rocket
 							</h3>
 							<ol id="lb-voice-list" class="lb-list"></ol>
+						</div>
+						<div class="lb-card">
+							<h3
+								id="lb-pose-title"
+								title="Double-click to reset (booth staff only)"
+							>
+								🕺 ESI Pose Party
+							</h3>
+							<ol id="lb-pose-list" class="lb-list"></ol>
 						</div>
 					</div>
 				</div>
@@ -1856,6 +2823,13 @@
 								<span>Data Scientist</span><span>AI Specialist</span
 								><span>Machine Learning Engineer</span><span>Data Analyst</span>
 							</div>
+							<a
+								class="prog-link"
+								href="https://www.uph.edu/program/data-science-and-data-analytics"
+								target="_blank"
+								rel="noopener"
+								>🔗 See this program on uph.edu <span class="arrow">↗</span></a
+							>
 						</div>
 
 						<div class="card">
@@ -1880,6 +2854,13 @@
 								<span>UI/UX Designer</span><span>UX Researcher</span
 								><span>AR/VR Designer</span><span>Product Designer</span>
 							</div>
+							<a
+								class="prog-link"
+								href="https://www.uph.edu/program/interactive-intelligence-systems/"
+								target="_blank"
+								rel="noopener"
+								>🔗 See this program on uph.edu <span class="arrow">↗</span></a
+							>
 						</div>
 
 						<div class="card">
@@ -1907,6 +2888,13 @@
 								><span>IT Consultant</span><span>Cybersecurity Consultant</span
 								><span>Technopreneur</span>
 							</div>
+							<a
+								class="prog-link"
+								href="https://www.uph.edu/program/digital-technology-and-innovation/"
+								target="_blank"
+								rel="noopener"
+								>🔗 See this program on uph.edu <span class="arrow">↗</span></a
+							>
 						</div>
 					</div>
 				</div>
@@ -2097,6 +3085,194 @@
 				});
 
 			/* ================================================================
+			   1a. ESICamera — satu aliran kamera dipakai bergantian
+			   ----------------------------------------------------------------
+			   Browser tidak suka dua permintaan kamera sekaligus, jadi semua
+			   fitur kamera (tangan & pose) meminjam stream yang sama lewat
+			   modul ini. Pemilik lama otomatis dimatikan saat ada yang baru.
+			   ================================================================ */
+			const ESICamera = (function () {
+				const video = document.getElementById("cam-video");
+				let stream = null,
+					owner = null;
+
+				async function open(newOwner) {
+					if (owner && owner !== newOwner) {
+						try {
+							owner.disable();
+						} catch (e) {}
+					}
+					owner = newOwner;
+					if (stream) return video;
+					if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia)
+						throw new Error(
+							"This browser has no camera access. Open the page over https:// or on localhost.",
+						);
+					stream = await navigator.mediaDevices.getUserMedia({
+						video: {
+							width: { ideal: 960 },
+							height: { ideal: 720 },
+							facingMode: "user",
+						},
+						audio: false,
+					});
+					video.srcObject = stream;
+					await video.play();
+					await new Promise((res) => {
+						if (video.videoWidth) return res();
+						video.onloadedmetadata = res;
+						setTimeout(res, 2500);
+					});
+					return video;
+				}
+
+				function close(o) {
+					if (owner && o && owner !== o) return;
+					owner = null;
+					if (stream) {
+						stream.getTracks().forEach((t) => t.stop());
+						stream = null;
+						video.srcObject = null;
+					}
+				}
+
+				/* ukuran gambar kamera setelah di-"cover" ke kanvas w x h */
+				function fit(w, h) {
+					const vw = video.videoWidth || 4,
+						vh = video.videoHeight || 3;
+					const vr = vw / vh,
+						cr = w / h;
+					let dw = w,
+						dh = h,
+						dx = 0,
+						dy = 0;
+					if (vr > cr) {
+						dw = h * vr;
+						dx = (w - dw) / 2;
+					} else {
+						dh = w / vr;
+						dy = (h - dh) / 2;
+					}
+					return { dw: dw, dh: dh, dx: dx, dy: dy };
+				}
+
+				/* titik normalisasi mentah -> koordinat kanvas (sudah dicermin),
+				   persis mengikuti gambar kamera supaya rangka tidak meleset */
+				function map(x, y, w, h) {
+					const f = fit(w, h);
+					return { x: f.dx + (1 - x) * f.dw, y: f.dy + y * f.dh };
+				}
+
+				/* rasio lebar/tinggi untuk hitung sudut yang benar */
+				function aspect() {
+					return (video.videoWidth || 4) / (video.videoHeight || 3);
+				}
+
+				return {
+					video: video,
+					open: open,
+					close: close,
+					fit: fit,
+					map: map,
+					aspect: aspect,
+					get owner() {
+						return owner;
+					},
+				};
+			})();
+
+			/* ================================================================
+			   1a2. ESIMP — pemuat MediaPipe yang dipakai bersama
+			   ----------------------------------------------------------------
+			   Library dan fileset WASM hanya dimuat SEKALI lalu dipakai ulang
+			   oleh pelacak tangan dan pelacak pose. Memuat dua fileset terpisah
+			   boros memori dan sering gagal di laptop tanpa GPU yang kuat.
+			   Ganti CDN di sini kalau file MediaPipe mau di-host sendiri.
+			   ================================================================ */
+			const ESIMP = (function () {
+				const CDN = {
+					lib: "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14",
+					wasm: "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm",
+					hand: "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task",
+					/* NAMA FILE-nya mengulang nama varian: ".../pose_landmarker_lite/
+					   float16/1/pose_landmarker_lite.task". Salah tulis di sini
+					   membuat unduhan 404 dan pelacak pose tidak pernah hidup.
+					   Daftar; yang pertama berhasil dipakai. */
+					pose: [
+						"https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task",
+						"https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_full/float16/1/pose_landmarker_full.task",
+					],
+				};
+				let libP = null,
+					filesetP = null;
+
+				function lib() {
+					if (!libP)
+						libP = import(/* @vite-ignore */ CDN.lib).catch(function (e) {
+							libP = null;
+							throw new Error(
+								"could not download the MediaPipe library (" +
+									(e && e.message ? e.message : e) +
+									")",
+							);
+						});
+					return libP;
+				}
+				async function fileset() {
+					if (!filesetP) {
+						const v = await lib();
+						filesetP = v.FilesetResolver.forVisionTasks(CDN.wasm).catch(
+							function (e) {
+								filesetP = null;
+								throw new Error(
+									"could not start the MediaPipe engine (" +
+										(e && e.message ? e.message : e) +
+										")",
+								);
+							},
+						);
+					}
+					return filesetP;
+				}
+
+				/* Buat sebuah task. modelAssetPath boleh berupa satu URL atau
+				   daftar URL cadangan. Untuk tiap model dicoba GPU dulu lalu CPU.
+				   Kalau semua gagal, lemparkan pesan aslinya supaya bisa dilihat. */
+				async function make(taskName, options) {
+					const v = await lib();
+					const Task = v[taskName];
+					if (!Task) throw new Error(taskName + " is missing from this build");
+					const fs = await fileset();
+					const models = [].concat(options.baseOptions.modelAssetPath);
+					let firstErr = null;
+					for (const model of models) {
+						for (const delegate of ["GPU", "CPU"]) {
+							try {
+								const opt = JSON.parse(JSON.stringify(options));
+								opt.baseOptions.modelAssetPath = model;
+								opt.baseOptions.delegate = delegate;
+								const t = await Task.createFromOptions(fs, opt);
+								if (firstErr)
+									console.warn(
+										"[ESI] first attempt failed, recovered with",
+										delegate,
+										model,
+										firstErr,
+									);
+								return t;
+							} catch (e) {
+								console.warn("[ESI]", taskName, delegate, "failed:", e);
+								firstErr = firstErr || e;
+							}
+						}
+					}
+					throw firstErr || new Error("task could not be created");
+				}
+
+				return { CDN: CDN, make: make, lib: lib };
+			})();
+
+			/* ================================================================
 			   1b. ESIHand — PELACAK TANGAN LEWAT KAMERA (dipakai 2 game)
 			   ----------------------------------------------------------------
 			   Mode utama  : MediaPipe Hand Landmarker (21 titik, deteksi PINCH).
@@ -2106,13 +3282,7 @@
 			   (mis. "assets/mediapipe/…") supaya booth aman tanpa internet.
 			   ================================================================ */
 			const ESIHand = (function () {
-				const CDN = {
-					lib: "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14",
-					wasm: "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm",
-					model:
-						"https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task",
-				};
-				const video = document.getElementById("cam-video");
+				const video = ESICamera.video;
 
 				const H = {
 					status: "off" /* off | starting | ready | motion | error */,
@@ -2128,8 +3298,7 @@
 					owner: null,
 				};
 
-				let stream = null,
-					landmarker = null,
+				let landmarker = null,
 					raf = 0,
 					lastVideoTime = -1,
 					sx = 0.5,
@@ -2163,51 +3332,14 @@
 					return "Camera off";
 				}
 
-				async function openCamera() {
-					if (stream) return;
-					if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia)
-						throw new Error(
-							"This browser has no camera access. Open the page over https:// or on localhost.",
-						);
-					stream = await navigator.mediaDevices.getUserMedia({
-						video: {
-							width: { ideal: 640 },
-							height: { ideal: 480 },
-							facingMode: "user",
-						},
-						audio: false,
-					});
-					video.srcObject = stream;
-					await video.play();
-					await new Promise((res) => {
-						if (video.videoWidth) return res();
-						video.onloadedmetadata = res;
-						setTimeout(res, 2500);
-					});
-				}
-
 				async function loadLandmarker() {
-					const vision = await import(/* @vite-ignore */ CDN.lib);
-					const fileset = await vision.FilesetResolver.forVisionTasks(CDN.wasm);
-					const opts = (delegate) => ({
-						baseOptions: { modelAssetPath: CDN.model, delegate: delegate },
+					landmarker = await ESIMP.make("HandLandmarker", {
+						baseOptions: { modelAssetPath: ESIMP.CDN.hand },
 						numHands: 1,
 						runningMode: "VIDEO",
 						minHandDetectionConfidence: 0.5,
 						minTrackingConfidence: 0.5,
 					});
-					try {
-						landmarker = await vision.HandLandmarker.createFromOptions(
-							fileset,
-							opts("GPU"),
-						);
-					} catch (e) {
-						/* beberapa laptop booth tak punya WebGPU/WebGL yang cocok -> pakai CPU */
-						landmarker = await vision.HandLandmarker.createFromOptions(
-							fileset,
-							opts("CPU"),
-						);
-					}
 				}
 
 				function initMotion() {
@@ -2341,8 +3473,8 @@
 						[13, 17], [17, 18], [18, 19], [19, 20],
 						[0, 17],
 					];
-					const px = (p) => (1 - p.x) * w,
-						py = (p) => p.y * h;
+					const px = (p) => ESICamera.map(p.x, p.y, w, h).x,
+						py = (p) => ESICamera.map(p.x, p.y, w, h).y;
 					c.save();
 					c.lineCap = "round";
 					c.strokeStyle = H.pinch
@@ -2366,12 +3498,16 @@
 
 				/* -------- latar kamera besar di dalam kanvas game -------- */
 				function paintBackdrop(c, w, h, alpha, veil) {
-					if (!drawVideo(c, w, h, alpha === undefined ? 0.55 : alpha)) return;
-					c.save();
-					c.fillStyle =
-						"rgba(240,245,252," + (veil === undefined ? 0.5 : veil) + ")";
-					c.fillRect(0, 0, w, h);
-					c.restore();
+					if (!drawVideo(c, w, h, alpha === undefined ? 0.55 : alpha))
+						return false;
+					const v = veil === undefined ? 0.5 : veil;
+					if (v > 0) {
+						c.save();
+						c.fillStyle = "rgba(240,245,252," + v + ")";
+						c.fillRect(0, 0, w, h);
+						c.restore();
+					}
+					return true;
 				}
 
 				/* -------- gambar preview kamera + rangka tangan -------- */
@@ -2392,7 +3528,7 @@
 						c.strokeStyle = "#F0762B";
 						c.lineWidth = 3;
 						c.beginPath();
-						c.arc(H.x * w, H.y * h, 14, 0, 7);
+						c.arc(H.x * w, H.y * h, Math.max(12, w / 24), 0, 7);
 						c.stroke();
 					}
 					c.restore();
@@ -2400,20 +3536,19 @@
 
 				/* -------- API -------- */
 				async function request(owner) {
-					if (H.owner && H.owner !== owner) {
-						try {
-							H.owner.disable();
-						} catch (e) {}
-					}
-					H.owner = owner;
-					if (H.status === "ready" || H.status === "motion") {
+					if (
+						H.owner === owner &&
+						(H.status === "ready" || H.status === "motion")
+					) {
 						H.active = true;
 						return true;
 					}
 					H.status = "starting";
 					H.msg = "";
 					try {
-						await openCamera();
+						/* meminjam kamera bersama — pemakai lama dimatikan otomatis */
+						await ESICamera.open(owner);
+						H.owner = owner;
 					} catch (e) {
 						H.status = "error";
 						H.active = false;
@@ -2457,11 +3592,12 @@
 					H.status = "off";
 					cancelAnimationFrame(raf);
 					raf = 0;
-					if (stream) {
-						stream.getTracks().forEach((t) => t.stop());
-						stream = null;
-						video.srcObject = null;
-					}
+					ESICamera.close(owner);
+					/* penting: lepaskan konteks GPU, kalau tidak akan menumpuk
+					   dan pelacak berikutnya gagal dibuat */
+					try {
+						if (landmarker) landmarker.close();
+					} catch (e) {}
 					landmarker = null;
 					lastVideoTime = -1;
 					prevFrame = null;
@@ -2705,6 +3841,370 @@
 				return V;
 			})();
 
+			/* ================================================================
+			   1d. ESIPose — PELACAK SELURUH BADAN (33 titik)
+			   ----------------------------------------------------------------
+			   Memakai MediaPipe Pose Landmarker lewat kamera bersama.
+			   Selain koordinat, modul ini juga menghitung sudut lengan yang
+			   dipakai game untuk menilai kemiripan gaya, dan menggambar
+			   "kostum ESI" di atas badan pemain.
+			   ================================================================ */
+			const ESIPose = (function () {
+				const video = ESICamera.video;
+				const P = {
+					status: "off" /* off | starting | ready | error */,
+					msg: "",
+					err: "",
+					active: false,
+					seen: false,
+					lm: null,
+					owner: null,
+				};
+				let landmarker = null,
+					raf = 0,
+					lastVideoTime = -1,
+					noPose = 0;
+
+				/* indeks landmark MediaPipe Pose */
+				const NOSE = 0,
+					LSH = 11,
+					RSH = 12,
+					LEL = 13,
+					REL = 14,
+					LWR = 15,
+					RWR = 16,
+					LHIP = 23,
+					RHIP = 24,
+					LEAR = 7,
+					REAR = 8;
+
+				function label() {
+					if (P.status === "starting") return "Loading body tracking…";
+					if (P.status === "ready")
+						return P.seen ? "🕺 I can see you!" : "Step back a little 🐧";
+					if (P.status === "error") return "Body tracking unavailable";
+					return "Camera off";
+				}
+
+				async function load() {
+					landmarker = await ESIMP.make("PoseLandmarker", {
+						baseOptions: { modelAssetPath: ESIMP.CDN.pose },
+						numPoses: 1,
+						runningMode: "VIDEO",
+						minPoseDetectionConfidence: 0.5,
+						minPosePresenceConfidence: 0.5,
+						minTrackingConfidence: 0.5,
+					});
+				}
+
+				function loop(now) {
+					raf = requestAnimationFrame(loop);
+					if (P.status !== "ready" || !landmarker) return;
+					if (video.currentTime === lastVideoTime) return;
+					lastVideoTime = video.currentTime;
+					let res = null;
+					try {
+						res = landmarker.detectForVideo(video, now);
+					} catch (e) {
+						return;
+					}
+					const poses = res && res.landmarks ? res.landmarks : [];
+					if (!poses.length) {
+						noPose++;
+						if (noPose > 10) {
+							P.seen = false;
+							P.lm = null;
+						}
+						return;
+					}
+					noPose = 0;
+					P.seen = true;
+					P.lm = poses[0];
+				}
+
+				/* ---------- pengukuran sudut ---------- */
+				function vis(i) {
+					const l = P.lm && P.lm[i];
+					return l ? (l.visibility === undefined ? 1 : l.visibility) : 0;
+				}
+				/* koordinat "lurus": x dikali rasio kamera supaya sudutnya benar,
+				   dan sudah dicermin agar kiri pemain = kiri layar */
+				function q(i) {
+					const l = P.lm[i],
+						ar = ESICamera.aspect();
+					return { x: (1 - l.x) * ar, y: l.y };
+				}
+				function angle(a, b) {
+					const p = q(a),
+						r = q(b);
+					return (Math.atan2(-(r.y - p.y), r.x - p.x) * 180) / Math.PI;
+				}
+				/* {lu,lf,ru,rf} = sudut lengan atas & bawah kiri/kanan (derajat) */
+				function metrics() {
+					if (!P.lm) return null;
+					const need = [LSH, RSH, LEL, REL, LWR, RWR];
+					let seen = 0;
+					for (const i of need) if (vis(i) > 0.5) seen++;
+					if (seen < 5) return null;
+					return {
+						lu: angle(LSH, LEL),
+						lf: angle(LEL, LWR),
+						ru: angle(RSH, REL),
+						rf: angle(REL, RWR),
+					};
+				}
+
+				/* ---------- gambar "kostum ESI" di atas badan pemain ---------- */
+				function M(i, w, h) {
+					const l = P.lm[i];
+					return ESICamera.map(l.x, l.y, w, h);
+				}
+				function limb(c, a, b, lw, color) {
+					c.strokeStyle = color;
+					c.lineWidth = lw;
+					c.lineCap = "round";
+					c.beginPath();
+					c.moveTo(a.x, a.y);
+					c.lineTo(b.x, b.y);
+					c.stroke();
+				}
+				function drawCostume(c, w, h, esiImg) {
+					if (!P.lm || !P.seen) return;
+					const ls = M(LSH, w, h),
+						rs = M(RSH, w, h),
+						lh = M(LHIP, w, h),
+						rh = M(RHIP, w, h),
+						le = M(LEL, w, h),
+						re = M(REL, w, h),
+						lw2 = M(LWR, w, h),
+						rw = M(RWR, w, h),
+						nose = M(NOSE, w, h);
+					const shW = Math.hypot(ls.x - rs.x, ls.y - rs.y) || 80;
+					const T = Math.max(10, shW * 0.3);
+
+					c.save();
+					c.lineJoin = "round";
+
+					/* badan navy ESI */
+					const bg = c.createLinearGradient(0, ls.y, 0, lh.y);
+					bg.addColorStop(0, "#1E3462");
+					bg.addColorStop(1, "#152246");
+					c.fillStyle = bg;
+					c.beginPath();
+					c.moveTo(ls.x, ls.y);
+					c.lineTo(rs.x, rs.y);
+					c.lineTo(rh.x, rh.y);
+					c.lineTo(lh.x, lh.y);
+					c.closePath();
+					c.fill();
+					c.strokeStyle = "#1E3462";
+					c.lineWidth = T * 0.9;
+					c.stroke();
+
+					/* perut putih */
+					c.fillStyle = "rgba(255,255,255,.94)";
+					c.beginPath();
+					c.ellipse(
+						(ls.x + rs.x + lh.x + rh.x) / 4,
+						(ls.y + rs.y + lh.y + rh.y) / 4 + shW * 0.05,
+						shW * 0.3,
+						shW * 0.42,
+						0,
+						0,
+						7,
+					);
+					c.fill();
+
+					/* sirip / lengan */
+					limb(c, ls, le, T, "#1E3462");
+					limb(c, le, lw2, T * 0.86, "#1E3462");
+					limb(c, rs, re, T, "#1E3462");
+					limb(c, re, rw, T * 0.86, "#1E3462");
+					c.fillStyle = "#F0762B";
+					for (const p of [lw2, rw]) {
+						c.beginPath();
+						c.arc(p.x, p.y, T * 0.62, 0, 7);
+						c.fill();
+					}
+
+					/* syal oranye di leher */
+					const neck = { x: (ls.x + rs.x) / 2, y: (ls.y + rs.y) / 2 };
+					c.strokeStyle = "#F0762B";
+					c.lineWidth = T * 0.72;
+					c.lineCap = "round";
+					c.beginPath();
+					c.moveTo(ls.x * 0.78 + neck.x * 0.22, ls.y * 0.78 + neck.y * 0.22);
+					c.lineTo(rs.x * 0.78 + neck.x * 0.22, rs.y * 0.78 + neck.y * 0.22);
+					c.stroke();
+
+					/* kepala ESI */
+					const headR = shW * 0.62;
+					let tilt = 0;
+					if (vis(LEAR) > 0.4 && vis(REAR) > 0.4) {
+						const a = M(LEAR, w, h),
+							b = M(REAR, w, h);
+						tilt = Math.atan2(a.y - b.y, a.x - b.x);
+					}
+					const hx = nose.x,
+						hy = nose.y - headR * 0.12;
+					if (esiImg && esiImg.complete && esiImg.naturalWidth) {
+						/* potong bagian kepala gambar ESI (kira-kira 46% teratas)
+						   supaya yang menempel di badan pemain hanya kepalanya */
+						const sw = esiImg.naturalWidth,
+							sh = esiImg.naturalHeight * 0.46;
+						const dw = headR * 2,
+							dh = dw * (sh / sw);
+						c.save();
+						c.translate(hx, hy);
+						c.rotate(Math.max(-0.5, Math.min(0.5, tilt)));
+						c.drawImage(esiImg, 0, 0, sw, sh, -dw / 2, -dh * 0.62, dw, dh);
+						c.restore();
+					}
+					c.restore();
+				}
+
+				/* rangka badan — sengaja ditampilkan juga di atas kostum supaya
+				   pemain melihat pelacakannya benar-benar bekerja */
+				const WIRE = [
+					[11, 12], [11, 13], [13, 15], [12, 14], [14, 16],
+					[11, 23], [12, 24], [23, 24], [23, 25], [25, 27],
+					[24, 26], [26, 28],
+				];
+				const JOINTS = [11, 12, 13, 14, 15, 16, 23, 24, 25, 26];
+				function drawWire(c, w, h, big) {
+					if (!P.lm || !P.seen) return;
+					const lw = big ? Math.max(4, w / 190) : Math.max(2, w / 110);
+					c.save();
+					c.lineCap = "round";
+					c.lineJoin = "round";
+					/* garis luar gelap + garis dalam terang = kelihatan di latar apa pun */
+					for (let pass = 0; pass < 2; pass++) {
+						c.strokeStyle =
+							pass === 0 ? "rgba(12,20,44,.55)" : "rgba(120,240,235,.98)";
+						c.lineWidth = pass === 0 ? lw * 2.1 : lw;
+						c.beginPath();
+						for (const pr of WIRE) {
+							if (vis(pr[0]) < 0.4 || vis(pr[1]) < 0.4) continue;
+							const a = M(pr[0], w, h),
+								b = M(pr[1], w, h);
+							c.moveTo(a.x, a.y);
+							c.lineTo(b.x, b.y);
+						}
+						c.stroke();
+					}
+					const r = big ? Math.max(5, w / 150) : Math.max(3, w / 90);
+					for (const i of JOINTS) {
+						if (vis(i) < 0.4) continue;
+						const p = M(i, w, h);
+						c.beginPath();
+						c.arc(p.x, p.y, r, 0, 7);
+						c.fillStyle = "#fff";
+						c.fill();
+						c.lineWidth = Math.max(2, r * 0.5);
+						c.strokeStyle = i === 15 || i === 16 ? "#F0762B" : "#0FA8A3";
+						c.stroke();
+					}
+					c.restore();
+				}
+
+				function paint(canvas) {
+					if (!canvas) return;
+					const c = canvas.getContext("2d");
+					const w = canvas.width,
+						h = canvas.height;
+					c.save();
+					c.clearRect(0, 0, w, h);
+					if (!ESIHand.paintBackdrop(c, w, h, 1, 0)) {
+						c.fillStyle = "#0e1730";
+						c.fillRect(0, 0, w, h);
+					}
+					drawWire(c, w, h);
+					c.restore();
+				}
+
+				async function request(owner) {
+					if (P.owner === owner && P.status === "ready") {
+						P.active = true;
+						return true;
+					}
+					P.status = "starting";
+					P.msg = "";
+					try {
+						await ESICamera.open(owner);
+						P.owner = owner;
+					} catch (e) {
+						P.status = "error";
+						P.active = false;
+						P.msg =
+							e && e.name === "NotAllowedError"
+								? "Camera permission was blocked. Allow it in the browser address bar, then tap 🕺 Body again."
+								: (e && e.message) ||
+									"Camera could not be opened. Make sure the page runs over https:// (or localhost).";
+						return false;
+					}
+					try {
+						await Promise.race([
+							load(),
+							new Promise((_, rej) =>
+								setTimeout(
+									() =>
+										rej(
+											new Error(
+												"took longer than 60 seconds — the body model is about 6 MB",
+											),
+										),
+									60000,
+								),
+							),
+						]);
+					} catch (e) {
+						/* pesan asli ikut ditampilkan supaya masalahnya kelihatan,
+						   bukan cuma "gagal" */
+						console.error("[ESI] pose tracking failed to load:", e);
+						P.status = "error";
+						P.active = false;
+						P.err = (e && (e.message || e.name)) || String(e);
+						P.msg =
+							"Body tracking could not start: " +
+							P.err +
+							" — it needs internet the first time. See README section 5 to host the files locally.";
+						ESICamera.close(owner);
+						return false;
+					}
+					P.status = "ready";
+					P.active = true;
+					cancelAnimationFrame(raf);
+					raf = requestAnimationFrame(loop);
+					return true;
+				}
+
+				function release(owner) {
+					if (P.owner && P.owner !== owner) return;
+					P.owner = null;
+					P.active = false;
+					P.seen = false;
+					P.lm = null;
+					P.status = "off";
+					cancelAnimationFrame(raf);
+					raf = 0;
+					ESICamera.close(owner);
+					try {
+						if (landmarker) landmarker.close();
+					} catch (e) {}
+					landmarker = null;
+					lastVideoTime = -1;
+				}
+
+				P.request = request;
+				P.release = release;
+				P.paint = paint;
+				P.label = label;
+				P.metrics = metrics;
+				P.drawCostume = drawCostume;
+				P.drawWire = drawWire;
+				return P;
+			})();
+
 			/* klik panel kamera/mic untuk memperbesar–memperkecil */
 			(function () {
 				const SIZES = ["", "pip-lg", "pip-xl"];
@@ -2716,6 +4216,82 @@
 						if (next) pip.classList.add(next);
 					});
 				});
+			})();
+
+			/* ---------- 1e. NAVIGASI ----------
+			   Sembilan section tidak muat lagi dalam satu baris, jadi game
+			   dikelompokkan ke satu menu "Play", dan di layar sempit seluruh
+			   navigasi dilipat ke tombol ☰ Menu. */
+			(function () {
+				const toggle = document.getElementById("nav-toggle");
+				const menu = document.getElementById("nav-menu");
+				const drop = document.getElementById("nav-play");
+				const dropBtn = document.getElementById("nav-play-btn");
+				if (!toggle || !menu || !drop) return;
+				const links = Array.from(menu.querySelectorAll("a[href^='#']"));
+
+				function closeAll() {
+					menu.classList.remove("open");
+					drop.classList.remove("open");
+					toggle.setAttribute("aria-expanded", "false");
+					dropBtn.setAttribute("aria-expanded", "false");
+				}
+				toggle.addEventListener("click", function (e) {
+					e.stopPropagation();
+					const open = menu.classList.toggle("open");
+					toggle.setAttribute("aria-expanded", open ? "true" : "false");
+					if (!open) drop.classList.remove("open");
+				});
+				dropBtn.addEventListener("click", function (e) {
+					e.stopPropagation();
+					const open = drop.classList.toggle("open");
+					dropBtn.setAttribute("aria-expanded", open ? "true" : "false");
+				});
+				links.forEach((a) => a.addEventListener("click", closeAll));
+				document.addEventListener("click", function (e) {
+					if (!menu.contains(e.target) && e.target !== toggle) closeAll();
+				});
+				document.addEventListener("keydown", function (e) {
+					if (e.key === "Escape") closeAll();
+				});
+
+				/* tandai section yang sedang dilihat */
+				const map = {};
+				links.forEach(function (a) {
+					const el = document.querySelector(a.getAttribute("href"));
+					if (el) map[a.getAttribute("href")] = { a: a, el: el };
+				});
+				const inPlay = (href) => !!drop.querySelector("a[href='" + href + "']");
+				function mark(href) {
+					links.forEach((a) => a.classList.remove("active"));
+					drop.classList.remove("active");
+					const hit = map[href];
+					if (!hit) return;
+					hit.a.classList.add("active");
+					if (inPlay(href)) drop.classList.add("active");
+				}
+				if ("IntersectionObserver" in window) {
+					const seen = new Map();
+					const io = new IntersectionObserver(
+						function (entries) {
+							entries.forEach((en) =>
+								seen.set(en.target, en.isIntersecting ? en.intersectionRatio : 0),
+							);
+							let bestHref = null,
+								best = 0;
+							for (const href in map) {
+								const r = seen.get(map[href].el) || 0;
+								if (r > best) {
+									best = r;
+									bestHref = href;
+								}
+							}
+							if (bestHref) mark(bestHref);
+						},
+						{ threshold: [0.15, 0.35, 0.6], rootMargin: "-70px 0px -40% 0px" },
+					);
+					for (const href in map) io.observe(map[href].el);
+				}
 			})();
 
 			/* ---------- 2. GAME: ESI DATA RUSH (3 LEVEL) ---------- */
@@ -4158,7 +5734,11 @@
 				renderBoard();
 			})();
 
-			/* ---------- 3b2. GAME SUARA: ESI SOUND ROCKET (3 LEVEL) ---------- */
+			/* ---------- 3b2. GAME SUARA: ESI SOUND ROCKET (3 LEVEL) ----------
+			   Suara = tenaga terbang. TIDAK ada batas atas: makin keras teriak,
+			   makin tinggi, dan layar ikut naik mengikuti ESI. Satu-satunya
+			   bahaya adalah TANAH — kalau kehabisan suara, ESI jatuh.
+			   ------------------------------------------------------------------ */
 			(function () {
 				const cv = document.getElementById("voice-canvas");
 				const ctx = cv.getContext("2d");
@@ -4169,7 +5749,7 @@
 				const ovEnd = document.getElementById("v-ov-end");
 				const hudScore = document.getElementById("v-hud-score");
 				const hudTime = document.getElementById("v-hud-time");
-				const hudCombo = document.getElementById("v-hud-combo");
+				const hudLives = document.getElementById("v-hud-combo");
 				const hudLevel = document.getElementById("v-hud-level");
 				const hudTarget = document.getElementById("v-hud-target");
 				const ctrlHint = document.getElementById("v-ctrl-hint");
@@ -4178,55 +5758,44 @@
 				esiImg.src = "assets/esi.png";
 
 				const LEVELS = [
-					{
-						time: 35,
-						target: 130,
-						speed: 170,
-						gap: 235,
-						wallEvery: 1700,
-						orbEvery: 900,
-						name: "Level 1 · Lift Off 🥉",
-					},
-					{
-						time: 35,
-						target: 360,
-						speed: 218,
-						gap: 200,
-						wallEvery: 1400,
-						orbEvery: 780,
-						name: "Level 2 · Sound Surge 🥈",
-					},
-					{
-						time: 35,
-						target: 660,
-						speed: 268,
-						gap: 172,
-						wallEvery: 1150,
-						orbEvery: 680,
-						name: "Level 3 · Sonic Storm ⛈️🥇",
-					},
+					{ time: 40, target: 150, speed: 165, orbEvery: 780,
+						name: "Level 1 · First Flight 🥉" },
+					{ time: 40, target: 370, speed: 205, orbEvery: 690,
+						name: "Level 2 · Sky Cruise 🥈" },
+					{ time: 40, target: 640, speed: 250, orbEvery: 600,
+						name: "Level 3 · Stratosphere 🥇" },
 				];
 
-				const EX = 190, /* posisi tetap ESI di sumbu x */
-					ER = 40; /* radius tabrakan */
-				const GRAV = 880,
-					THRUST = 2150;
+				const EX = 200, /* posisi "rumah" saat hening */
+					EX_MAX = 560, /* sejauh ini ESI bisa maju saat suara kencang */
+					ER = 38;
+				/* fisika dibuat "mengambang": diam sebentar tidak langsung jatuh */
+				const GRAV = 700,
+					THRUST = 1900, /* melayang stabil di sekitar 37% kekerasan suara */
+					VMAX_DOWN = 470,
+					VMAX_UP = 620;
+				const GROUND_Y = Hh - 62; /* posisi tanah saat kamera belum naik */
+				const FOLLOW_Y = Hh * 0.34; /* ESI tidak naik lebih tinggi dari sini di layar */
 
 				const st = {
 					running: false,
 					level: 0,
 					score: 0,
-					time: 35,
+					time: 40,
+					lives: 3,
 					combo: 1,
 					streak: 0,
-					y: Hh / 2,
+					alt: 150 /* ketinggian di atas tanah, px — TIDAK dibatasi */,
 					vy: 0,
-					walls: [],
+					x: EX /* posisi mendatar; ikut suara + tombol panah */,
+					loudAvg: 0,
+					nudge: 0,
+					camOff: 0,
+					maxAlt: 0,
 					orbs: [],
 					parts: [],
 					floats: [],
-					stars: [],
-					wallAt: 0,
+					clouds: [],
 					orbAt: 0,
 					lastT: 0,
 					shake: 0,
@@ -4235,21 +5804,34 @@
 					mic: false,
 					keyThrust: false,
 					loud: 0,
+					warn: 0,
 					raf: 0,
 				};
 
-				for (let i = 0; i < 46; i++)
-					st.stars.push({
+				for (let i2 = 0; i2 < 16; i2++)
+					st.clouds.push({
 						x: Math.random() * W,
-						y: Math.random() * Hh,
-						r: 1 + Math.random() * 2.2,
-						sp: 12 + Math.random() * 46,
+						alt: Math.random() * 1400,
+						r: 26 + Math.random() * 54,
+						sp: 8 + Math.random() * 26,
 					});
 
-				/* ---------- kontrol cadangan: Space / klik ---------- */
+				/* layar <-> ketinggian */
+				function scrY(alt) {
+					return GROUND_Y - alt + st.camOff;
+				}
+
+				/* ---------- kontrol cadangan ---------- */
 				addEventListener("keydown", (e) => {
 					if (e.code === "Space" && st.running) {
 						st.keyThrust = true;
+						e.preventDefault();
+					}
+					/* panah kiri/kanan menggeser sedikit — berguna kalau mikrofon
+					   tidak dipakai, dan untuk menjemput data yang agak jauh */
+					if (st.running && (e.code === "ArrowLeft" || e.code === "ArrowRight")) {
+						st.nudge += e.code === "ArrowRight" ? 26 : -26;
+						st.nudge = Math.max(-90, Math.min(210, st.nudge));
 						e.preventDefault();
 					}
 				});
@@ -4276,7 +5858,7 @@
 					st.keyThrust = false;
 				});
 
-				/* ---------- tombol mikrofon ---------- */
+				/* ---------- mikrofon ---------- */
 				const micBtn = document.getElementById("mic-voice");
 				const pipBox = document.getElementById("pip-voice");
 				const pipCv = document.getElementById("pip-voice-cv");
@@ -4300,7 +5882,7 @@
 				}
 				function refreshHint() {
 					ctrlHint.innerHTML = st.mic
-						? "🎤 <b>Shout, sing or cheer</b> to fly &nbsp;·&nbsp; go quiet and ESI drops &nbsp;·&nbsp; ⌨️ Space still works"
+						? "🎤 <b>Louder = higher AND further forward</b> &nbsp;·&nbsp; the sky has no limit, only the ground hurts &nbsp;·&nbsp; ⌨️ Space + ← → also work"
 						: "🎤 Turn on the mic to fly with your voice &nbsp;·&nbsp; ⌨️ or hold <b>Space</b> / click the canvas";
 					pipTag.textContent = ESIVoice.label();
 					pipTag.className =
@@ -4348,7 +5930,6 @@
 					if (st.mic) disableMic();
 					else enableMic();
 				});
-				/* klik dua kali panel mic = kalibrasi ulang (misal booth jadi lebih ramai) */
 				pipBox.addEventListener("dblclick", function (e) {
 					e.stopPropagation();
 					if (st.mic && ESIVoice.active) {
@@ -4359,41 +5940,34 @@
 				refreshHint();
 
 				/* ---------- spawn ---------- */
-				function spawnWall() {
-					const lv = LEVELS[st.level];
-					const gap = lv.gap;
-					const gy = 90 + Math.random() * (Hh - 180);
-					st.walls.push({
-						x: W + 40,
-						w: 58,
-						gy: Math.max(gap / 2 + 30, Math.min(Hh - gap / 2 - 30, gy)),
-						gap: gap,
-						passed: false,
-						hit: false,
-					});
-				}
 				function spawnOrb() {
-					const star = Math.random() < 0.14;
+					/* data muncul di sekitar ketinggian ESI supaya selalu terjangkau,
+					   sesekali bintang di atas sebagai umpan untuk terbang lebih tinggi */
+					const star = Math.random() < 0.16;
+					/* data biasa sedikit condong ke BAWAH, bintang jauh di atas:
+					   rata-ratanya seimbang, jadi pemain tidak terseret naik terus
+					   dan tanah tetap terasa dekat */
+					const spread = star
+						? 270 + Math.random() * 170
+						: -300 + Math.random() * 450;
+					const alt = Math.max(60, Math.min(st.alt + 440, st.alt + spread));
 					st.orbs.push({
-						x: W + 30,
-						y: 60 + Math.random() * (Hh - 120),
-						r: star ? 24 : 21,
+						x: W + 40,
+						alt: alt,
+						r: star ? 25 : 21,
 						star: star,
 						e: star ? "⭐" : ["💾", "📊", "🧩", "💡"][Math.floor(Math.random() * 4)],
 						bob: Math.random() * 6.28,
 					});
 				}
 				function burst(x, y, color) {
-					for (let i = 0; i < 15; i++) {
+					for (let i2 = 0; i2 < 16; i2++) {
 						const a = Math.random() * 6.28,
-							sp = 60 + Math.random() * 190;
+							sp = 70 + Math.random() * 200;
 						st.parts.push({
-							x: x,
-							y: y,
-							vx: Math.cos(a) * sp,
-							vy: Math.sin(a) * sp,
-							life: 1,
-							color: color,
+							x: x, y: y,
+							vx: Math.cos(a) * sp, vy: Math.sin(a) * sp,
+							life: 1, color: color,
 						});
 					}
 				}
@@ -4405,105 +5979,108 @@
 				function update(dt, now) {
 					const lv = LEVELS[st.level];
 
-					/* tenaga dorong: suara atau tombol */
-					const voice = st.mic && ESIVoice.status === "ready" ? ESIVoice.level : 0;
+					const voice =
+						st.mic && ESIVoice.status === "ready" ? ESIVoice.level : 0;
 					const loud = Math.max(voice, st.keyThrust ? 1 : 0);
 					st.loud = loud;
+					/* selama mikrofon masih mengukur kebisingan ruangan, pemain
+					   belum punya kendali — jangan dihukum */
+					if (st.mic && ESIVoice.status !== "ready")
+						st.invuln = Math.max(st.invuln, 0.4);
+
+					/* Suara tidak cuma menaikkan, tapi juga MEMAJUKAN ESI ke kanan.
+					   Yang dipakai sengaja RATA-RATA suara, bukan suara sesaat:
+					   kalau memakai suara sesaat, tiap kali pemain berhenti bersuara
+					   untuk turun, ESI ikut tertarik mundur ke kiri dan justru jadi
+					   lebih sulit menangkap data. Dengan rata-rata, naik-turun cepat
+					   tidak menggeser posisi mendatar, tapi teriakan panjang tetap
+					   membawa ESI maju menjemput data. */
+					st.loudAvg += (loud - st.loudAvg) * Math.min(1, dt * 0.85);
+					const wantX = EX + st.loudAvg * (EX_MAX - EX) + st.nudge;
+					st.x += (wantX - st.x) * Math.min(1, dt * 2.6);
+					st.x = Math.max(90, Math.min(W - 120, st.x));
 
 					st.vy += (GRAV - THRUST * loud) * dt;
-					st.vy = Math.max(-560, Math.min(680, st.vy));
-					st.y += st.vy * dt;
-					if (st.y < ER) {
-						st.y = ER;
-						st.vy = Math.max(0, st.vy);
-					}
-					if (st.y > Hh - ER) {
-						st.y = Hh - ER;
-						st.vy = Math.min(0, st.vy);
+					st.vy = Math.max(-VMAX_UP, Math.min(VMAX_DOWN, st.vy));
+					/* vy positif = turun; ketinggian berkurang */
+					st.alt -= st.vy * dt;
+					if (st.alt > st.maxAlt) st.maxAlt = st.alt;
+
+					/* TANAH — satu-satunya bahaya */
+					if (st.alt <= 0) {
+						st.alt = 0;
+						if (st.invuln <= 0) {
+							st.invuln = 1.3;
+							st.lives--;
+							st.score = Math.max(0, st.score - 10);
+							st.streak = 0;
+							st.combo = 1;
+							st.shake = 15;
+							burst(st.x, scrY(0), "#A4468A");
+							floatText(st.x, scrY(0) - 60, "BONK! -10", "#C9438F");
+							sfx.bad();
+							if (st.lives <= 0) {
+								levelDone();
+								return;
+							}
+						}
+						st.vy = -400; /* dipantulkan supaya sempat pulih */
 					}
 
-					for (const s2 of st.stars) {
-						s2.x -= s2.sp * dt;
-						if (s2.x < -4) {
-							s2.x = W + 4;
-							s2.y = Math.random() * Hh;
+					/* kamera mengikuti ESI ke atas — langit tanpa batas */
+					const want = Math.max(0, st.alt - (GROUND_Y - FOLLOW_Y));
+					st.camOff += (want - st.camOff) * Math.min(1, dt * 4);
+
+					/* peringatan mau menyentuh tanah */
+					st.warn = st.alt < 110 && st.vy > 0 ? Math.min(1, st.warn + dt * 4) : Math.max(0, st.warn - dt * 3);
+
+					for (const c2 of st.clouds) {
+						c2.x -= c2.sp * dt;
+						if (c2.x < -c2.r * 2) {
+							c2.x = W + c2.r * 2;
+							c2.alt = st.alt + (Math.random() * 2 - 1) * 520;
 						}
 					}
 
-					if (now > st.wallAt) {
-						spawnWall();
-						st.wallAt = now + lv.wallEvery * (0.85 + Math.random() * 0.3);
-					}
 					if (now > st.orbAt) {
 						spawnOrb();
 						st.orbAt = now + lv.orbEvery * (0.8 + Math.random() * 0.5);
 					}
-
 					if (st.invuln > 0) st.invuln -= dt;
 
-					/* dinding */
-					for (let i = st.walls.length - 1; i >= 0; i--) {
-						const wl = st.walls[i];
-						wl.x -= lv.speed * dt;
-						const overlapX = EX + ER > wl.x && EX - ER < wl.x + wl.w;
-						const inGap =
-							st.y - ER * 0.72 > wl.gy - wl.gap / 2 &&
-							st.y + ER * 0.72 < wl.gy + wl.gap / 2;
-						if (overlapX && !inGap && !wl.hit && st.invuln <= 0) {
-							wl.hit = true;
-							st.invuln = 1.0;
-							st.score = Math.max(0, st.score - 15);
-							st.streak = 0;
-							st.combo = 1;
-							st.shake = 13;
-							burst(EX + ER, st.y, "#A4468A");
-							floatText(EX, st.y - 40, "-15", "#C9438F");
-							sfx.bad();
-						}
-						if (!wl.passed && wl.x + wl.w < EX - ER) {
-							wl.passed = true;
-							if (!wl.hit) {
-								st.score += 15;
-								floatText(EX + 60, st.y - 30, "+15 pass!", "#0FA8A3");
-								beep(760, 0.07, "triangle", 0.12);
-							}
-						}
-						if (wl.x < -90) st.walls.splice(i, 1);
-					}
-
-					/* data */
-					for (let i = st.orbs.length - 1; i >= 0; i--) {
-						const o = st.orbs[i];
+					const ey = scrY(st.alt);
+					for (let i2 = st.orbs.length - 1; i2 >= 0; i2--) {
+						const o = st.orbs[i2];
 						o.x -= lv.speed * dt;
 						o.bob += dt * 2.4;
-						const dy = o.y + Math.sin(o.bob) * 9;
-						if (Math.hypot(o.x - EX, dy - st.y) < o.r + ER * 0.68) {
+						const oy = scrY(o.alt) + Math.sin(o.bob) * 9;
+						if (Math.hypot(o.x - st.x, oy - ey) < o.r + ER * 0.95) {
 							st.streak++;
 							st.combo = Math.min(3, 1 + Math.floor(st.streak / 5));
 							const pts = (o.star ? 30 : 10) * st.combo;
 							st.score += pts;
-							burst(o.x, dy, o.star ? "#E0A23B" : "#0FA8A3");
-							floatText(o.x, dy, "+" + pts, o.star ? "#D98A00" : "#0FA8A3");
+							burst(o.x, oy, o.star ? "#E0A23B" : "#0FA8A3");
+							floatText(o.x, oy, "+" + pts, o.star ? "#D98A00" : "#0FA8A3");
 							o.star ? sfx.star() : sfx.good();
-							st.orbs.splice(i, 1);
+							st.orbs.splice(i2, 1);
 							continue;
 						}
-						if (o.x < -50) st.orbs.splice(i, 1);
+						if (o.x < -60) st.orbs.splice(i2, 1);
 					}
 
-					for (let i = st.parts.length - 1; i >= 0; i--) {
-						const p = st.parts[i];
+					for (let i2 = st.parts.length - 1; i2 >= 0; i2--) {
+						const p = st.parts[i2];
 						p.x += p.vx * dt;
 						p.y += p.vy * dt;
-						p.vy += 260 * dt;
+						p.vy += 250 * dt;
 						p.life -= dt * 1.7;
-						if (p.life <= 0) st.parts.splice(i, 1);
+						if (p.life <= 0) st.parts.splice(i2, 1);
 					}
-					for (let i = st.floats.length - 1; i >= 0; i--) {
-						const f = st.floats[i];
+					for (let i2 = st.floats.length - 1; i2 >= 0; i2--) {
+						const f = st.floats[i2];
 						f.y -= 44 * dt;
 						f.life -= dt * 1.2;
-						if (f.life <= 0) st.floats.splice(i, 1);
+						if (f.life <= 0) st.floats.splice(i2, 1);
 					}
 					if (st.shake > 0) st.shake -= dt * 40;
 
@@ -4511,16 +6088,17 @@
 					if (st.time <= 0) {
 						st.time = 0;
 						levelDone();
+						return;
 					}
 
 					hudScore.textContent = st.score;
 					hudTime.textContent = Math.ceil(st.time);
-					hudCombo.textContent = "x" + st.combo;
+					hudLives.textContent = "❤".repeat(Math.max(0, st.lives)) || "—";
 					hudTarget.textContent = lv.target;
 					hudScore.style.color = st.score >= lv.target ? "var(--cyan)" : "";
 				}
 
-				/* ---------- draw ---------- */
+				/* ---------- gambar ---------- */
 				function draw() {
 					const lv = LEVELS[st.level];
 					ctx.save();
@@ -4531,12 +6109,72 @@
 						);
 					ctx.clearRect(-20, -20, W + 40, Hh + 40);
 
-					/* bintang latar */
-					for (const s2 of st.stars) {
-						ctx.fillStyle = "rgba(90,77,168,.22)";
+					/* langit makin gelap makin tinggi */
+					const hi = Math.min(1, st.alt / 1600);
+					const sky = ctx.createLinearGradient(0, 0, 0, Hh);
+					sky.addColorStop(0, "rgba(" + Math.round(150 - 110 * hi) + "," +
+						Math.round(180 - 130 * hi) + "," + Math.round(235 - 120 * hi) + ",.38)");
+					sky.addColorStop(1, "rgba(232,241,252,.15)");
+					ctx.fillStyle = sky;
+					ctx.fillRect(0, 0, W, Hh);
+
+					/* awan */
+					for (const c2 of st.clouds) {
+						const y = scrY(c2.alt);
+						if (y < -120 || y > Hh + 120) continue;
+						ctx.fillStyle = "rgba(255,255,255,.55)";
 						ctx.beginPath();
-						ctx.arc(s2.x, s2.y, s2.r, 0, 7);
+						ctx.arc(c2.x, y, c2.r, 0, 7);
+						ctx.arc(c2.x + c2.r * 0.7, y + c2.r * 0.18, c2.r * 0.72, 0, 7);
+						ctx.arc(c2.x - c2.r * 0.7, y + c2.r * 0.2, c2.r * 0.64, 0, 7);
 						ctx.fill();
+					}
+
+					/* penggaris ketinggian */
+					ctx.strokeStyle = "rgba(74,63,143,.16)";
+					ctx.fillStyle = "rgba(74,63,143,.4)";
+					ctx.font = '700 11px "JetBrains Mono", monospace';
+					ctx.textAlign = "left";
+					const step = 100;
+					const firstAlt = Math.floor((st.alt - Hh) / step) * step;
+					for (let a = Math.max(0, firstAlt); a < st.alt + Hh; a += step) {
+						const y = scrY(a);
+						if (y < 12 || y > Hh - 12) continue;
+						ctx.beginPath();
+						ctx.moveTo(0, y);
+						ctx.lineTo(a % 500 === 0 ? 34 : 18, y);
+						ctx.stroke();
+						if (a % 500 === 0) ctx.fillText(a + "m", 38, y + 4);
+					}
+
+					/* tanah es */
+					const gy = scrY(0);
+					if (gy < Hh + 60) {
+						const gg = ctx.createLinearGradient(0, gy, 0, Hh);
+						gg.addColorStop(0, "#BFE3F2");
+						gg.addColorStop(1, "#7FB6D6");
+						ctx.fillStyle = gg;
+						ctx.fillRect(0, gy, W, Hh - gy + 60);
+						ctx.strokeStyle = "#EAF6FC";
+						ctx.lineWidth = 5;
+						ctx.beginPath();
+						ctx.moveTo(0, gy);
+						ctx.lineTo(W, gy);
+						ctx.stroke();
+						ctx.fillStyle = "rgba(21,34,70,.35)";
+						ctx.font = '700 14px "Baloo 2", cursive';
+						ctx.textAlign = "center";
+						ctx.fillText("❄️  don't land  ❄️", W / 2, gy + 34);
+					} else {
+						/* tanah sudah jauh di bawah — tunjukkan arah pulang */
+						ctx.fillStyle = "rgba(21,34,70,.35)";
+						ctx.font = '700 14px "JetBrains Mono", monospace';
+						ctx.textAlign = "center";
+						ctx.fillText(
+							"▼ ground " + Math.round(st.alt) + "m below",
+							W / 2,
+							Hh - 18,
+						);
 					}
 
 					/* bar waktu */
@@ -4547,46 +6185,17 @@
 					g.addColorStop(1, "#F0762B");
 					ctx.fillStyle = g;
 					ctx.fillRect(0, 0, tw, 7);
-
 					ctx.fillStyle = "rgba(21,34,70,.45)";
 					ctx.font = '700 15px "Baloo 2", cursive';
 					ctx.textAlign = "left";
 					ctx.fillText(lv.name, 16, 30);
 
-					/* dinding firewall */
-					for (const wl of st.walls) {
-						const top = wl.gy - wl.gap / 2,
-							bot = wl.gy + wl.gap / 2;
-						const wg = ctx.createLinearGradient(wl.x, 0, wl.x + wl.w, 0);
-						if (wl.hit) {
-							wg.addColorStop(0, "#C9558F");
-							wg.addColorStop(1, "#5E2050");
-						} else {
-							wg.addColorStop(0, "#6C5FC0");
-							wg.addColorStop(1, "#3A3170");
-						}
-						ctx.fillStyle = wg;
-						roundRect(wl.x, -10, wl.w, top + 10, 12);
-						roundRect(wl.x, bot, wl.w, Hh - bot + 10, 12);
-						ctx.strokeStyle = "rgba(244,248,254,.4)";
-						ctx.lineWidth = 2;
-						ctx.beginPath();
-						ctx.moveTo(wl.x, top);
-						ctx.lineTo(wl.x + wl.w, top);
-						ctx.moveTo(wl.x, bot);
-						ctx.lineTo(wl.x + wl.w, bot);
-						ctx.stroke();
-						ctx.fillStyle = "rgba(244,248,254,.85)";
-						ctx.font = '700 17px "Baloo 2", cursive';
-						ctx.textAlign = "center";
-						ctx.fillText("🔥", wl.x + wl.w / 2, top - 14);
-					}
-
 					/* data */
 					for (const o of st.orbs) {
-						const dy = o.y + Math.sin(o.bob) * 9;
+						const oy = scrY(o.alt) + Math.sin(o.bob) * 9;
+						if (oy < -60 || oy > Hh + 60) continue;
 						ctx.save();
-						ctx.translate(o.x, dy);
+						ctx.translate(o.x, oy);
 						const rg = ctx.createRadialGradient(0, -o.r * 0.4, 2, 0, 0, o.r);
 						if (o.star) {
 							rg.addColorStop(0, "#FFD97A");
@@ -4599,7 +6208,7 @@
 						ctx.beginPath();
 						ctx.arc(0, 0, o.r, 0, 7);
 						ctx.fill();
-						ctx.strokeStyle = "rgba(244,248,254,.35)";
+						ctx.strokeStyle = "rgba(244,248,254,.4)";
 						ctx.lineWidth = 2;
 						ctx.stroke();
 						ctx.font = o.r * 1.1 + "px serif";
@@ -4608,21 +6217,37 @@
 						ctx.fillText(o.e, 0, 2);
 						ctx.restore();
 					}
+					ctx.textBaseline = "alphabetic";
 
-					/* semburan jet — panjangnya mengikuti kerasnya suara */
-					const fl = 26 + st.loud * 90;
+					/* semburan jet */
+					const ey = scrY(st.alt);
+					const fl = 26 + st.loud * 96;
 					if (st.loud > 0.04) {
-						const fg = ctx.createLinearGradient(EX - 26, 0, EX - 26 - fl, 0);
+						const fg = ctx.createLinearGradient(st.x - 24, 0, st.x - 24 - fl, 0);
 						fg.addColorStop(0, "rgba(240,118,43,.95)");
 						fg.addColorStop(0.5, "rgba(224,162,59,.7)");
 						fg.addColorStop(1, "rgba(255,217,122,0)");
 						ctx.fillStyle = fg;
 						ctx.beginPath();
-						ctx.moveTo(EX - 22, st.y - 16 - st.loud * 6);
-						ctx.lineTo(EX - 22 - fl, st.y + (Math.random() - 0.5) * 12);
-						ctx.lineTo(EX - 22, st.y + 16 + st.loud * 6);
+						ctx.moveTo(st.x - 20, ey - 15 - st.loud * 6);
+						ctx.lineTo(st.x - 20 - fl, ey + (Math.random() - 0.5) * 12);
+						ctx.lineTo(st.x - 20, ey + 15 + st.loud * 6);
 						ctx.closePath();
 						ctx.fill();
+					}
+
+					/* garis bantu: sampai mana ESI bisa maju kalau berteriak penuh */
+					if (st.running) {
+						ctx.save();
+						ctx.setLineDash([6, 10]);
+						ctx.strokeStyle = "rgba(74,63,143,.18)";
+						ctx.lineWidth = 2;
+						ctx.beginPath();
+						ctx.moveTo(EX_MAX, 12);
+						ctx.lineTo(EX_MAX, Hh - 12);
+						ctx.stroke();
+						ctx.setLineDash([]);
+						ctx.restore();
 					}
 
 					/* ESI */
@@ -4630,14 +6255,31 @@
 						const tilt = Math.max(-0.42, Math.min(0.42, st.vy * 0.0009));
 						ctx.save();
 						ctx.globalAlpha =
-							st.invuln > 0 ? (Math.floor(st.invuln * 12) % 2 ? 0.35 : 1) : 1;
-						ctx.translate(EX, st.y);
+							st.invuln > 0 ? (Math.floor(st.invuln * 12) % 2 ? 0.4 : 1) : 1;
+						ctx.translate(st.x, ey);
 						ctx.rotate(tilt);
-						ctx.drawImage(esiImg, -38, -54, 76, 108);
+						ctx.drawImage(esiImg, -36, -52, 72, 104);
 						ctx.restore();
 					}
 
-					/* meter suara di kanvas */
+					/* peringatan tanah */
+					if (st.warn > 0.02) {
+						ctx.save();
+						ctx.globalAlpha = st.warn * 0.5;
+						const vg = ctx.createLinearGradient(0, Hh - 190, 0, Hh);
+						vg.addColorStop(0, "rgba(201,67,143,0)");
+						vg.addColorStop(1, "rgba(201,67,143,.85)");
+						ctx.fillStyle = vg;
+						ctx.fillRect(0, Hh - 190, W, 190);
+						ctx.globalAlpha = st.warn;
+						ctx.fillStyle = "#8E2A6E";
+						ctx.font = '800 30px "Baloo 2", cursive';
+						ctx.textAlign = "center";
+						ctx.fillText("🔊 LOUDER! PULL UP!", W / 2, Hh - 130);
+						ctx.restore();
+					}
+
+					/* meter suara */
 					const mx = 20,
 						my = Hh - 34,
 						mw = 250,
@@ -4653,17 +6295,29 @@
 					ctx.strokeStyle = "rgba(21,34,70,.55)";
 					ctx.lineWidth = 2;
 					ctx.beginPath();
-					ctx.moveTo(mx + mw * 0.41, my - 4);
-					ctx.lineTo(mx + mw * 0.41, my + mh + 4);
+					ctx.moveTo(mx + mw * 0.37, my - 4);
+					ctx.lineTo(mx + mw * 0.37, my + mh + 4);
 					ctx.stroke();
 					ctx.fillStyle = "rgba(21,34,70,.5)";
 					ctx.font = '700 12px "JetBrains Mono", monospace';
 					ctx.textAlign = "left";
 					ctx.fillText(
-						st.mic ? "🎤 VOICE POWER" : "⌨️ SPACE / CLICK",
+						(st.mic ? "🎤 VOICE POWER" : "⌨️ SPACE / CLICK") +
+							"   ·   line = hover",
 						mx,
 						my - 8,
 					);
+
+					/* combo + ketinggian */
+					ctx.textAlign = "right";
+					ctx.fillStyle = "rgba(21,34,70,.5)";
+					ctx.font = '800 18px "Baloo 2", cursive';
+					ctx.fillText("▲ " + Math.round(st.alt) + "m", W - 18, Hh - 40);
+					if (st.combo > 1) {
+						ctx.fillStyle = "#F0762B";
+						ctx.font = '800 22px "Baloo 2", cursive';
+						ctx.fillText("COMBO x" + st.combo, W - 18, Hh - 66);
+					}
 
 					for (const p of st.parts) {
 						ctx.globalAlpha = Math.max(0, p.life);
@@ -4709,7 +6363,7 @@
 					const dt = Math.min(0.05, (now - st.lastT) / 1000 || 0.016);
 					st.lastT = now;
 					update(dt, now);
-					draw();
+					if (st.running) draw();
 					st.raf = requestAnimationFrame(loop);
 				}
 
@@ -4717,18 +6371,23 @@
 					const lv = LEVELS[st.level];
 					st.running = true;
 					st.time = lv.time;
+					st.lives = 3;
 					st.combo = 1;
 					st.streak = 0;
-					st.walls = [];
 					st.orbs = [];
 					st.parts = [];
 					st.floats = [];
-					st.y = Hh / 2;
+					st.alt = 190;
 					st.vy = 0;
-					st.invuln = 0;
+					st.x = EX;
+					st.loudAvg = 0;
+					st.nudge = 0;
+					st.camOff = 0;
+					st.maxAlt = 190;
+					st.invuln = 2.5; /* masa aman di awal level */
 					st.shake = 0;
-					st.wallAt = performance.now() + 1200;
-					st.orbAt = performance.now() + 500;
+					st.warn = 0;
+					st.orbAt = performance.now() + 400;
 					st.lastT = performance.now();
 					hudLevel.textContent = st.level + 1 + "/3";
 					ovStart.classList.add("hidden");
@@ -4747,19 +6406,20 @@
 				}
 				function levelDone() {
 					st.running = false;
+					cancelAnimationFrame(st.raf);
 					const lv = LEVELS[st.level];
-					if (st.score >= lv.target) {
+					if (st.score >= lv.target && st.lives > 0) {
+						sfx.end();
 						if (st.level < LEVELS.length - 1) {
-							sfx.end();
 							document.getElementById("v-lv-title").textContent =
 								"LEVEL " + (st.level + 1) + " COMPLETE! 🎉";
+							document.getElementById("v-lv-sub").textContent =
+								"🏔️ Highest point: " + Math.round(st.maxAlt) + "m · score so far:";
 							document.getElementById("v-lv-score").textContent = st.score;
 							const next = LEVELS[st.level + 1];
 							document.getElementById("v-lv-next").textContent =
-								next.name +
-								" — target " +
-								next.target +
-								" points. Faster walls, narrower gaps!";
+								next.name + " — target " + next.target +
+								" points. Data flies past faster!";
 							ovLevel.classList.remove("hidden");
 						} else {
 							st.won = true;
@@ -4771,17 +6431,20 @@
 				}
 				function endGame() {
 					st.running = false;
+					cancelAnimationFrame(st.raf);
 					sfx.end();
 					document.getElementById("v-end-score").textContent = st.score;
 					const best = getBoard()[0];
 					document.getElementById("v-end-title").textContent = st.won
 						? "🏆 LOUDEST PILOT IN THE BOOTH!"
-						: "💥 Grounded at Level " + (st.level + 1);
+						: st.lives <= 0
+							? "💥 Crash landed at Level " + (st.level + 1)
+							: "⏰ Time's Up at Level " + (st.level + 1);
 					document.getElementById("v-end-sub").textContent = st.won
 						? !best || st.score > best.s
 							? "NEW BOOTH RECORD! Your final score:"
 							: "All three levels cleared! Your score:"
-						: "Target not reached. Your score:";
+						: "Highest point " + Math.round(st.maxAlt) + "m. Your score:";
 					renderBoard();
 					ovEnd.classList.remove("hidden");
 					document.getElementById("v-name-input").value = "";
@@ -4804,13 +6467,9 @@
 						? board
 								.map(
 									(r) =>
-										"<li><span>" +
-										r.n +
-										' <small style="color:var(--muted)">Lv' +
-										(r.lv || 1) +
-										"</small></span><span>" +
-										r.s +
-										"</span></li>",
+										"<li><span>" + r.n +
+										' <small style="color:var(--muted)">Lv' + (r.lv || 1) +
+										"</small></span><span>" + r.s + "</span></li>",
 								)
 								.join("")
 						: "<li><span>No scores yet—be the first!</span><span>—</span></li>";
@@ -4821,9 +6480,7 @@
 				document
 					.getElementById("lb-voice-title")
 					.addEventListener("dblclick", function () {
-						if (
-							confirm("Reset the ESI Sound Rocket leaderboard? (booth staff only)")
-						) {
+						if (confirm("Reset the ESI Sound Rocket leaderboard? (booth staff only)")) {
 							store.removeItem("esi_voice_board");
 							renderBoard();
 						}
@@ -4838,11 +6495,7 @@
 							.slice(0, 10)
 							.replace(/[<>&"]/g, "");
 						const board = getBoard();
-						board.push({
-							n: name,
-							s: st.score,
-							lv: st.won ? 3 : st.level + 1,
-						});
+						board.push({ n: name, s: st.score, lv: st.won ? 3 : st.level + 1 });
 						board.sort((a, b) => b.s - a.s);
 						store.setItem("esi_voice_board", JSON.stringify(board.slice(0, 5)));
 						renderBoard();
@@ -4865,6 +6518,1604 @@
 					});
 				renderBoard();
 				draw();
+			})();
+
+			/* ---------- 3b3. GAME POSE: ESI POSE PARTY (3 LEVEL) ---------- */
+			(function () {
+				const cv = document.getElementById("pose-canvas");
+				const ctx = cv.getContext("2d");
+				const W = cv.width,
+					Hh = cv.height;
+				const hudScore = document.getElementById("p-hud-score");
+				const hudPoses = document.getElementById("p-hud-poses");
+				const hudTime = document.getElementById("p-hud-time");
+				const hudLevel = document.getElementById("p-hud-level");
+				const hudMatch = document.getElementById("p-hud-match");
+				const ovStart = document.getElementById("p-ov-start");
+				const ovLevel = document.getElementById("p-ov-level");
+				const ovEnd = document.getElementById("p-ov-end");
+				const ctrlHint = document.getElementById("p-ctrl-hint");
+
+				const esiImg = new Image();
+				esiImg.src = "assets/esi.png";
+
+				/* Gaya ditulis sebagai sudut lengan (derajat, 0 = kanan, 90 = atas),
+				   "l" = sisi kiri layar. Semua bisa dilakukan sambil duduk/berdiri
+				   dan hanya butuh badan bagian atas. */
+				const POSES = [
+					{ n: "Touchdown!", e: "🙌", lu: 90, lf: 90, ru: 90, rf: 90,
+						tip: "Both wings straight up!" },
+					{ n: "Robo-Penguin", e: "🤖", lu: 180, lf: 180, ru: 0, rf: 0,
+						tip: "Arms straight out — beep boop." },
+					{ n: "Strong Penguin", e: "💪", lu: 180, lf: 90, ru: 0, rf: 90,
+						tip: "Elbows out, fists up." },
+					{ n: "Penguin Flap", e: "🐧", lu: 208, lf: 208, ru: 332, rf: 332,
+						tip: "Wings down and out — flap flap!" },
+					{ n: "Big Y", e: "🙆", lu: 135, lf: 135, ru: 45, rf: 45,
+						tip: "Make a giant letter Y." },
+					{ n: "Disco Fever", e: "🕺", lu: 225, lf: 225, ru: 45, rf: 45,
+						tip: "One wing up, one wing down." },
+					{ n: "Wing Salute", e: "🫡", lu: 270, lf: 270, ru: 90, rf: 90,
+						tip: "One arm straight up, one straight down." },
+					{ n: "Droopy Wings", e: "🥲", lu: 180, lf: 270, ru: 0, rf: 270,
+						tip: "Elbows out, hands hanging down." },
+					{ n: "Goal Post", e: "🥅", lu: 160, lf: 90, ru: 20, rf: 90,
+						tip: "Forearms straight up, like goal posts." },
+					{ n: "Fly Away", e: "🦅", lu: 160, lf: 120, ru: 20, rf: 60,
+						tip: "Wings out and gently lifted." },
+				];
+
+				const LEVELS = [
+					{ time: 45, need: 5, tol: 62, thresh: 0.62, hold: 0.4,
+						name: "Level 1 · Warm-Up Waddle 🥉" },
+					{ time: 45, need: 6, tol: 50, thresh: 0.70, hold: 0.5,
+						name: "Level 2 · Penguin Groove 🥈" },
+					{ time: 45, need: 7, tol: 42, thresh: 0.74, hold: 0.6,
+						name: "Level 3 · Ice Dance Finals ⛸️🥇" },
+				];
+
+				const CHEERS = [
+					"PERFECT! ESI is speechless 😲",
+					"Nailed it! 🎉",
+					"Look at those wings! 🐧",
+					"Certified penguin 🏅",
+					"Smooth! ❄️",
+				];
+
+				const st = {
+					running: false,
+					level: 0,
+					score: 0,
+					done: 0,
+					time: 45,
+					pose: null,
+					pool: [],
+					match: 0,
+					hold: 0,
+					parts: [],
+					floats: [],
+					cheer: "",
+					cheerT: 0,
+					lastT: 0,
+					raf: 0,
+					cam: false,
+					won: false,
+					wob: 0,
+				};
+
+				/* ---------- kamera ---------- */
+				const camBtn = document.getElementById("cam-pose");
+				const pipBox = document.getElementById("pip-pose");
+				const pipCv = document.getElementById("pip-pose-cv");
+				const pipTag = document.getElementById("pip-pose-tag");
+				const toast = document.getElementById("toast-pose");
+				const OWNER = { id: "pose", disable: () => disableCam(true) };
+				let pipRaf = 0;
+
+				function showToast(msg) {
+					if (!msg) {
+						toast.classList.add("hidden");
+						return;
+					}
+					toast.textContent = msg;
+					toast.classList.remove("hidden");
+					clearTimeout(toast._t);
+					toast._t = setTimeout(
+						() => toast.classList.add("hidden"),
+						msg.length > 90 ? 9000 : 6000,
+					);
+				}
+				function refreshHint() {
+					ctrlHint.innerHTML = st.cam
+						? "🕺 Copy the pose and <b>hold still</b> until the ring fills &nbsp;·&nbsp; upper body only"
+						: "🕺 Turn on the camera to play — upper body only, legs are not needed.";
+					pipTag.textContent = ESIPose.label();
+					pipTag.className =
+						"pip-tag " + (ESIPose.status === "ready" ? "ready" : ESIPose.status);
+				}
+				function pipLoop() {
+					ESIPose.paint(pipCv);
+					refreshHint();
+					if (!st.running) drawScene(true);
+					pipRaf = requestAnimationFrame(pipLoop);
+				}
+				async function enableCam() {
+					st.cam = true;
+					camBtn.classList.add("on");
+					pipBox.classList.remove("hidden");
+					cancelAnimationFrame(pipRaf);
+					pipLoop();
+					refreshHint();
+					showToast("Loading body tracking… please allow the camera 🕺");
+					const ok = await ESIPose.request(OWNER);
+					refreshHint();
+					if (!ok) {
+						showToast(ESIPose.msg);
+						disableCam();
+						return;
+					}
+					showToast("Ready! Step back so both arms fit in the picture 🐧");
+					if (!st.running) drawIdle();
+				}
+				function disableCam(silent) {
+					st.cam = false;
+					camBtn.classList.remove("on");
+					pipBox.classList.add("hidden");
+					cancelAnimationFrame(pipRaf);
+					pipRaf = 0;
+					ESIPose.release(OWNER);
+					refreshHint();
+					if (!silent) showToast("");
+				}
+				camBtn.addEventListener("click", function () {
+					if (st.cam) disableCam();
+					else enableCam();
+				});
+				refreshHint();
+
+				/* ---------- penilaian gaya ---------- */
+				function dAng(a, b) {
+					let d = Math.abs(((a - b) % 360) + 360) % 360;
+					if (d > 180) d = 360 - d;
+					return d;
+				}
+				function scoreAgainst(m, p, tol) {
+					const keys = ["lu", "lf", "ru", "rf"];
+					let sum = 0;
+					for (const k of keys)
+						sum += Math.max(0, 1 - dAng(m[k], p[k]) / tol);
+					return sum / keys.length;
+				}
+				/* gaya diterima juga kalau pemain mencerminkannya (kiri/kanan tertukar) */
+				function mirrored(p) {
+					const f = (a) => 180 - a;
+					return { lu: f(p.ru), lf: f(p.rf), ru: f(p.lu), rf: f(p.lf) };
+				}
+				function evaluate() {
+					const m = ESIPose.metrics();
+					if (!m) return -1;
+					const lv = LEVELS[st.level];
+					return Math.max(
+						scoreAgainst(m, st.pose, lv.tol),
+						scoreAgainst(m, mirrored(st.pose), lv.tol),
+					);
+				}
+
+				function nextPose() {
+					if (!st.pool.length) st.pool = POSES.slice().sort(() => Math.random() - 0.5);
+					const prev = st.pose;
+					let p = st.pool.pop();
+					if (prev && p.n === prev.n && st.pool.length) {
+						st.pool.unshift(p);
+						p = st.pool.pop();
+					}
+					st.pose = p;
+					st.hold = 0;
+					st.match = 0;
+				}
+
+				/* ---------- gambar boneka ESI kecil untuk contoh gaya ---------- */
+				function drawMiniEsi(c, cx, cy, R, p, wob) {
+					const rad = (d) => (-d * Math.PI) / 180;
+					const T = R * 0.3;
+					c.save();
+					c.translate(cx, cy);
+					c.rotate(Math.sin(wob) * 0.06);
+					/* badan */
+					c.fillStyle = "#1E3462";
+					c.beginPath();
+					c.ellipse(0, R * 0.42, R * 0.5, R * 0.62, 0, 0, 7);
+					c.fill();
+					c.fillStyle = "#fff";
+					c.beginPath();
+					c.ellipse(0, R * 0.5, R * 0.32, R * 0.45, 0, 0, 7);
+					c.fill();
+					/* lengan */
+					const sh = R * 0.42;
+					const sides = [
+						{ x: -sh, u: p.lu, f: p.lf },
+						{ x: sh, u: p.ru, f: p.rf },
+					];
+					c.strokeStyle = "#1E3462";
+					c.lineWidth = T;
+					c.lineCap = "round";
+					for (const sd of sides) {
+						const sx = sd.x,
+							sy = R * 0.05;
+						const ex = sx + Math.cos(rad(sd.u)) * R * 0.52,
+							ey = sy + Math.sin(rad(sd.u)) * R * 0.52;
+						const wx = ex + Math.cos(rad(sd.f)) * R * 0.48,
+							wy = ey + Math.sin(rad(sd.f)) * R * 0.48;
+						c.beginPath();
+						c.moveTo(sx, sy);
+						c.lineTo(ex, ey);
+						c.lineTo(wx, wy);
+						c.stroke();
+						c.fillStyle = "#F0762B";
+						c.beginPath();
+						c.arc(wx, wy, T * 0.62, 0, 7);
+						c.fill();
+					}
+					/* syal + kepala */
+					c.strokeStyle = "#F0762B";
+					c.lineWidth = T * 0.8;
+					c.beginPath();
+					c.moveTo(-sh * 0.8, -R * 0.08);
+					c.lineTo(sh * 0.8, -R * 0.08);
+					c.stroke();
+					if (esiImg.complete && esiImg.naturalWidth) {
+						const sw = esiImg.naturalWidth,
+							sh = esiImg.naturalHeight * 0.46;
+						const dw = R * 1.05,
+							dh = dw * (sh / sw);
+						c.drawImage(esiImg, 0, 0, sw, sh, -dw / 2, -R * 0.28 - dh, dw, dh);
+					}
+					c.restore();
+				}
+
+				function burst(x, y, color) {
+					for (let i = 0; i < 22; i++) {
+						const a = Math.random() * 6.28,
+							sp = 90 + Math.random() * 240;
+						st.parts.push({
+							x: x, y: y,
+							vx: Math.cos(a) * sp, vy: Math.sin(a) * sp,
+							life: 1, color: color,
+						});
+					}
+				}
+
+				/* ---------- update ---------- */
+				function update(dt) {
+					const lv = LEVELS[st.level];
+					st.wob += dt * 3;
+					const m = evaluate();
+					if (m < 0) {
+						st.match = Math.max(0, st.match - dt * 1.5);
+						st.hold = 0;
+					} else {
+						st.match += (m - st.match) * Math.min(1, dt * 9);
+						if (st.match >= lv.thresh) {
+							st.hold += dt;
+							if (st.hold >= lv.hold) scored();
+						} else {
+							st.hold = Math.max(0, st.hold - dt * 0.8);
+						}
+					}
+
+					for (let i = st.parts.length - 1; i >= 0; i--) {
+						const p = st.parts[i];
+						p.x += p.vx * dt;
+						p.y += p.vy * dt;
+						p.vy += 300 * dt;
+						p.life -= dt * 1.3;
+						if (p.life <= 0) st.parts.splice(i, 1);
+					}
+					for (let i = st.floats.length - 1; i >= 0; i--) {
+						const f = st.floats[i];
+						f.y -= 46 * dt;
+						f.life -= dt * 1.1;
+						if (f.life <= 0) st.floats.splice(i, 1);
+					}
+					if (st.cheerT > 0) st.cheerT -= dt;
+
+					st.time -= dt;
+					if (st.time <= 0) {
+						st.time = 0;
+						levelDone();
+						return;
+					}
+					hudScore.textContent = st.score;
+					hudTime.textContent = Math.ceil(st.time);
+					hudPoses.textContent = st.done + "/" + lv.need;
+					hudMatch.textContent = Math.round(Math.max(0, st.match) * 100) + "%";
+				}
+
+				function scored() {
+					const lv = LEVELS[st.level];
+					const acc = Math.min(1, st.match);
+					const pts = Math.round(40 + 70 * acc);
+					st.score += pts;
+					st.done++;
+					st.floats.push({
+						x: W / 2, y: Hh * 0.42,
+						txt: "+" + pts + "  (" + Math.round(acc * 100) + "%)",
+						color: "#0FA8A3", life: 1,
+					});
+					burst(W / 2, Hh * 0.45, acc > 0.9 ? "#E0A23B" : "#0FA8A3");
+					st.cheer =
+						acc > 0.9
+							? CHEERS[Math.floor(Math.random() * CHEERS.length)]
+							: "Good one! 👍";
+					st.cheerT = 1.4;
+					acc > 0.9 ? sfx.star() : sfx.good();
+					if (st.done >= lv.need) {
+						levelDone();
+						return;
+					}
+					nextPose();
+				}
+
+				/* ---------- gambar ---------- */
+				function drawScene(idle) {
+					ctx.save();
+					ctx.clearRect(0, 0, W, Hh);
+
+					const camOn = st.cam && ESIPose.active;
+					if (camOn) {
+						ESIHand.paintBackdrop(ctx, W, Hh, 0.92, 0.34);
+						ESIPose.drawCostume(ctx, W, Hh, esiImg);
+						/* rangka badan digambar di atas kostum: pemain langsung
+						   melihat bahwa pelacakannya bekerja */
+						ESIPose.drawWire(ctx, W, Hh, true);
+					} else {
+						ctx.textAlign = "center";
+						if (ESIPose.status === "error") {
+							ctx.fillStyle = "#8E2A6E";
+							ctx.font = '800 24px "Baloo 2", cursive';
+							ctx.fillText("😕 Body tracking could not start", W / 2, Hh / 2 - 34);
+							ctx.fillStyle = "rgba(21,34,70,.72)";
+							ctx.font = '600 15px "Nunito Sans", sans-serif';
+							wrapText(ESIPose.err || "unknown error", W / 2, Hh / 2 + 4, W * 0.7, 20);
+							ctx.fillStyle = "rgba(21,34,70,.55)";
+							ctx.font = '700 14px "Nunito Sans", sans-serif';
+							ctx.fillText(
+								"Tap 🕺 Body again to retry · needs internet the first time",
+								W / 2,
+								Hh / 2 + 62,
+							);
+						} else if (ESIPose.status === "starting") {
+							ctx.fillStyle = "rgba(21,34,70,.6)";
+							ctx.font = '700 24px "Baloo 2", cursive';
+							ctx.fillText("⏳ Downloading the body model…", W / 2, Hh / 2 - 12);
+							ctx.font = '600 15px "Nunito Sans", sans-serif';
+							ctx.fillText(
+								"About 6 MB — the first time can take a few seconds.",
+								W / 2,
+								Hh / 2 + 18,
+							);
+						} else {
+							ctx.fillStyle = "rgba(21,34,70,.5)";
+							ctx.font = '700 26px "Baloo 2", cursive';
+							ctx.fillText(
+								"🕺 Turn on the camera to join the party",
+								W / 2,
+								Hh / 2,
+							);
+						}
+					}
+
+					if (camOn && !ESIPose.seen) {
+						ctx.fillStyle = "rgba(21,34,70,.6)";
+						ctx.font = '700 24px "Baloo 2", cursive';
+						ctx.textAlign = "center";
+						ctx.fillText("🐧 Step back so ESI can see your arms", W / 2, Hh / 2);
+					}
+
+					if (idle || !st.pose) {
+						ctx.restore();
+						return;
+					}
+					const lv = LEVELS[st.level];
+
+					/* bar waktu */
+					const tw = (st.time / lv.time) * W;
+					const g = ctx.createLinearGradient(0, 0, W, 0);
+					g.addColorStop(0, "#5A4DA8");
+					g.addColorStop(0.55, "#A4468A");
+					g.addColorStop(1, "#F0762B");
+					ctx.fillStyle = g;
+					ctx.fillRect(0, 0, tw, 7);
+
+					ctx.fillStyle = "rgba(21,34,70,.5)";
+					ctx.font = '700 15px "Baloo 2", cursive';
+					ctx.textAlign = "center";
+					ctx.fillText(lv.name, W / 2, 30);
+
+					/* Kartu contoh gaya ditaruh di pojok KIRI. Panel kamera (PIP)
+					   selalu menempel di kanan atas, jadi kartu di kanan menutupinya. */
+					const cardW = 232,
+						cardH = 268,
+						cx = 18,
+						cy = 46;
+					ctx.fillStyle = "rgba(255,255,255,.82)";
+					roundRect(cx, cy, cardW, cardH, 20);
+					ctx.strokeStyle = "rgba(255,255,255,.95)";
+					ctx.lineWidth = 2;
+					ctx.stroke();
+					ctx.fillStyle = "#152246";
+					ctx.font = '800 21px "Baloo 2", cursive';
+					ctx.textAlign = "center";
+					ctx.fillText(st.pose.e + " " + st.pose.n, cx + cardW / 2, cy + 32);
+					drawMiniEsi(ctx, cx + cardW / 2, cy + 92, 74, st.pose, st.wob);
+					ctx.fillStyle = "rgba(21,34,70,.6)";
+					ctx.font = '600 13px "Nunito Sans", sans-serif';
+					wrapText(st.pose.tip, cx + cardW / 2, cy + 232, cardW - 26, 17);
+
+					/* cincin kemiripan tetap di kiri bawah, tepat di bawah kartu:
+					   semua panel dikumpulkan di sisi kiri supaya bagian tengah
+					   dan kanan bebas untuk gambar kamera */
+					const rx = 92,
+						ry = Hh - 96,
+						rr = 54;
+					ctx.beginPath();
+					ctx.arc(rx, ry, rr, 0, 7);
+					ctx.fillStyle = "rgba(255,255,255,.72)";
+					ctx.fill();
+					ctx.lineWidth = 11;
+					ctx.strokeStyle = "rgba(21,34,70,.12)";
+					ctx.beginPath();
+					ctx.arc(rx, ry, rr, 0, 7);
+					ctx.stroke();
+					const ok = st.match >= lv.thresh;
+					ctx.strokeStyle = ok ? "#0FA8A3" : "#A4468A";
+					ctx.beginPath();
+					ctx.arc(
+						rx, ry, rr, -1.5708,
+						-1.5708 + Math.max(0, Math.min(1, st.match)) * 6.283,
+					);
+					ctx.stroke();
+					if (ok) {
+						ctx.strokeStyle = "#F0762B";
+						ctx.lineWidth = 6;
+						ctx.beginPath();
+						ctx.arc(
+							rx, ry, rr + 12, -1.5708,
+							-1.5708 + (st.hold / lv.hold) * 6.283,
+						);
+						ctx.stroke();
+					}
+					ctx.fillStyle = "#152246";
+					ctx.font = '800 22px "Baloo 2", cursive';
+					ctx.textAlign = "center";
+					ctx.textBaseline = "middle";
+					ctx.fillText(
+						Math.round(Math.max(0, st.match) * 100) + "%",
+						rx, ry,
+					);
+					ctx.textBaseline = "alphabetic";
+					ctx.font = '700 13px "Nunito Sans", sans-serif';
+					ctx.fillStyle = "rgba(21,34,70,.6)";
+					ctx.fillText(ok ? "HOLD IT!" : "MATCH", rx, ry + rr + 24);
+
+					for (const p of st.parts) {
+						ctx.globalAlpha = Math.max(0, p.life);
+						ctx.fillStyle = p.color;
+						ctx.beginPath();
+						ctx.arc(p.x, p.y, 4 * p.life + 1, 0, 7);
+						ctx.fill();
+					}
+					ctx.globalAlpha = 1;
+					for (const f of st.floats) {
+						ctx.globalAlpha = Math.max(0, f.life);
+						ctx.fillStyle = f.color;
+						ctx.font = '700 26px "JetBrains Mono", monospace';
+						ctx.textAlign = "center";
+						ctx.fillText(f.txt, f.x, f.y);
+					}
+					ctx.globalAlpha = 1;
+					if (st.cheerT > 0) {
+						ctx.globalAlpha = Math.min(1, st.cheerT);
+						ctx.fillStyle = "#152246";
+						ctx.font = '800 30px "Baloo 2", cursive';
+						ctx.textAlign = "center";
+						ctx.fillText(st.cheer, W / 2, 78);
+						ctx.globalAlpha = 1;
+					}
+					ctx.restore();
+				}
+				function drawIdle() {
+					drawScene(true);
+				}
+				function wrapText(text, cx, y, maxW, lh) {
+					const words = text.split(" ");
+					let line = "",
+						lines = [];
+					for (const w2 of words) {
+						const t = line ? line + " " + w2 : w2;
+						if (ctx.measureText(t).width > maxW && line) {
+							lines.push(line);
+							line = w2;
+						} else line = t;
+					}
+					if (line) lines.push(line);
+					const start = y - (lines.length - 1) * lh;
+					lines.forEach((l, i) => ctx.fillText(l, cx, start + i * lh));
+				}
+				function roundRect(x, y, w, h, r) {
+					const rr = Math.min(r, w / 2, h / 2);
+					ctx.beginPath();
+					ctx.moveTo(x + rr, y);
+					ctx.arcTo(x + w, y, x + w, y + h, rr);
+					ctx.arcTo(x + w, y + h, x, y + h, rr);
+					ctx.arcTo(x, y + h, x, y, rr);
+					ctx.arcTo(x, y, x + w, y, rr);
+					ctx.closePath();
+					ctx.fill();
+				}
+
+				function loop(now) {
+					if (!st.running) return;
+					const dt = Math.min(0.05, (now - st.lastT) / 1000 || 0.016);
+					st.lastT = now;
+					update(dt);
+					drawScene(false);
+					st.raf = requestAnimationFrame(loop);
+				}
+
+				function beginLevel() {
+					const lv = LEVELS[st.level];
+					st.running = true;
+					st.time = lv.time;
+					st.done = 0;
+					st.pool = [];
+					st.parts = [];
+					st.floats = [];
+					st.match = 0;
+					st.hold = 0;
+					st.cheerT = 0;
+					st.lastT = performance.now();
+					nextPose();
+					hudLevel.textContent = st.level + 1 + "/3";
+					ovStart.classList.add("hidden");
+					ovLevel.classList.add("hidden");
+					ovEnd.classList.add("hidden");
+					beep(520, 0.08);
+					beep(780, 0.1);
+					cancelAnimationFrame(st.raf);
+					st.raf = requestAnimationFrame(loop);
+				}
+				async function startGame() {
+					if (!st.cam || !ESIPose.active) {
+						showToast("Turning on the camera first… 🕺");
+						await enableCam();
+						if (!ESIPose.active) return;
+					}
+					st.level = 0;
+					st.score = 0;
+					st.won = false;
+					beginLevel();
+				}
+				function levelDone() {
+					st.running = false;
+					cancelAnimationFrame(st.raf);
+					const lv = LEVELS[st.level];
+					if (st.done >= lv.need) {
+						const bonus = Math.ceil(st.time) * 4;
+						st.score += bonus;
+						sfx.end();
+						if (st.level < LEVELS.length - 1) {
+							document.getElementById("p-lv-title").textContent =
+								"LEVEL " + (st.level + 1) + " COMPLETE! 🎉";
+							document.getElementById("p-lv-sub").textContent =
+								"⏱️ Remaining-time bonus: +" + bonus + " points";
+							document.getElementById("p-lv-score").textContent = st.score;
+							const nx = LEVELS[st.level + 1];
+							document.getElementById("p-lv-next").textContent =
+								nx.name + " — " + nx.need + " poses, and ESI gets pickier!";
+							ovLevel.classList.remove("hidden");
+						} else {
+							st.won = true;
+							endGame();
+						}
+					} else {
+						endGame();
+					}
+				}
+				function endGame() {
+					st.running = false;
+					cancelAnimationFrame(st.raf);
+					sfx.end();
+					const best = getBoard()[0];
+					document.getElementById("p-end-title").textContent = st.won
+						? "🏆 DANCING PENGUIN CHAMPION!"
+						: "⏰ Time's Up at Level " + (st.level + 1);
+					document.getElementById("p-end-sub").textContent = st.won
+						? !best || st.score > best.s
+							? "NEW BOOTH RECORD! Your score:"
+							: "All three levels cleared! Your score:"
+						: "Not enough poses this time. Your score:";
+					document.getElementById("p-end-score").textContent = st.score;
+					renderBoard();
+					ovEnd.classList.remove("hidden");
+					document.getElementById("p-name-input").value = "";
+					const btn = document.getElementById("p-btn-save");
+					btn.disabled = false;
+					btn.textContent = "💾 Save Score";
+					document.getElementById("p-name-input").focus();
+				}
+
+				function getBoard() {
+					try {
+						return JSON.parse(store.getItem("esi_pose_board") || "[]");
+					} catch (e) {
+						return [];
+					}
+				}
+				function renderBoard() {
+					const board = getBoard();
+					const rows = board.length
+						? board
+								.map(
+									(r) =>
+										"<li><span>" + r.n +
+										' <small style="color:var(--muted)">Lv' + (r.lv || 1) +
+										"</small></span><span>" + r.s + "</span></li>",
+								)
+								.join("")
+						: "<li><span>No scores yet—be the first!</span><span>—</span></li>";
+					document.getElementById("p-board-list").innerHTML = rows;
+					const pub = document.getElementById("lb-pose-list");
+					if (pub) pub.innerHTML = rows;
+				}
+				document
+					.getElementById("lb-pose-title")
+					.addEventListener("dblclick", function () {
+						if (confirm("Reset the ESI Pose Party leaderboard? (booth staff only)")) {
+							store.removeItem("esi_pose_board");
+							renderBoard();
+						}
+					});
+				document
+					.getElementById("p-btn-save")
+					.addEventListener("click", function () {
+						const name = (
+							document.getElementById("p-name-input").value.trim() || "ANON"
+						)
+							.toUpperCase()
+							.slice(0, 10)
+							.replace(/[<>&"]/g, "");
+						const board = getBoard();
+						board.push({ n: name, s: st.score, lv: st.won ? 3 : st.level + 1 });
+						board.sort((a, b) => b.s - a.s);
+						store.setItem("esi_pose_board", JSON.stringify(board.slice(0, 5)));
+						renderBoard();
+						this.disabled = true;
+						this.textContent = "✅ Saved!";
+						beep(700, 0.1);
+						beep(1050, 0.12);
+					});
+				document
+					.getElementById("p-btn-start")
+					.addEventListener("click", startGame);
+				document
+					.getElementById("p-btn-retry")
+					.addEventListener("click", startGame);
+				document
+					.getElementById("p-btn-next")
+					.addEventListener("click", function () {
+						st.level++;
+						beginLevel();
+					});
+				renderBoard();
+				drawIdle();
+			})();
+
+			/* ---------- 3b4. ESI PHOTO BOOTH ----------
+			   Tiga jepretan, tiga gaya konyol, satu strip foto yang bisa disimpan.
+			   Properti ESI (kacamata VR + syal) ditempelkan lewat pelacakan pose,
+			   tapi kalau pelacakan tidak tersedia, foto tetap jalan dengan bingkai
+			   dan stiker saja — booth tidak boleh bergantung pada satu fitur.
+			   ------------------------------------------------------------------ */
+			(function () {
+				const cv = document.getElementById("photo-canvas");
+				if (!cv) return;
+				const ctx = cv.getContext("2d");
+				const W = cv.width,
+					Hh = cv.height;
+				const ovStart = document.getElementById("ph-ov-start");
+				const ovDone = document.getElementById("ph-ov-done");
+				const hudShot = document.getElementById("ph-hud-shot");
+				const hudPose = document.getElementById("ph-hud-pose");
+				const hintEl = document.getElementById("ph-hint");
+				const stripImg = document.getElementById("ph-strip");
+				const toast = document.getElementById("toast-photo");
+
+				const esiImg = new Image();
+				esiImg.src = "assets/esi.png";
+				const logoImg = new Image();
+				logoImg.src = "assets/si-horizontal.png";
+				const uphImg = new Image();
+				uphImg.src = "assets/uph-faidas.png";
+
+				/* gaya konyol yang diminta ESI — cukup teks, tidak dinilai,
+				   supaya siapa pun langsung bisa ikut tanpa takut salah */
+				/* Gaya dipilih yang gampang ditiru RAMAI-RAMAI — kalau terlalu
+				   rumit, satu orang bengong dan fotonya jadi berantakan. */
+				const POSES = [
+					{ e: "✌️", n: "Peace!", t: "Two fingers up — everyone!" },
+					{ e: "🙌", n: "Hands up!", t: "All hands in the air" },
+					{ e: "🫶", n: "Heart hands", t: "Make a heart together" },
+					{ e: "👍", n: "Thumbs up", t: "Two thumbs, big smile" },
+					{ e: "🤗", n: "Squeeze in", t: "Lean in close, group hug!" },
+					{ e: "😜", n: "Silly face", t: "Your funniest face — go!" },
+					{ e: "👉", n: "Point at us", t: "Everyone point at the camera" },
+					{ e: "💪", n: "Strong squad", t: "Flex those muscles" },
+					{ e: "🐧", n: "Penguin flap", t: "Arms down, flap like ESI" },
+					{ e: "🦘", n: "Jump!", t: "Everyone jump on 3!" },
+					{ e: "😎", n: "Too cool", t: "Arms folded, look away" },
+					{ e: "🤳", n: "Say ESI!", t: "Lean in and grin" },
+				];
+
+				const LAYOUTS = [
+					{ k: "strip", n: "🎞️ Strip (3 photos)", shots: 3 },
+					{ k: "group", n: "🖼️ Group (1 big photo)", shots: 1 },
+				];
+				let layout = LAYOUTS[0];
+
+				const EFFECTS = [
+					{ k: "trail", n: "🌀 Motion trail", on: true },
+					{ k: "sparkle", n: "✨ Sparkles", on: true },
+					{ k: "confetti", n: "🎉 Confetti", on: false },
+				];
+				const fx = { trail: true, sparkle: true, confetti: false };
+
+				const THEMES = [
+					{ k: "classic", n: "🎞️ Classic", bg: "#152246", ink: "#ffffff", accent: "#F0762B" },
+					{ k: "sunset", n: "🌇 Sunset", bg: "#7A2E63", ink: "#ffffff", accent: "#FFD97A" },
+					{ k: "ice", n: "❄️ Ice", bg: "#DCEBF7", ink: "#152246", accent: "#0FA8A3" },
+					{ k: "neon", n: "🌌 Neon", bg: "#1B1040", ink: "#ffffff", accent: "#0FA8A3" },
+				];
+				let theme = THEMES[0];
+
+				const st = {
+					cam: false,
+					props: true,
+					running: false,
+					shot: 0,
+					pose: POSES[0],
+					count: 0,
+					flash: 0,
+					shots: [],
+					raf: 0,
+					strip: null,
+					sparks: [],
+					confs: [],
+				};
+
+				/* penampung jejak gerak — dipakai untuk efek "velocity" */
+				const trailCv = document.createElement("canvas");
+				trailCv.width = 640;
+				trailCv.height = 360;
+				const trailCtx = trailCv.getContext("2d");
+				let trailReady = false;
+
+				/* ---------- kamera ---------- */
+				const camBtn = document.getElementById("cam-photo");
+				const propsBtn = document.getElementById("props-photo");
+				const OWNER = { id: "photo", disable: () => disableCam(true) };
+
+				function showToast(msg) {
+					if (!msg) {
+						toast.classList.add("hidden");
+						return;
+					}
+					toast.textContent = msg;
+					toast.classList.remove("hidden");
+					clearTimeout(toast._t);
+					toast._t = setTimeout(
+						() => toast.classList.add("hidden"),
+						msg.length > 90 ? 9000 : 5500,
+					);
+				}
+				/* Kamera dinyalakan LEBIH DULU, properti menyusul di latar belakang.
+				   Model pelacakan badan besarnya sekitar 6 MB; kalau ditunggu dulu,
+				   pengunjung menatap layar kosong beberapa detik dan mengira rusak. */
+				async function enableCam() {
+					st.cam = true;
+					camBtn.classList.add("on");
+					showToast("Starting the camera… please allow access 📷");
+					let ok = false;
+					try {
+						await ESICamera.open(OWNER);
+						ok = true;
+					} catch (e) {
+						ok = false;
+					}
+					if (!ok) {
+						showToast(
+							"The camera could not start. Make sure the page runs over https:// or localhost and no other app is using it.",
+						);
+						disableCam();
+						return;
+					}
+					hintEl.innerHTML =
+						"✅ Camera ready — press <b>Start Photo Session</b> and strike a pose!";
+					showToast("");
+					loop();
+					if (st.props) loadProps(true);
+				}
+
+				/* properti ESI dimuat terpisah supaya kegagalannya tidak
+				   ikut mematikan kamera */
+				async function loadProps(quiet) {
+					if (!st.cam || ESIPose.status === "ready") return;
+					if (!quiet) showToast("Loading ESI's goggles… 🥽");
+					const ok = await ESIPose.request(OWNER);
+					if (!st.cam) return;
+					if (ok) {
+						showToast("ESI's goggles and scarf are on! 🥽🧣");
+						return;
+					}
+					st.props = false;
+					propsBtn.classList.remove("on");
+					showToast(
+						"Body tracking is unavailable, so ESI's goggles are off — but the photos still work! 📸",
+					);
+					/* ESIPose menutup kamera saat gagal; nyalakan lagi untuk pratinjau */
+					try {
+						await ESICamera.open(OWNER);
+						loop();
+					} catch (e) {}
+				}
+				function disableCam(silent) {
+					st.cam = false;
+					st.running = false;
+					camBtn.classList.remove("on");
+					cancelAnimationFrame(st.raf);
+					st.raf = 0;
+					ESIPose.release(OWNER);
+					ESICamera.close(OWNER);
+					hintEl.innerHTML =
+						"📷 Turn on the camera first · grab a friend, it is more fun with two!";
+					if (!silent) showToast("");
+					idle();
+				}
+				camBtn.addEventListener("click", function () {
+					if (st.cam) disableCam();
+					else enableCam();
+				});
+				propsBtn.classList.add("on");
+				propsBtn.addEventListener("click", function () {
+					st.props = !st.props;
+					propsBtn.classList.toggle("on", st.props);
+					if (st.cam && st.props) loadProps(false);
+				});
+
+				/* pilihan tata letak */
+				const layoutRow = document.getElementById("ph-layouts");
+				LAYOUTS.forEach(function (l) {
+					const b = document.createElement("button");
+					b.type = "button";
+					b.textContent = l.n;
+					b.className = l.k === layout.k ? "on" : "";
+					b.addEventListener("click", function () {
+						layout = l;
+						Array.from(layoutRow.children).forEach((c) =>
+							c.classList.remove("on"),
+						);
+						b.classList.add("on");
+					});
+					layoutRow.appendChild(b);
+				});
+
+				/* pilihan efek */
+				const fxRow = document.getElementById("ph-effects");
+				EFFECTS.forEach(function (f) {
+					const b = document.createElement("button");
+					b.type = "button";
+					b.textContent = f.n;
+					b.className = fx[f.k] ? "on" : "";
+					b.addEventListener("click", function () {
+						fx[f.k] = !fx[f.k];
+						b.classList.toggle("on", fx[f.k]);
+						if (f.k === "trail") trailReady = false;
+					});
+					fxRow.appendChild(b);
+				});
+
+				/* pilihan tema bingkai */
+				const themeRow = document.getElementById("ph-themes");
+				THEMES.forEach(function (t) {
+					const b = document.createElement("button");
+					b.type = "button";
+					b.textContent = t.n;
+					b.className = t.k === theme.k ? "on" : "";
+					b.addEventListener("click", function () {
+						theme = t;
+						Array.from(themeRow.children).forEach((c) =>
+							c.classList.remove("on"),
+						);
+						b.classList.add("on");
+					});
+					themeRow.appendChild(b);
+				});
+
+				/* ---------- musik kecil ---------- */
+				function tick(n) {
+					beep(520 + n * 90, 0.09, "triangle", 0.16);
+				}
+				function shutter() {
+					beep(1400, 0.04, "square", 0.16);
+					setTimeout(() => beep(700, 0.06, "square", 0.12), 45);
+				}
+				function jingle() {
+					const notes = [523, 659, 784, 1047, 784, 1047, 1319];
+					notes.forEach((f, i) =>
+						setTimeout(() => beep(f, 0.13, "triangle", 0.15), i * 130),
+					);
+				}
+
+				/* ---------- properti ESI di badan ---------- */
+				function props(c, w, h) {
+					if (!st.props || ESIPose.status !== "ready" || !ESIPose.seen) return;
+					const lm = ESIPose.lm;
+					if (!lm) return;
+					const V = (i) =>
+						lm[i] && (lm[i].visibility === undefined ? 1 : lm[i].visibility);
+					const M = (i) => ESICamera.map(lm[i].x, lm[i].y, w, h);
+					if (V(11) < 0.4 || V(12) < 0.4) return;
+					const ls = M(11),
+						rs = M(12);
+					const shW = Math.hypot(ls.x - rs.x, ls.y - rs.y) || 90;
+
+					/* syal oranye di leher */
+					c.save();
+					c.strokeStyle = "#F0762B";
+					c.lineWidth = shW * 0.22;
+					c.lineCap = "round";
+					c.beginPath();
+					c.moveTo(ls.x * 0.82 + rs.x * 0.18, ls.y * 0.82 + rs.y * 0.18);
+					c.lineTo(rs.x * 0.82 + ls.x * 0.18, rs.y * 0.82 + ls.y * 0.18);
+					c.stroke();
+					c.restore();
+
+					/* kacamata VR khas ESI di mata */
+					if (V(7) > 0.35 && V(8) > 0.35) {
+						const le = M(7),
+							re = M(8);
+						const cx = (le.x + re.x) / 2,
+							cy = (le.y + re.y) / 2;
+						const ew = Math.hypot(le.x - re.x, le.y - re.y) || shW * 0.5;
+						const ang = Math.atan2(le.y - re.y, le.x - re.x);
+						const gw = ew * 1.16,
+							gh = ew * 0.52;
+						c.save();
+						c.translate(cx, cy);
+						c.rotate(ang);
+						c.fillStyle = "#2B3350";
+						roundOn(c, -gw / 2, -gh / 2, gw, gh, gh * 0.42);
+						c.fillStyle = "#5CE1E6";
+						const lr = gh * 0.3;
+						c.beginPath();
+						c.arc(-gw * 0.22, 0, lr, 0, 7);
+						c.arc(gw * 0.22, 0, lr, 0, 7);
+						c.fill();
+						c.fillStyle = "#3FCB6A";
+						c.beginPath();
+						c.arc(gw * 0.44, -gh * 0.1, gh * 0.09, 0, 7);
+						c.fill();
+						c.restore();
+					}
+
+					/* sirip oranye di pergelangan tangan */
+					c.fillStyle = "#F0762B";
+					for (const i of [15, 16]) {
+						if (V(i) < 0.45) continue;
+						const p = M(i);
+						c.beginPath();
+						c.arc(p.x, p.y, shW * 0.13, 0, 7);
+						c.fill();
+					}
+				}
+				function roundOn(c, x, y, w, h, r) {
+					const rr = Math.min(r, w / 2, h / 2);
+					c.beginPath();
+					c.moveTo(x + rr, y);
+					c.arcTo(x + w, y, x + w, y + h, rr);
+					c.arcTo(x + w, y + h, x, y + h, rr);
+					c.arcTo(x, y + h, x, y, rr);
+					c.arcTo(x, y, x + w, y, rr);
+					c.closePath();
+					c.fill();
+				}
+
+				/* ---------- efek ----------
+				   Semuanya digambar penuh satu layar (bukan menempel di badan),
+				   supaya tetap bekerja untuk foto rame-rame berapa pun orangnya. */
+				function stepEffects(dt) {
+					if (fx.trail) {
+						/* rata-rata bergerak dari beberapa frame terakhir: bagian yang
+						   diam tetap tajam, bagian yang bergerak meninggalkan bayangan */
+						if (!trailReady) {
+							trailCtx.clearRect(0, 0, trailCv.width, trailCv.height);
+							trailReady = true;
+						}
+						trailCtx.globalAlpha = 0.3;
+						ESIHand.paintBackdrop(trailCtx, trailCv.width, trailCv.height, 1, 0);
+						trailCtx.globalAlpha = 1;
+					}
+					if (fx.sparkle) {
+						while (st.sparks.length < 26)
+							st.sparks.push({
+								x: Math.random(),
+								y: Math.random(),
+								r: 0.004 + Math.random() * 0.008,
+								p: Math.random() * 6.28,
+								sp: 1.6 + Math.random() * 2.4,
+							});
+						for (const p of st.sparks) {
+							p.p += dt * p.sp;
+							if (p.p > 6.28) {
+								p.p = 0;
+								p.x = Math.random();
+								p.y = Math.random();
+							}
+						}
+					} else st.sparks.length = 0;
+					if (fx.confetti) {
+						while (st.confs.length < 40)
+							st.confs.push({
+								x: Math.random(),
+								y: Math.random() * -0.4,
+								vy: 0.1 + Math.random() * 0.22,
+								vx: (Math.random() - 0.5) * 0.06,
+								w: 0.008 + Math.random() * 0.012,
+								h: 0.014 + Math.random() * 0.018,
+								rot: Math.random() * 6.28,
+								vr: (Math.random() - 0.5) * 5,
+								c: ["#F0762B", "#0FA8A3", "#A4468A", "#4A3F8F", "#FFD97A"][
+									Math.floor(Math.random() * 5)
+								],
+							});
+						for (const p of st.confs) {
+							p.y += p.vy * dt;
+							p.x += p.vx * dt;
+							p.rot += p.vr * dt;
+							if (p.y > 1.15) {
+								p.y = -0.1;
+								p.x = Math.random();
+							}
+						}
+					} else st.confs.length = 0;
+				}
+				function drawEffects(c, w, h) {
+					if (fx.sparkle)
+						for (const p of st.sparks) {
+							const a = Math.abs(Math.sin(p.p));
+							if (a < 0.05) continue;
+							const R = p.r * w * (0.6 + a);
+							c.save();
+							c.globalAlpha = a * 0.9;
+							c.translate(p.x * w, p.y * h);
+							c.fillStyle = "#fff";
+							c.beginPath();
+							for (let i = 0; i < 4; i++) {
+								const ang = (i * Math.PI) / 2;
+								c.lineTo(Math.cos(ang) * R * 3, Math.sin(ang) * R * 3);
+								c.lineTo(
+									Math.cos(ang + Math.PI / 4) * R,
+									Math.sin(ang + Math.PI / 4) * R,
+								);
+							}
+							c.closePath();
+							c.fill();
+							c.restore();
+						}
+					if (fx.confetti)
+						for (const p of st.confs) {
+							c.save();
+							c.translate(p.x * w, p.y * h);
+							c.rotate(p.rot);
+							c.fillStyle = p.c;
+							c.fillRect(-p.w * w * 0.5, -p.h * h * 0.5, p.w * w, p.h * h);
+							c.restore();
+						}
+					c.globalAlpha = 1;
+				}
+
+				/* ---------- gambar satu bingkai ---------- */
+				function paintScene(c, w, h, forPhoto) {
+					c.save();
+					c.clearRect(0, 0, w, h);
+					const drew = ESIHand.paintBackdrop(c, w, h, 1, 0);
+					if (!drew) {
+						c.fillStyle = "#0e1730";
+						c.fillRect(0, 0, w, h);
+						c.fillStyle = "rgba(255,255,255,.6)";
+						c.font = '700 ' + Math.round(w / 34) + 'px "Baloo 2", cursive';
+						c.textAlign = "center";
+						c.fillText("📷 Turn on the camera", w / 2, h / 2);
+						c.restore();
+						return;
+					}
+					/* bayangan gerak digambar di atas gambar utama: yang diam tak
+					   berubah, yang bergerak meninggalkan jejak — efek "velocity" */
+					if (fx.trail && trailReady) {
+						c.save();
+						c.globalAlpha = 0.45;
+						c.drawImage(trailCv, 0, 0, w, h);
+						c.restore();
+					}
+					props(c, w, h);
+					drawEffects(c, w, h);
+
+					/* sudut membulat + garis tepi tipis, biar terasa seperti foto */
+					c.strokeStyle = "rgba(255,255,255,.7)";
+					c.lineWidth = Math.max(3, w / 240);
+					c.strokeRect(
+						c.lineWidth / 2,
+						c.lineWidth / 2,
+						w - c.lineWidth,
+						h - c.lineWidth,
+					);
+
+					/* ESI mengintip dari pojok kanan bawah */
+					if (esiImg.complete && esiImg.naturalWidth) {
+						const ew = w * 0.15,
+							eh = ew * (esiImg.naturalHeight / esiImg.naturalWidth);
+						c.drawImage(esiImg, w - ew - w * 0.02, h - eh * 0.78, ew, eh);
+					}
+					c.restore();
+				}
+
+				/* ---------- pratinjau langsung ---------- */
+				let lastFxT = 0;
+				function loop() {
+					cancelAnimationFrame(st.raf);
+					st.raf = requestAnimationFrame(function step(now) {
+						const dt = Math.min(0.05, (now - lastFxT) / 1000 || 0.016);
+						lastFxT = now;
+						stepEffects(dt);
+						paintScene(ctx, W, Hh, false);
+
+						if (st.running) {
+							/* papan gaya */
+							ctx.save();
+							ctx.fillStyle = "rgba(21,34,70,.66)";
+							roundOn(ctx, W / 2 - 235, 18, 470, 62, 18);
+							ctx.fillStyle = "#fff";
+							ctx.font = '800 26px "Baloo 2", cursive';
+							ctx.textAlign = "center";
+							ctx.fillText(
+								st.pose.e + "  " + st.pose.n,
+								W / 2,
+								46,
+							);
+							ctx.font = '600 14px "Nunito Sans", sans-serif';
+							ctx.fillStyle = "rgba(255,255,255,.82)";
+							ctx.fillText(st.pose.t, W / 2, 68);
+							ctx.restore();
+
+							/* hitungan mundur */
+							if (st.count > 0) {
+								ctx.save();
+								ctx.textAlign = "center";
+								ctx.textBaseline = "middle";
+								const scale = 1 + (1 - (st.count % 1)) * 0.25;
+								ctx.translate(W / 2, Hh / 2);
+								ctx.scale(scale, scale);
+								ctx.font = '800 150px "Baloo 2", cursive';
+								ctx.lineWidth = 12;
+								ctx.strokeStyle = "rgba(21,34,70,.55)";
+								ctx.strokeText(String(Math.ceil(st.count)), 0, 0);
+								ctx.fillStyle = "#fff";
+								ctx.fillText(String(Math.ceil(st.count)), 0, 0);
+								ctx.restore();
+								ctx.textBaseline = "alphabetic";
+							}
+
+							/* nomor jepretan */
+							ctx.fillStyle = "rgba(255,255,255,.9)";
+							ctx.font = '800 20px "Baloo 2", cursive';
+							ctx.textAlign = "left";
+							ctx.fillText(
+								"📸 " + (st.shot + 1) + " / " + layout.shots,
+								22,
+								Hh - 24,
+							);
+						}
+
+						/* kilat blitz */
+						if (st.flash > 0) {
+							ctx.fillStyle = "rgba(255,255,255," + st.flash + ")";
+							ctx.fillRect(0, 0, W, Hh);
+							st.flash -= 0.06;
+						}
+						st.raf = requestAnimationFrame(step);
+					});
+				}
+				function idle() {
+					cancelAnimationFrame(st.raf);
+					paintScene(ctx, W, Hh, false);
+				}
+
+				/* ---------- ambil satu foto ---------- */
+				function capture() {
+					const c2 = document.createElement("canvas");
+					c2.width = 1280;
+					c2.height = 720;
+					paintScene(c2.getContext("2d"), c2.width, c2.height, true);
+					return { canvas: c2, pose: st.pose };
+				}
+
+				const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+				async function session() {
+					if (!st.cam) {
+						showToast("Turn on the camera first 📷");
+						await enableCam();
+						if (!st.cam) return;
+						await sleep(600);
+					}
+					ovStart.classList.add("hidden");
+					ovDone.classList.add("hidden");
+					st.running = true;
+					st.shots = [];
+					loop();
+
+					const N = layout.shots;
+					const pool = POSES.slice().sort(() => Math.random() - 0.5);
+					for (let i = 0; i < N; i++) {
+						st.shot = i;
+						st.pose = pool[i];
+						hudShot.textContent = i + 1 + "/" + N;
+						hudPose.textContent = st.pose.e + " " + st.pose.n;
+						/* waktu untuk membaca gayanya dulu */
+						st.count = 0;
+						await sleep(1500);
+						for (let n = 3; n >= 1; n--) {
+							st.count = n;
+							tick(4 - n);
+							await sleep(900);
+						}
+						st.count = 0;
+						shutter();
+						st.flash = 1;
+						st.shots.push(capture());
+						await sleep(700);
+					}
+					st.running = false;
+					hudShot.textContent = N + "/" + N;
+					hudPose.textContent = "✨";
+					jingle();
+					buildStrip();
+				}
+
+				/* ---------- susun hasil foto: BINGKAI POLAROID ----------
+				   Bingkai putih tebal dengan bagian bawah lebih lebar untuk
+				   keterangan — persis polaroid. Tiap kartu dimiringkan sedikit
+				   dan diberi bayangan supaya terasa seperti foto sungguhan yang
+				   ditempel, bukan gambar yang ditumpuk lurus. */
+				const POLA = {
+					pad: 24 /* tepi kiri/kanan/atas */,
+					chin: 92 /* tepi bawah tempat keterangan */,
+				};
+
+				function polaroid(g, shot, x, y, pw, ph, tilt, caption, note) {
+					const cw = pw + POLA.pad * 2,
+						ch = ph + POLA.pad + POLA.chin;
+					g.save();
+					g.translate(x + cw / 2, y + ch / 2);
+					g.rotate((tilt * Math.PI) / 180);
+					g.translate(-cw / 2, -ch / 2);
+
+					/* bayangan lembut di bawah kartu */
+					g.save();
+					g.shadowColor = "rgba(10,18,40,.38)";
+					g.shadowBlur = 26;
+					g.shadowOffsetY = 10;
+					g.fillStyle = "#FFFDF8";
+					roundOn(g, 0, 0, cw, ch, 6);
+					g.restore();
+
+					/* jendela foto */
+					g.save();
+					g.fillStyle = "#0e1730";
+					g.fillRect(POLA.pad, POLA.pad, pw, ph);
+					if (shot) g.drawImage(shot.canvas, POLA.pad, POLA.pad, pw, ph);
+					g.restore();
+					/* garis dalam tipis biar fotonya "masuk" ke bingkai */
+					g.strokeStyle = "rgba(21,34,70,.16)";
+					g.lineWidth = 2;
+					g.strokeRect(POLA.pad, POLA.pad, pw, ph);
+
+					/* keterangan di dagu polaroid */
+					if (caption) {
+						g.fillStyle = "#2A3355";
+						g.textAlign = "center";
+						g.font =
+							'700 ' + Math.round(POLA.chin * 0.38) + 'px "Baloo 2", cursive';
+						g.fillText(caption, cw / 2, POLA.pad + ph + POLA.chin * 0.58);
+					}
+					if (note) {
+						g.fillStyle = "rgba(21,34,70,.4)";
+						g.textAlign = "right";
+						g.font =
+							'700 ' +
+							Math.round(POLA.chin * 0.2) +
+							'px "JetBrains Mono", monospace';
+						g.fillText(note, cw - POLA.pad, POLA.pad + ph + POLA.chin * 0.9);
+					}
+					g.restore();
+					return ch;
+				}
+
+				function stripHeader(g, w, y) {
+					g.textAlign = "center";
+					g.fillStyle = theme.ink;
+					g.font = '800 38px "Baloo 2", cursive';
+					g.fillText("ESI PHOTO BOOTH", w / 2, y + 40);
+					g.globalAlpha = 0.78;
+					g.font = '700 16px "Nunito Sans", sans-serif';
+					g.fillText(
+						"Information Systems · FAIDAS · Universitas Pelita Harapan",
+						w / 2,
+						y + 66,
+					);
+					g.globalAlpha = 1;
+				}
+				function stripFooter(g, w, y) {
+					g.textAlign = "center";
+					g.fillStyle = theme.accent;
+					g.font = '800 27px "Baloo 2", cursive';
+					g.fillText("@sisteminformasi.uph", w / 2, y + 34);
+					g.fillStyle = theme.ink;
+					g.globalAlpha = 0.68;
+					g.font = '600 16px "Nunito Sans", sans-serif';
+					g.fillText(
+						new Date().toLocaleDateString() + "  ·  #ESIPhotoBooth  ·  🐧",
+						w / 2,
+						y + 60,
+					);
+					g.globalAlpha = 1;
+					if (logoImg.complete && logoImg.naturalWidth) {
+						const lw = 150,
+							lh = lw * (logoImg.naturalHeight / logoImg.naturalWidth);
+						g.globalAlpha = 0.95;
+						g.drawImage(logoImg, w / 2 - lw / 2, y + 74, lw, lh);
+						g.globalAlpha = 1;
+					}
+				}
+				function finish(c) {
+					try {
+						st.strip = c;
+						const url = c.toDataURL("image/png");
+						stripImg.src = url;
+						const link = document.getElementById("ph-strip-link");
+						if (link) link.href = url;
+						ovDone.classList.remove("hidden");
+					} catch (e) {
+						showToast(
+							"The photo could not be exported. Open the page through http://localhost (XAMPP) instead of double-clicking the file.",
+						);
+					}
+				}
+
+				/* strip tegak berisi tiga polaroid */
+				function buildStrip() {
+					if (layout.k === "group") return buildGroup();
+					const PW = 600,
+						PH = Math.round((PW * 9) / 16),
+						CW = PW + POLA.pad * 2,
+						CH = PH + POLA.pad + POLA.chin,
+						SIDE = 46,
+						GAP = 20,
+						HEAD = 96,
+						FOOT = 140;
+					const c = document.createElement("canvas");
+					c.width = CW + SIDE * 2;
+					c.height = HEAD + CH * 3 + GAP * 2 + FOOT;
+					const g = c.getContext("2d");
+
+					const bg = g.createLinearGradient(0, 0, 0, c.height);
+					bg.addColorStop(0, theme.bg);
+					bg.addColorStop(1, shade(theme.bg));
+					g.fillStyle = bg;
+					g.fillRect(0, 0, c.width, c.height);
+					const bar = g.createLinearGradient(0, 0, c.width, 0);
+					bar.addColorStop(0, "#4A3F8F");
+					bar.addColorStop(0.55, "#A4468A");
+					bar.addColorStop(1, "#F0762B");
+					g.fillStyle = bar;
+					g.fillRect(0, 0, c.width, 10);
+
+					stripHeader(g, c.width, 18);
+
+					const tilts = [-1.5, 1.1, -0.7];
+					for (let i = 0; i < 3; i++) {
+						polaroid(
+							g,
+							st.shots[i],
+							SIDE,
+							HEAD + i * (CH + GAP),
+							PW,
+							PH,
+							tilts[i],
+							st.shots[i]
+								? st.shots[i].pose.e + " " + st.shots[i].pose.n
+								: "",
+							i + 1 + "/3",
+						);
+					}
+					stripFooter(g, c.width, HEAD + CH * 3 + GAP * 2 + 6);
+					finish(c);
+				}
+
+				/* satu polaroid besar mendatar — pas untuk foto rame-rame */
+				function buildGroup() {
+					const PW = 1100,
+						PH = Math.round((PW * 9) / 16),
+						CW = PW + POLA.pad * 2,
+						CH = PH + POLA.pad + POLA.chin,
+						SIDE = 50,
+						HEAD = 96,
+						FOOT = 140;
+					const c = document.createElement("canvas");
+					c.width = CW + SIDE * 2;
+					c.height = HEAD + CH + FOOT;
+					const g = c.getContext("2d");
+
+					const bg = g.createLinearGradient(0, 0, 0, c.height);
+					bg.addColorStop(0, theme.bg);
+					bg.addColorStop(1, shade(theme.bg));
+					g.fillStyle = bg;
+					g.fillRect(0, 0, c.width, c.height);
+					const bar = g.createLinearGradient(0, 0, c.width, 0);
+					bar.addColorStop(0, "#4A3F8F");
+					bar.addColorStop(0.55, "#A4468A");
+					bar.addColorStop(1, "#F0762B");
+					g.fillStyle = bar;
+					g.fillRect(0, 0, c.width, 10);
+
+					stripHeader(g, c.width, 18);
+					const shot = st.shots[0];
+					polaroid(
+						g,
+						shot,
+						SIDE,
+						HEAD,
+						PW,
+						PH,
+						-0.8,
+						shot ? shot.pose.e + " " + shot.pose.n : "",
+					);
+					stripFooter(g, c.width, HEAD + CH + 6);
+					finish(c);
+				}
+
+				/* warna dasar sedikit digelapkan untuk gradien latar strip */
+				function shade(hex) {
+					const m = /^#([0-9a-f]{6})$/i.exec(hex);
+					if (!m) return hex;
+					const v = parseInt(m[1], 16);
+					const f = 0.78;
+					const r = Math.round(((v >> 16) & 255) * f),
+						gg = Math.round(((v >> 8) & 255) * f),
+						b = Math.round((v & 255) * f);
+					return "rgb(" + r + "," + gg + "," + b + ")";
+				}
+
+				function fileName() {
+					const d = new Date();
+					const p = (n) => String(n).padStart(2, "0");
+					return (
+						"esi-photobooth-" +
+						d.getFullYear() +
+						p(d.getMonth() + 1) +
+						p(d.getDate()) +
+						"-" +
+						p(d.getHours()) +
+						p(d.getMinutes()) +
+						p(d.getSeconds()) +
+						".png"
+					);
+				}
+				function downloadFallback() {
+					const a = document.createElement("a");
+					a.href = st.strip.toDataURL("image/png");
+					a.download = fileName();
+					document.body.appendChild(a);
+					a.click();
+					a.remove();
+					showToast(
+						"Saved to your Downloads folder — drag it to the Desktop if you like. 🐧",
+					);
+				}
+				document
+					.getElementById("ph-btn-save")
+					.addEventListener("click", async function () {
+						if (!st.strip) return;
+						beep(700, 0.1);
+						beep(1050, 0.12);
+						/* Kalau browser mendukung, pemakai boleh memilih sendiri
+						   foldernya — jadi bisa langsung disimpan ke Desktop.
+						   Kalau tidak, jatuh ke unduhan biasa. */
+						if (window.showSaveFilePicker && st.strip.toBlob) {
+							try {
+								const blob = await new Promise((r) =>
+									st.strip.toBlob(r, "image/png"),
+								);
+								const handle = await window.showSaveFilePicker({
+									suggestedName: fileName(),
+									types: [
+										{
+											description: "PNG image",
+											accept: { "image/png": [".png"] },
+										},
+									],
+								});
+								const w = await handle.createWritable();
+								await w.write(blob);
+								await w.close();
+								showToast("Saved! 🎉 Check the folder you picked.");
+								return;
+							} catch (e) {
+								if (e && e.name === "AbortError") return;
+							}
+						}
+						downloadFallback();
+					});
+				document
+					.getElementById("ph-btn-share")
+					.addEventListener("click", function () {
+						if (!st.strip) return;
+						if (!st.strip.toBlob || !navigator.share) {
+							showToast(
+								"Sharing is not supported in this browser — use 💾 Save Photo, then post it yourself. 🐧",
+							);
+							return;
+						}
+						st.strip.toBlob(function (blob) {
+							const file = new File([blob], fileName(), { type: "image/png" });
+							const data = { files: [file], title: "ESI Photo Booth" };
+							if (navigator.canShare && !navigator.canShare(data)) {
+								showToast("Sharing this file is not supported — try 💾 Save Photo.");
+								return;
+							}
+							navigator.share(data).catch(function () {});
+						}, "image/png");
+					});
+				/* langsung jepret lagi dengan pengaturan yang sama */
+				document
+					.getElementById("ph-btn-again")
+					.addEventListener("click", function () {
+						ovDone.classList.add("hidden");
+						st.strip = null;
+						stripImg.removeAttribute("src");
+						const lk = document.getElementById("ph-strip-link");
+						if (lk) lk.removeAttribute("href");
+						session();
+					});
+				/* kembali ke layar awal untuk ganti tata letak / warna / efek */
+				document
+					.getElementById("ph-btn-style")
+					.addEventListener("click", function () {
+						ovDone.classList.add("hidden");
+						st.running = false;
+						st.shots = [];
+						st.strip = null;
+						stripImg.removeAttribute("src");
+						hudShot.textContent = "0/" + layout.shots;
+						hudPose.textContent = "—";
+						ovStart.classList.remove("hidden");
+						if (st.cam) loop();
+					});
+				document
+					.getElementById("ph-btn-start")
+					.addEventListener("click", session);
+
+				idle();
 			})();
 
 			/* ---------- 3c. FULLSCREEN TIAP GAME ---------- */
@@ -4899,6 +8150,656 @@
 				setupFS("fs-rush", "#game .game-shell");
 				setupFS("fs-ty", "#typing .game-shell");
 				setupFS("fs-voice", "#voice .game-shell");
+				setupFS("fs-pose", "#pose .game-shell");
+				setupFS("fs-photo", "#photo .game-shell");
+			})();
+
+			/* ================================================================
+			   5. NGOBROL DENGAN ESI
+			   ----------------------------------------------------------------
+			   Sengaja TIDAK memakai layanan AI daring: file ini dibuka di booth
+			   lewat XAMPP dan harus jalan tanpa internet, tanpa kunci API yang
+			   terekspos, dan yang paling penting — jawabannya harus pasti benar
+			   soal UPH. Semua jawaban ditulis tangan dan bersumber dari isi
+			   halaman ini sendiri. Untuk hal yang tidak diketahui (biaya,
+			   pendaftaran), ESI mengarahkan ke petugas booth, bukan mengarang.
+			   Cara menyambungkan LLM sungguhan: lihat README bagian 16.
+			   ================================================================ */
+			(function () {
+				const log = document.getElementById("chat-log");
+				const chipBox = document.getElementById("chat-chips");
+				const input = document.getElementById("chat-input");
+				const sendBtn = document.getElementById("chat-send");
+				const langBtn = document.getElementById("chat-lang");
+				const voiceBtn = document.getElementById("chat-voice");
+				const note = document.getElementById("chat-note");
+				if (!log) return;
+
+				let LANG = "en"; /* "en" | "id" */
+				let speak = false;
+				let voiceTouched = false; /* pemakai pernah mengatur sendiri? */
+				let busy = false;
+
+				/* ---------------- basis pengetahuan ---------------- */
+				const KB = {
+					hello: {
+						kw: ["hi", "hai", "halo", "hello", "hey", "pagi", "siang", "sore", "malam", "morning", "assalam", "shalom"],
+						en: "Hi there! 🐧 I'm <b>ESI</b>, the mascot of the Information Systems program at UPH. Ask me what Information Systems actually is, what you would study, where it can take you, or about our three specializations. What would you like to know?",
+						id: "Halo! 🐧 Aku <b>ESI</b>, maskot program studi Sistem Informasi UPH. Tanya aku soal apa itu Sistem Informasi, apa saja yang dipelajari, prospek kerjanya, atau tentang tiga peminatan kami. Mau tahu yang mana dulu?",
+						next: ["what_is", "three", "careers"],
+					},
+					what_is: {
+						kw: ["what is information system", "apa itu sistem informasi", "sistem informasi itu apa", "apa sih sistem informasi", "define", "pengertian", "maksudnya", "what does information systems mean", "si itu apa"],
+						en: "Information Systems is the bridge between <b>business and technology</b>. 🌉 We don't just build software — we work out which problem is worth solving, design the system that solves it, and make sure people and organisations actually benefit.<ul><li>💻 <b>Technology</b> — programming, databases, data analysis</li><li>💼 <b>Business</b> — processes, strategy, project management</li><li>🧠 <b>People</b> — how users really behave with a system</li></ul>That combination is exactly what makes IS graduates hard to replace.",
+						id: "Sistem Informasi adalah jembatan antara <b>bisnis dan teknologi</b>. 🌉 Kami tidak sekadar membuat aplikasi — kami menentukan masalah mana yang layak diselesaikan, merancang sistemnya, dan memastikan orang serta organisasi benar-benar terbantu.<ul><li>💻 <b>Teknologi</b> — pemrograman, basis data, analisis data</li><li>💼 <b>Bisnis</b> — proses, strategi, manajemen proyek</li><li>🧠 <b>Manusia</b> — bagaimana pengguna sesungguhnya memakai sistem</li></ul>Perpaduan itulah yang membuat lulusan SI sulit digantikan.",
+						next: ["vs_cs", "three", "coding"],
+					},
+					vs_cs: {
+						kw: ["beda", "bedanya", "perbedaan", "difference", "different", "versus", " vs ", "informatika", "informatics", "computer science", "teknik informatika", "ilmu komputer", "compare"],
+						en: "Good question — this is the one people ask most. 🤔<ul><li><b>Computer Science / Informatics</b> leans deeper into the machine: algorithms, theory, how software is built.</li><li><b>Information Systems</b> leans towards the <b>purpose</b>: which problem to solve, how a business runs, how technology creates real value.</li></ul>We still code — plenty of it — but we also learn to sit in a meeting with non-technical people and translate between both worlds. If you like technology <i>and</i> people, IS is usually the better fit.",
+						id: "Pertanyaan bagus — ini yang paling sering ditanyakan. 🤔<ul><li><b>Informatika / Ilmu Komputer</b> lebih dalam ke sisi mesin: algoritma, teori, cara perangkat lunak dibangun.</li><li><b>Sistem Informasi</b> lebih ke <b>tujuannya</b>: masalah apa yang perlu diselesaikan, bagaimana bisnis berjalan, bagaimana teknologi memberi nilai nyata.</li></ul>Kami tetap ngoding — banyak — tapi juga belajar duduk satu meja dengan orang non-teknis dan menerjemahkan dua dunia itu. Kalau kamu suka teknologi <i>dan</i> orang, SI biasanya lebih cocok.",
+						next: ["what_is", "coding", "careers"],
+					},
+					three: {
+						kw: ["peminatan", "specialization", "specialisation", "jurusan", "konsentrasi", "tiga", "three", "3 peminatan", "pilihan", "pathway", "track"],
+						en: "We have <b>three specialization pathways</b> — you pick the one that matches your passion: 🎯<ul><li>📊 <b>Data Science &amp; Analytics</b> — turn data into decisions</li><li>🕹️ <b>Interactive Intelligence Systems</b> — build experiences people love</li><li>💡 <b>Digital Technology and Innovation</b> — create digital products</li></ul>Which one sounds most like you? Tap one below and I'll tell you more.",
+						id: "Ada <b>tiga peminatan</b> — kamu tinggal pilih yang paling sesuai minatmu: 🎯<ul><li>📊 <b>Data Science &amp; Analytics</b> — mengubah data jadi keputusan</li><li>🕹️ <b>Interactive Intelligence Systems</b> — membangun pengalaman yang disukai pengguna</li><li>💡 <b>Digital Technology and Innovation</b> — menciptakan produk digital</li></ul>Yang mana paling kamu banget? Ketuk salah satu di bawah, nanti kuceritakan lebih lengkap.",
+						next: ["spec_data", "spec_ix", "spec_dti", "which"],
+					},
+					spec_data: {
+						kw: ["data science", "analytics", "analitik", "machine learning", "big data", "data scientist", "data analyst", "analis data", "pattern", "pola", "insight", "peminatan 1", "pertama", "statistik", "process mining"],
+						en: "📊 <b>Data Science &amp; Analytics</b><br />Behind every good business decision there is reliable data. You learn to turn datasets into <b>valuable insight</b> through machine learning, predictive analytics and data visualisation.<br /><br /><b>Featured courses:</b> Big Data Management · AI for Business · Web Analytics &amp; Social Media · Process Mining · Behavioral Analytics &amp; Trends<br /><br /><b>Careers:</b> Data Scientist · AI Specialist · Machine Learning Engineer · Data Analyst<br /><a class='chat-link' href='https://www.uph.edu/program/data-science-and-data-analytics' target='_blank' rel='noopener'>🔗 Full program page on uph.edu ↗</a>",
+						id: "📊 <b>Data Science &amp; Analytics</b><br />Di balik setiap keputusan bisnis yang baik ada data yang dapat dipercaya. Kamu belajar mengubah kumpulan data menjadi <b>wawasan bernilai</b> lewat machine learning, analitik prediktif, dan visualisasi data.<br /><br /><b>Mata kuliah unggulan:</b> Big Data Management · AI for Business · Web Analytics &amp; Social Media · Process Mining · Behavioral Analytics &amp; Trends<br /><br /><b>Prospek karier:</b> Data Scientist · AI Specialist · Machine Learning Engineer · Data Analyst<br /><a class='chat-link' href='https://www.uph.edu/program/data-science-and-data-analytics' target='_blank' rel='noopener'>🔗 Halaman lengkap program di uph.edu ↗</a>",
+						next: ["spec_ix", "spec_dti", "which"],
+					},
+					spec_ix: {
+						kw: ["interactive", "interaktif", "ui", "ux", "ui/ux", "desain", "design", "ar", "vr", "immersive", "genai", "peminatan 2", "kedua"],
+						en: "🕹️ <b>Interactive Intelligence Systems</b><br />Want to create applications that <b>keep people engaged</b>? This is where you learn how. You design advanced UI/UX, build interactive applications, and explore immersive technology such as AR and VR.<br /><br /><b>Featured courses:</b> Advanced UI/UX · Immersive Technology · Interactive Application Development · GenAI App Development · Advanced Software Project<br /><br /><b>Careers:</b> UI/UX Designer · UX Researcher · AR/VR Designer · Product Designer<br /><a class='chat-link' href='https://www.uph.edu/program/interactive-intelligence-systems/' target='_blank' rel='noopener'>🔗 Full program page on uph.edu ↗</a><br /><br />Fun fact: the camera and voice games on this page are exactly the kind of thing you'd build here. 🎮",
+						id: "🕹️ <b>Interactive Intelligence Systems</b><br />Ingin membuat aplikasi yang <b>bikin orang betah</b>? Di sinilah tempatnya. Kamu merancang UI/UX tingkat lanjut, membangun aplikasi interaktif, dan menjelajahi teknologi imersif seperti AR dan VR.<br /><br /><b>Mata kuliah unggulan:</b> Advanced UI/UX · Immersive Technology · Interactive Application Development · GenAI App Development · Advanced Software Project<br /><br /><b>Prospek karier:</b> UI/UX Designer · UX Researcher · AR/VR Designer · Product Designer<br /><a class='chat-link' href='https://www.uph.edu/program/interactive-intelligence-systems/' target='_blank' rel='noopener'>🔗 Halaman lengkap program di uph.edu ↗</a><br /><br />Ngomong-ngomong, game kamera dan suara di halaman ini persis jenis karya yang dibuat di peminatan ini. 🎮",
+						next: ["spec_dti", "spec_data", "games"],
+					},
+					spec_dti: {
+						kw: ["digital technology", "innovation", "inovasi", "iot", "mobile", "aplikasi mobile", "produk", "product", "startup", "wirausaha", "technopreneur", "risk management", "peminatan 3", "ketiga", "cyber"],
+						en: "💡 <b>Digital Technology and Innovation</b><br />Want to build <b>the digital product of your dreams</b>? Here you create innovative technology products such as IoT solutions and mobile apps, backed by solid business strategy and project management.<br /><br /><b>Featured courses:</b> IoT Programming · Advanced Mobile Application Programming · Business Recommendation System · Immersive Technology · IT Risk Management<br /><br /><b>Careers:</b> Software Engineer · Project &amp; Product Manager · IT Consultant · Cybersecurity Consultant · Technopreneur<br /><a class='chat-link' href='https://www.uph.edu/program/digital-technology-and-innovation/' target='_blank' rel='noopener'>🔗 Full program page on uph.edu ↗</a>",
+						id: "💡 <b>Digital Technology and Innovation</b><br />Ingin membangun <b>produk digital impianmu</b>? Di sini kamu menciptakan produk teknologi inovatif seperti solusi IoT dan aplikasi mobile, ditopang strategi bisnis dan manajemen proyek yang kuat.<br /><br /><b>Mata kuliah unggulan:</b> IoT Programming · Advanced Mobile Application Programming · Business Recommendation System · Immersive Technology · IT Risk Management<br /><br /><b>Prospek karier:</b> Software Engineer · Project &amp; Product Manager · IT Consultant · Cybersecurity Consultant · Technopreneur<br /><a class='chat-link' href='https://www.uph.edu/program/digital-technology-and-innovation/' target='_blank' rel='noopener'>🔗 Halaman lengkap program di uph.edu ↗</a>",
+						next: ["spec_data", "spec_ix", "which"],
+					},
+					which: {
+						kw: ["which one", "pilih yang mana", "cocok", "recommend", "saran", "bingung", "should i", "sebaiknya", "yang mana", "suit"],
+						en: "Let me help you narrow it down — pick whichever line sounds most like you: 🤔<ul><li>“I like finding patterns, numbers and answers” → 📊 <b>Data Science &amp; Analytics</b></li><li>“I care how things look and feel to use” → 🕹️ <b>Interactive Intelligence Systems</b></li><li>“I want to build and launch my own product” → 💡 <b>Digital Technology and Innovation</b></li></ul>And honestly? You don't have to decide today. You take shared foundations first, so you get to try things before you choose. The lecturers at the booth are the best people to talk this through with. 🐧",
+						id: "Aku bantu persempit ya — pilih kalimat yang paling terasa seperti kamu: 🤔<ul><li>“Aku suka mencari pola, angka, dan jawaban” → 📊 <b>Data Science &amp; Analytics</b></li><li>“Aku peduli pada tampilan dan rasa saat dipakai” → 🕹️ <b>Interactive Intelligence Systems</b></li><li>“Aku ingin membangun dan meluncurkan produkku sendiri” → 💡 <b>Digital Technology and Innovation</b></li></ul>Jujur saja, kamu tidak harus memutuskan hari ini. Ada mata kuliah dasar bersama dulu, jadi kamu sempat mencoba sebelum memilih. Untuk obrolan lebih dalam, dosen di booth adalah orang yang paling tepat. 🐧",
+						next: ["spec_data", "spec_ix", "spec_dti"],
+					},
+					careers: {
+						kw: ["career", "karir", "karier", "kerja", "pekerjaan", "job", "jobs", "prospek", "prospect", "peluang", "lulusan", "graduate", "gaji", "salary", "future", "masa depan", "jadi apa"],
+						en: "Information Systems graduates end up in a very wide range of roles — it depends on the specialization you pick: 🚀<ul><li>📊 Data Scientist · AI Specialist · Machine Learning Engineer · Data Analyst</li><li>🕹️ UI/UX Designer · UX Researcher · AR/VR Designer · Product Designer</li><li>💡 Software Engineer · Project &amp; Product Manager · IT Consultant · Cybersecurity Consultant · Technopreneur</li></ul>The common thread: almost every organisation runs on information systems, so you are not tied to one industry. I can't quote salary figures — the team at the booth can share what our alumni are actually doing. 💼",
+						id: "Lulusan Sistem Informasi tersebar di banyak peran — tergantung peminatan yang dipilih: 🚀<ul><li>📊 Data Scientist · AI Specialist · Machine Learning Engineer · Data Analyst</li><li>🕹️ UI/UX Designer · UX Researcher · AR/VR Designer · Product Designer</li><li>💡 Software Engineer · Project &amp; Product Manager · IT Consultant · Cybersecurity Consultant · Technopreneur</li></ul>Benang merahnya: hampir semua organisasi berjalan di atas sistem informasi, jadi kamu tidak terikat pada satu industri saja. Soal angka gaji aku tidak bisa menyebutkan — tim di booth bisa bercerita tentang alumni kami. 💼",
+						next: ["three", "coding", "booth"],
+					},
+					coding: {
+						kw: ["coding", "ngoding", "programming", "pemrograman", "susah", "sulit", "hard", "bisa gak", "harus jago", "pintar", "jago", "beginner", "pemula", "belum pernah", "no experience"],
+						en: "You do <b>not</b> need to arrive already knowing how to code. 🙂 Plenty of our students write their first line of code in their first semester, and that is completely normal — we start from the basics and build up.<br /><br />What helps far more is curiosity and a willingness to keep trying when something breaks. Programming is a skill you practise, not a talent you are born with.",
+						id: "Kamu <b>tidak perlu</b> sudah bisa ngoding sebelum masuk. 🙂 Banyak mahasiswa kami menulis baris kode pertamanya di semester satu, dan itu sangat wajar — kami mulai dari dasar lalu naik bertahap.<br /><br />Yang jauh lebih membantu adalah rasa ingin tahu dan kemauan mencoba lagi saat ada yang error. Pemrograman itu keterampilan yang dilatih, bukan bakat bawaan.",
+						next: ["math", "courses", "what_is"],
+					},
+					math: {
+						kw: ["math", "matematika", "hitung", "kalkulus", "statistics", "statistika", "angka", "numbers"],
+						en: "There is some maths — mostly statistics and logic, and it matters most in the Data Science pathway. But it is applied maths: you use it to answer a real question, not to fill a page with formulas. 📐<br /><br />If maths is not your favourite subject, the Interactive Intelligence Systems and Digital Technology pathways lean more on design, product thinking and building things.",
+						id: "Ada matematikanya — kebanyakan statistika dan logika, dan paling terasa di peminatan Data Science. Tapi sifatnya terapan: dipakai untuk menjawab pertanyaan nyata, bukan sekadar memenuhi halaman dengan rumus. 📐<br /><br />Kalau matematika bukan favoritmu, peminatan Interactive Intelligence Systems dan Digital Technology lebih condong ke desain, cara berpikir produk, dan membangun karya.",
+						next: ["spec_ix", "spec_dti", "coding"],
+					},
+					courses: {
+						kw: ["course", "mata kuliah", "matkul", "pelajaran", "belajar apa", "study", "subject", "kurikulum", "curriculum", "dipelajari"],
+						en: "Across the program you will meet things like programming and web development, databases, data analysis, UI/UX, business process and strategy, project management, and IT risk management — plus the specialization courses you choose later.<br /><br />Want the detail for one pathway? Tap a specialization below and I'll list its featured courses. 📚",
+						id: "Sepanjang kuliah kamu akan bertemu hal-hal seperti pemrograman dan pengembangan web, basis data, analisis data, UI/UX, proses dan strategi bisnis, manajemen proyek, serta manajemen risiko TI — ditambah mata kuliah peminatan yang kamu pilih nanti.<br /><br />Mau detail satu peminatan? Ketuk salah satu di bawah, nanti kusebutkan mata kuliah unggulannya. 📚",
+						next: ["spec_data", "spec_ix", "spec_dti"],
+					},
+					faidas: {
+						kw: ["faidas", "fakultas", "faculty", "under which", "naungan"],
+						en: "Information Systems at UPH sits inside <b>FAIDAS</b> — the Faculty of Artificial Intelligence and Data Sciences. 🤖📊<br /><br />That matters in practice: you are surrounded by people working on AI and data every day, and it shows up in our courses — AI for Business, GenAI App Development, machine learning, and so on.",
+						id: "Sistem Informasi UPH berada di bawah <b>FAIDAS</b> — Fakultas Artificial Intelligence and Data Sciences. 🤖📊<br /><br />Ini terasa nyata dalam keseharian: kamu dikelilingi orang yang menggarap AI dan data setiap hari, dan itu tercermin di mata kuliah kami — AI for Business, GenAI App Development, machine learning, dan seterusnya.",
+						next: ["what_is", "three", "uph"],
+					},
+					uph: {
+						kw: ["uph", "universitas pelita harapan", "kampus", "campus", "why uph", "kenapa uph", "keunggulan", "lokasi", "alamat"],
+						en: "UPH is Universitas Pelita Harapan, and our Information Systems program runs under FAIDAS. 🏫<br /><br />For campus location, facilities, tours and anything about visiting, please ask the team at our booth — they can give you accurate, up-to-date answers and even show you around. I'd rather point you to them than guess. 🐧",
+						id: "UPH adalah Universitas Pelita Harapan, dan program Sistem Informasi kami berada di bawah FAIDAS. 🏫<br /><br />Untuk lokasi kampus, fasilitas, tur, dan segala hal tentang kunjungan, silakan tanyakan ke tim di booth kami — mereka bisa memberi jawaban akurat dan terbaru, bahkan mengajak keliling. Lebih baik aku arahkan ke mereka daripada menebak. 🐧",
+						next: ["booth", "faidas", "three"],
+					},
+					admission: {
+						kw: ["daftar", "pendaftaran", "admission", "masuk", "syarat", "requirement", "register", "enroll", "seleksi", "tes", "kapan", "when", "deadline", "beasiswa", "scholarship"],
+						en: "That one I have to hand over. 🙏 Admission requirements, dates, tests and scholarships change from intake to intake, and I don't want to give you information that turns out to be out of date.<br /><br />Please talk to the team at our booth or check UPH's official admission channels — they will give you the accurate answer for this year.",
+						id: "Yang ini harus kuserahkan ke yang lebih tahu. 🙏 Syarat pendaftaran, jadwal, tes, dan beasiswa bisa berubah tiap gelombang, dan aku tidak mau memberi informasi yang ternyata sudah kedaluwarsa.<br /><br />Silakan bicara dengan tim di booth kami atau cek kanal penerimaan resmi UPH — mereka akan memberi jawaban yang akurat untuk tahun ini.",
+						next: ["booth", "three", "careers"],
+					},
+					cost: {
+						kw: ["biaya", "uang kuliah", "spp", "tuition", "fee", "cost", "harga kuliah", "mahal"],
+						en: "I genuinely don't know the current figures, and this is the last thing you'd want a penguin to guess at. 😅<br /><br />Tuition, payment schemes and scholarship options are best answered by the team at our booth or UPH's official admission office — please ask them directly.",
+						id: "Aku benar-benar tidak tahu angkanya saat ini, dan soal biaya jelas bukan hal yang boleh ditebak-tebak seekor penguin. 😅<br /><br />Biaya kuliah, skema pembayaran, dan pilihan beasiswa paling tepat dijawab oleh tim di booth kami atau kantor penerimaan resmi UPH — silakan tanyakan langsung ke mereka.",
+						next: ["admission", "booth", "three"],
+					},
+					games: {
+						kw: ["game", "main", "play", "permainan", "bisa apa", "halaman ini", "this page", "activity", "kegiatan"],
+						en: "There are four things to play with on this page — and every one of them is built with skills from our program: 🎮<ul><li>🎮 <b>Data Rush</b> — catch data; steer me with your hand on camera</li><li>⌨️ <b>Typing / Air Spelling</b> — spell words by pinching letters in the air</li><li>🎤 <b>Sound Rocket</b> — your voice is the jetpack fuel</li><li>🕺 <b>Pose Party</b> — copy my poses with your whole body</li></ul>There's a quiz too, and a booth leaderboard. Go beat someone's score! 🏆",
+						id: "Ada empat hal yang bisa dimainkan di halaman ini — dan semuanya dibangun dengan keterampilan dari program kami: 🎮<ul><li>🎮 <b>Data Rush</b> — tangkap data; kendalikan aku dengan tangan lewat kamera</li><li>⌨️ <b>Typing / Air Spelling</b> — eja kata dengan menjepit huruf di udara</li><li>🎤 <b>Sound Rocket</b> — suaramu jadi bahan bakar jetpack</li><li>🕺 <b>Pose Party</b> — tirukan gayaku dengan seluruh badan</li></ul>Ada kuis juga, dan papan skor booth. Ayo salip skor orang lain! 🏆",
+						next: ["spec_ix", "esi", "booth"],
+					},
+					esi: {
+						kw: ["esi", "maskot", "mascot", "penguin", "pinguin", "siapa kamu", "who are you", "namamu", "your name", "kamu siapa"],
+						en: "That's me! 🐧 <b>ESI</b> — the penguin mascot of UPH Information Systems. The VR headset is not just for show: it stands for the technology side of what we do, and the orange scarf comes from our program's colours.<br /><br />Why a penguin? Penguins look a bit clumsy on land but are brilliant once they're in their element — which is a fairly accurate description of a first-year student. 😄 Don't forget to take a photo with me at the booth!",
+						id: "Itu aku! 🐧 <b>ESI</b> — maskot penguin Sistem Informasi UPH. Headset VR-nya bukan sekadar hiasan: itu mewakili sisi teknologi dari yang kami kerjakan, dan syal oranyenya diambil dari warna program studi kami.<br /><br />Kenapa penguin? Penguin terlihat agak kikuk di darat tapi luar biasa begitu masuk ke elemennya — kira-kira itu gambaran akurat mahasiswa tahun pertama. 😄 Jangan lupa foto bareng aku di booth ya!",
+						next: ["games", "booth", "what_is"],
+					},
+					booth: {
+						kw: ["booth", "stand", "ketemu", "meet", "bertanya", "petugas", "dosen", "lecturer", "kakak", "orang", "talk to", "foto", "photo", "mampir", "visit"],
+						en: "Come and say hello! 👋 At our booth you can talk directly with Information Systems lecturers and students, try our project demos, and take a photo with me.<br /><br />Anything I couldn't answer — admission, fees, campus visits, what student life is actually like — they're the right people to ask.",
+						id: "Mampir dan sapa kami ya! 👋 Di booth kami kamu bisa mengobrol langsung dengan dosen dan mahasiswa Sistem Informasi, mencoba demo proyek kami, dan berfoto denganku.<br /><br />Hal-hal yang tidak bisa kujawab — pendaftaran, biaya, kunjungan kampus, bagaimana rasanya jadi mahasiswa di sini — merekalah orang yang tepat untuk ditanya.",
+						next: ["contact", "games", "three"],
+					},
+					contact: {
+						kw: ["instagram", "ig", "sosmed", "social media", "kontak", "contact", "follow", "medsos", "email", "website"],
+						en: "Follow us on Instagram at <b>@sisteminformasi.uph</b> 📷 — that's where our student projects, events and announcements go up.<br /><br />For anything official, the team at the booth can point you to the right channel.",
+						id: "Ikuti kami di Instagram <b>@sisteminformasi.uph</b> 📷 — di sanalah karya mahasiswa, kegiatan, dan pengumuman kami dibagikan.<br /><br />Untuk urusan resmi, tim di booth bisa mengarahkanmu ke kanal yang tepat.",
+						next: ["booth", "three", "games"],
+					},
+					ai: {
+						kw: ["are you ai", "kamu ai", "beneran", "real", "chatgpt", "bot", "robot", "manusia", "human", "gpt", "asli", "pintar gak"],
+						en: "Fair question, and I'll be straight with you: I'm <b>not</b> a live AI. 🐧 I'm a small script with answers written by the Information Systems team, so I can only handle topics they prepared — but everything I say about the program is accurate rather than made up.<br /><br />Ironically, building a proper AI assistant is something you'd learn to do here — GenAI App Development is one of our courses. 😄",
+						id: "Pertanyaan yang wajar, dan aku jawab terus terang: aku <b>bukan</b> AI sungguhan. 🐧 Aku program kecil dengan jawaban yang ditulis tim Sistem Informasi, jadi aku hanya bisa menangani topik yang mereka siapkan — tapi semua yang kukatakan soal program ini akurat, bukan karangan.<br /><br />Lucunya, membangun asisten AI yang sesungguhnya justru dipelajari di sini — GenAI App Development salah satu mata kuliah kami. 😄",
+						next: ["spec_ix", "what_is", "games"],
+					},
+					joke: {
+						kw: ["joke", "lucu", "lelucon", "garing", "hibur", "funny", "tebak"],
+						en: "Why did the database break up with the spreadsheet? 💔<br /><br />It said the relationship had <b>no integrity</b>. 🥁🐧<br /><br />…I'll show myself out. Ask me something about Information Systems instead?",
+						id: "Kenapa basis data putus dari spreadsheet? 💔<br /><br />Katanya hubungan mereka <b>tidak punya integritas</b>. 🥁🐧<br /><br />…baiklah, aku mundur pelan-pelan. Tanya soal Sistem Informasi saja yuk?",
+						next: ["what_is", "three", "games"],
+					},
+					thanks: {
+						kw: ["makasih", "terima kasih", "thanks", "thank you", "thx", "oke", "ok", "sip", "mantap", "bye", "dadah", "sampai jumpa", "see you"],
+						en: "Anytime! 🐧 Have a look at the games while you're here, and do come by the booth to meet the actual humans behind this program. See you there!",
+						id: "Sama-sama! 🐧 Mumpung di sini, cobain juga game-nya ya, dan mampir ke booth untuk bertemu manusia-manusia di balik program ini. Sampai jumpa di sana!",
+						next: ["games", "booth", "three"],
+					},
+				};
+
+				const LABEL = {
+					what_is: { en: "What is Information Systems?", id: "Apa itu Sistem Informasi?" },
+					three: { en: "The 3 specializations", id: "3 peminatannya apa saja?" },
+					spec_data: { en: "📊 Data Science & Analytics", id: "📊 Data Science & Analytics" },
+					spec_ix: { en: "🕹️ Interactive Intelligence", id: "🕹️ Interactive Intelligence" },
+					spec_dti: { en: "💡 Digital Tech & Innovation", id: "💡 Digital Tech & Innovation" },
+					which: { en: "Which one suits me?", id: "Aku cocok yang mana?" },
+					careers: { en: "Career prospects", id: "Prospek kerjanya?" },
+					coding: { en: "Do I need to code already?", id: "Harus bisa ngoding dulu?" },
+					math: { en: "Is there a lot of maths?", id: "Matematikanya banyak?" },
+					courses: { en: "What will I study?", id: "Belajar apa saja?" },
+					vs_cs: { en: "IS vs Informatics?", id: "Bedanya dengan Informatika?" },
+					faidas: { en: "What is FAIDAS?", id: "FAIDAS itu apa?" },
+					uph: { en: "About UPH", id: "Tentang UPH" },
+					admission: { en: "How do I apply?", id: "Cara daftarnya?" },
+					cost: { en: "Tuition fees?", id: "Biaya kuliahnya?" },
+					games: { en: "What can I play here?", id: "Bisa main apa di sini?" },
+					esi: { en: "Who are you, ESI?", id: "ESI itu siapa?" },
+					booth: { en: "Visit the booth", id: "Mampir ke booth" },
+					contact: { en: "Instagram", id: "Instagram" },
+					ai: { en: "Are you a real AI?", id: "Kamu AI beneran?" },
+					joke: { en: "Tell me a joke 😄", id: "Kasih lelucon dong 😄" },
+				};
+
+				const UI = {
+					en: {
+						greet: "Hi! 🐧 I'm <b>ESI</b>, your guide to Information Systems at UPH. Ask me anything — or tap one of the questions below to get started.",
+						ph: "Type your question here…",
+						send: "Send",
+						lang: "🇮🇩 Bahasa",
+						voiceOn: "🔊 Voice",
+						voiceOff: "🔈 Voice",
+						note: "ESI is a friendly guide with pre-written answers—not a live AI. For admission, fees and anything personal, please talk to the team at the booth. 🐧",
+						miss: "Hmm, that one isn't in my notes yet — I'd rather say so than make something up. 🐧 Here's what I <i>can</i> talk about:<ul><li>What Information Systems is, and how it differs from Informatics</li><li>Our three specializations, their courses and careers</li><li>Whether you need to code already, and how much maths there is</li><li>The games on this page, and where to find our booth</li></ul>For admission, fees or anything personal, the team at the booth is your best bet.",
+					},
+					id: {
+						greet: "Halo! 🐧 Aku <b>ESI</b>, pemandumu untuk Sistem Informasi UPH. Tanya apa saja — atau ketuk salah satu pertanyaan di bawah untuk mulai.",
+						ph: "Tulis pertanyaanmu di sini…",
+						send: "Kirim",
+						lang: "🇬🇧 English",
+						voiceOn: "🔊 Suara",
+						voiceOff: "🔈 Suara",
+						note: "ESI adalah pemandu ramah dengan jawaban yang sudah disiapkan—bukan AI sungguhan. Untuk pendaftaran, biaya, dan hal pribadi, silakan bicara dengan tim di booth. 🐧",
+						miss: "Hmm, yang itu belum ada di catatanku — lebih baik kubilang terus terang daripada mengarang. 🐧 Ini yang <i>bisa</i> kubahas:<ul><li>Apa itu Sistem Informasi, dan bedanya dengan Informatika</li><li>Tiga peminatan kami, mata kuliah, dan prospek kariernya</li><li>Perlu bisa ngoding dulu atau tidak, dan seberapa banyak matematikanya</li><li>Game di halaman ini, dan di mana booth kami</li></ul>Untuk pendaftaran, biaya, atau hal pribadi, tim di booth jauh lebih tepat.",
+					},
+				};
+
+				const START = ["what_is", "three", "careers", "games"];
+
+				/* ---------------- pencocokan pertanyaan ----------------
+				   Pengunjung menulis "peminatannya", "daftarnya", "matematikanya".
+				   Tanpa memotong imbuhan, kata-kata itu tidak pernah cocok utuh dan
+				   ESI jadi sering menjawab "tidak tahu". Jadi teks dibandingkan dua
+				   kali: apa adanya, dan versi yang imbuhannya dipangkas. */
+				const ID_SUFFIX = /(nya|ku|mu|lah|kah|pun)$/;
+				function stemWord(w) {
+					let x = w;
+					if (x.length > 5) x = x.replace(ID_SUFFIX, "");
+					if (x.length >= 4 && x.charAt(x.length - 1) === "s") x = x.slice(0, -1);
+					return x;
+				}
+				function norm(t) {
+					return (" " + t.toLowerCase() + " ")
+						.replace(/[^\w\s\/]/g, " ")
+						.replace(/\s+/g, " ");
+				}
+				function stemAll(t) {
+					return (
+						" " + norm(t).trim().split(" ").map(stemWord).join(" ") + " "
+					);
+				}
+				function match(text) {
+					const plain = norm(text),
+						stemmed = stemAll(text);
+					let best = null,
+						bestScore = 0;
+					for (const key in KB) {
+						let sc = 0;
+						for (const k of KB[key].kw) {
+							const kw = norm(k).trim();
+							if (!kw) continue;
+							const kwS = stemAll(k).trim();
+							const words = kw.split(" ").length;
+							if (
+								plain.indexOf(" " + kw + " ") >= 0 ||
+								stemmed.indexOf(" " + kwS + " ") >= 0
+							)
+								sc += words * 3; /* cocok utuh */
+							else if (plain.indexOf(kw) >= 0) sc += words; /* sekadar potongan */
+						}
+						if (sc > bestScore) {
+							bestScore = sc;
+							best = key;
+						}
+					}
+					/* satu kata kunci utuh sudah cukup; potongan saja tidak */
+					return bestScore >= 3 ? best : null;
+				}
+
+				/* ---------------- tampilan ---------------- */
+				function bubble(who, html) {
+					const d = document.createElement("div");
+					d.className = "msg " + who;
+					const av = document.createElement("div");
+					av.className = "av";
+					av.innerHTML =
+						who === "esi"
+							? '<img src="assets/esi.png" alt="ESI" />'
+							: "<span>🙋</span>";
+					const tx = document.createElement("div");
+					tx.className = "txt";
+					tx.innerHTML = html;
+					d.appendChild(av);
+					d.appendChild(tx);
+					log.appendChild(d);
+					log.scrollTop = log.scrollHeight;
+					return d;
+				}
+				function typing() {
+					const d = bubble(
+						"esi",
+						'<span class="dots"><span></span><span></span><span></span></span>',
+					);
+					d.dataset.temp = "1";
+					return d;
+				}
+				function say(html, delay) {
+					busy = true;
+					const t = typing();
+					setTimeout(
+						function () {
+							t.remove();
+							bubble("esi", html);
+							busy = false;
+							if (speak) speakOut(html);
+						},
+						delay === undefined ? 480 : delay,
+					);
+				}
+				function chips(keys) {
+					chipBox.innerHTML = "";
+					(keys || START).forEach(function (k) {
+						if (!LABEL[k]) return;
+						const b = document.createElement("button");
+						b.type = "button";
+						b.textContent = LABEL[k][LANG];
+						b.addEventListener("click", function () {
+							ask(LABEL[k][LANG], k);
+						});
+						chipBox.appendChild(b);
+					});
+				}
+				/* ---------------- suara ESI ----------------
+				   Tiga hal yang bikin suara sintetis terdengar seperti robot:
+				   emoji ikut dibaca, tanda baca daftar dibaca apa adanya, dan
+				   satu kalimat panjang diucapkan tanpa jeda. Ketiganya ditangani
+				   di sini, plus pemilihan suara terbaik yang tersedia. */
+				let voices = [];
+				function loadVoices() {
+					try {
+						voices = window.speechSynthesis.getVoices() || [];
+					} catch (e) {
+						voices = [];
+					}
+				}
+				if (window.speechSynthesis) {
+					loadVoices();
+					window.speechSynthesis.onvoiceschanged = loadVoices;
+				}
+				/* suara yang terdengar paling manusiawi, diurutkan dari yang terbaik */
+				const VOICE_PREF = {
+					id: ["google bahasa indonesia", "damayanti", "andika", "gadis", "id-id"],
+					en: [
+						"google uk english female",
+						"samantha",
+						"microsoft aria",
+						"microsoft jenny",
+						"google us english",
+						"karen",
+						"moira",
+						"en-gb",
+						"en-us",
+					],
+				};
+				/* Suara "Natural"/"Neural"/"Online" jauh lebih manusiawi daripada
+				   suara sintetis lama bawaan sistem — itu yang paling menentukan.
+				   Jadi suara dinilai, bukan diambil yang pertama ketemu. */
+				const NATURAL_HINTS = [
+					"natural",
+					"neural",
+					"online",
+					"premium",
+					"enhanced",
+					"siri",
+					"eloquence",
+				];
+				const ROBOT_HINTS = ["david", "zira", "mark", "espeak", "compact"];
+				function voiceScore(v, lang) {
+					const name = ((v.name || "") + " " + (v.lang || "")).toLowerCase();
+					let sc = 0;
+					const pref = VOICE_PREF[lang];
+					for (let i = 0; i < pref.length; i++)
+						if (name.indexOf(pref[i]) >= 0) {
+							sc += (pref.length - i) * 10;
+							break;
+						}
+					for (const h of NATURAL_HINTS) if (name.indexOf(h) >= 0) sc += 45;
+					for (const h of ROBOT_HINTS) if (name.indexOf(h) >= 0) sc -= 30;
+					if (/female|wanita|perempuan/.test(name)) sc += 6;
+					if (!v.localService) sc += 8; /* suara awan biasanya lebih halus */
+					return sc;
+				}
+				function pickVoice(lang) {
+					if (!voices.length) loadVoices();
+					const tag = lang === "id" ? "id" : "en";
+					const pool = voices.filter(
+						(v) => (v.lang || "").toLowerCase().indexOf(tag) === 0,
+					);
+					const cands = pool.length ? pool : voices;
+					if (!cands.length) return null;
+					let best = cands[0],
+						bestScore = -1e9;
+					for (const v of cands) {
+						const sc = voiceScore(v, lang);
+						if (sc > bestScore) {
+							bestScore = sc;
+							best = v;
+						}
+					}
+					return best;
+				}
+
+				/* emoji, simbol, dan penanda ragam — semuanya jangan dibaca */
+				const EMOJI =
+					/[\u{1F000}-\u{1FAFF}\u{2190}-\u{21FF}\u{2300}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE00}-\u{FE0F}\u{200D}\u{20E3}]/gu;
+				/* singkatan yang kalau dibaca utuh jadi aneh */
+				const SAY_AS = [
+					[/UI\s*\/\s*UX/gi, "U I, U X"],
+					[/\bUI\b/g, "U I"],
+					[/\bUX\b/g, "U X"],
+					[/\bUPH\b/g, "U P H"],
+					[/\bIoT\b/g, "I O T"],
+					[/\bGenAI\b/g, "Gen A I"],
+					[/\bAR\b/g, "A R"],
+					[/\bVR\b/g, "V R"],
+					[/\bIT\b/g, "I T"],
+					[/\bIS\b/g, "Information Systems"],
+				];
+				function toSpeech(html, lang) {
+					const tmp = document.createElement("div");
+					tmp.innerHTML = String(html)
+						.replace(/<\/(li|p|h\d)>/gi, ". ")
+						.replace(/<br\s*\/?>/gi, ". ")
+						.replace(/<\/?(ul|ol)>/gi, ". ");
+					let t = tmp.textContent || "";
+					t = t.replace(EMOJI, " ");
+					t = t.replace(/&/g, lang === "id" ? " dan " : " and ");
+					t = t.replace(/[·•|]/g, ", ");
+					t = t.replace(/[“”"]/g, "");
+					t = t.replace(/\s*—\s*/g, ", ");
+					for (const r of SAY_AS) t = t.replace(r[0], r[1]);
+					/* garis miring dibaca "slash" — diubah jadi jeda biasa
+					   (UI/UX sudah ditangani daftar di atas) */
+					t = t.replace(/\s*\/\s*/g, ", ");
+					/* titik dua yang disusul titik terdengar seperti tersendat */
+					t = t.replace(/([:;])\s*\./g, "$1");
+					t = t.replace(/\s*\.(\s*\.)+/g, ".");
+					t = t.replace(/\s*,(\s*,)+/g, ",");
+					t = t.replace(/\s+/g, " ");
+					t = t.replace(/\s+([,.!?])/g, "$1");
+					t = t.replace(/^[\s.,]+/, "").trim();
+					return t;
+				}
+				/* Antrean ucapan sendiri, tidak menumpuk semua ke browser sekaligus.
+				   Kalimat berikutnya baru diucapkan setelah jeda pendek — inilah
+				   "napas" yang membedakan bicara manusia dari daftar yang dibacakan
+				   mesin. Tiap kalimat juga diberi variasi nada & kecepatan kecil,
+				   karena bicara datar sempurna justru terdengar seperti robot. */
+				let sayQueue = [],
+					sayToken = 0;
+
+				function planSentence(seg, idx, total, lang) {
+					const last = seg.charAt(seg.length - 1);
+					const isQ = last === "?";
+					const isX = last === "!";
+					const jit = (a) => (Math.random() * 2 - 1) * a;
+					let rate = (lang === "id" ? 0.97 : 1.0) + jit(0.035);
+					let pitch = 1.05 + jit(0.05);
+					let pause = 230;
+					if (idx === 0) rate -= 0.03; /* buka kalimat sedikit lebih pelan */
+					if (isQ) {
+						pitch += 0.07;
+						rate -= 0.02;
+						pause = 330;
+					}
+					if (isX) {
+						pitch += 0.05;
+						rate += 0.03;
+						pause = 300;
+					}
+					if (seg.length < 30) pause -= 60; /* kalimat pendek, jeda pendek */
+					if (idx === total - 1) pause = 0;
+					return {
+						text: seg,
+						rate: Math.max(0.7, Math.min(1.3, rate)),
+						pitch: Math.max(0.7, Math.min(1.5, pitch)),
+						pause: Math.max(90, pause + jit(50)),
+					};
+				}
+
+				function sayNext(token) {
+					if (token !== sayToken || !speak || !sayQueue.length) return;
+					const seg = sayQueue.shift();
+					try {
+						const u = new SpeechSynthesisUtterance(seg.text);
+						const voice = pickVoice(LANG);
+						if (voice) u.voice = voice;
+						u.lang = voice ? voice.lang : LANG === "id" ? "id-ID" : "en-US";
+						u.rate = seg.rate;
+						u.pitch = seg.pitch;
+						u.volume = 1;
+						u.onend = function () {
+							setTimeout(function () {
+								sayNext(token);
+							}, seg.pause);
+						};
+						u.onerror = function () {
+							setTimeout(function () {
+								sayNext(token);
+							}, 90);
+						};
+						speechSynthesis.speak(u);
+					} catch (e) {}
+				}
+
+				function stopSpeaking() {
+					sayToken++;
+					sayQueue = [];
+					try {
+						speechSynthesis.cancel();
+					} catch (e) {}
+				}
+
+				function speakOut(html) {
+					try {
+						if (!window.speechSynthesis) return;
+						let t = toSpeech(html, LANG);
+						if (!t) return;
+						/* daftar mata kuliah yang panjang membosankan kalau dibacakan
+						   utuh — dipotong di batas kalimat, bukan di tengah kata */
+						if (t.length > 430) {
+							const cut = t.slice(0, 430);
+							const i = Math.max(
+								cut.lastIndexOf(". "),
+								cut.lastIndexOf("! "),
+								cut.lastIndexOf("? "),
+							);
+							t = i > 140 ? cut.slice(0, i + 1) : cut;
+						}
+						stopSpeaking();
+						const parts = (t.match(/[^.!?]+[.!?]*/g) || [t])
+							.map((p) => p.trim())
+							.filter((p) => p.length > 1);
+						sayQueue = parts.map((p, i) =>
+							planSentence(p, i, parts.length, LANG),
+						);
+						sayNext(sayToken);
+					} catch (e) {}
+				}
+
+				/* ---------------- alur tanya-jawab ---------------- */
+				function ask(text, forcedKey) {
+					if (busy) return;
+					text = (text || "").trim();
+					if (!text) return;
+					bubble("me", text.replace(/[<>&]/g, ""));
+					input.value = "";
+					const key = forcedKey || match(text);
+					if (key && KB[key]) {
+						say(KB[key][LANG]);
+						chips(KB[key].next);
+					} else {
+						say(UI[LANG].miss, 620);
+						chips(START);
+					}
+				}
+
+				sendBtn.addEventListener("click", function () {
+					ask(input.value);
+				});
+				input.addEventListener("keydown", function (e) {
+					if (e.key === "Enter") {
+						e.preventDefault();
+						ask(input.value);
+					}
+				});
+
+				langBtn.addEventListener("click", function () {
+					LANG = LANG === "en" ? "id" : "en";
+					langBtn.textContent = UI[LANG].lang;
+					input.placeholder = UI[LANG].ph;
+					sendBtn.textContent = UI[LANG].send;
+					voiceBtn.textContent = speak ? UI[LANG].voiceOn : UI[LANG].voiceOff;
+					note.textContent = UI[LANG].note;
+					log.innerHTML = "";
+					stopSpeaking();
+					busy = false;
+					say(UI[LANG].greet, 240);
+					chips(START);
+				});
+
+				voiceBtn.addEventListener("click", function () {
+					voiceTouched = true;
+					speak = !speak;
+					voiceBtn.classList.toggle("on", speak);
+					voiceBtn.textContent = speak ? UI[LANG].voiceOn : UI[LANG].voiceOff;
+					if (!speak) stopSpeaking();
+				});
+
+				/* ---------------- maskot di hero bisa diajak bicara ---------------- */
+				const HELLO_LINES = {
+					en: [
+						"Hi! 🐧 I'm ESI, the penguin behind UPH Information Systems. Ask me anything — what we study, where it leads, or the three specializations you can choose from.",
+						"Oh, hello! 🐧 Nice to meet you. I'm ESI. Curious what Information Systems actually is? Just ask — I'm right here.",
+						"You found me! 🐧 I'm ESI. I can tell you about our three specializations, what you'd study, and the jobs our graduates go into. Where shall we start?",
+						"Hey there! 🐧 I'm ESI, your guide to Information Systems at UPH. Type a question, or tap one of the buttons below.",
+					],
+					id: [
+						"Halo! 🐧 Aku ESI, penguin dari Sistem Informasi UPH. Tanya apa saja — apa yang dipelajari, prospeknya, atau tiga peminatan yang bisa kamu pilih.",
+						"Eh, halo! 🐧 Senang bertemu denganmu. Aku ESI. Penasaran Sistem Informasi itu sebenarnya apa? Tanya saja, aku di sini.",
+						"Ketemu juga! 🐧 Aku ESI. Aku bisa cerita soal tiga peminatan kami, apa saja yang dipelajari, dan pekerjaan para lulusannya. Mulai dari mana?",
+						"Hai! 🐧 Aku ESI, pemandumu untuk Sistem Informasi UPH. Ketik pertanyaanmu, atau ketuk salah satu tombol di bawah.",
+					],
+				};
+				let heroTurn = 0;
+				const heroEsi = document.getElementById("hero-esi");
+				const heroHint = document.getElementById("hero-esi-hint");
+
+				function heroTalk() {
+					/* klik adalah gestur pemakai, jadi browser mengizinkan suara.
+					   Suara dinyalakan hanya kalau pemakai belum pernah mengaturnya
+					   sendiri — kalau tadi sengaja dimatikan, hormati pilihan itu. */
+					if (!voiceTouched && !speak) {
+						speak = true;
+						voiceBtn.classList.add("on");
+						voiceBtn.textContent = UI[LANG].voiceOn;
+					}
+					const lines = HELLO_LINES[LANG];
+					const line = lines[heroTurn % lines.length];
+					heroTurn++;
+					if (heroHint) heroHint.style.display = "none";
+
+					const sec = document.getElementById("tanya");
+					if (sec) sec.scrollIntoView({ behavior: "smooth", block: "start" });
+
+					/* diucapkan langsung — jangan menunggu animasi gulir selesai,
+					   karena browser mengaitkan izin suara dengan klik barusan */
+					if (speak) speakOut(line);
+					setTimeout(function () {
+						busy = false;
+						bubble("esi", line);
+						chips(START);
+						if (window.innerWidth > 720) input.focus({ preventScroll: true });
+					}, 420);
+				}
+				if (heroEsi) {
+					heroEsi.addEventListener("click", heroTalk);
+					heroEsi.addEventListener("keydown", function (e) {
+						if (e.key === "Enter" || e.key === " ") {
+							e.preventDefault();
+							heroTalk();
+						}
+					});
+				}
+
+				/* sapaan pembuka */
+				bubble("esi", UI[LANG].greet);
+				chips(START);
 			})();
 
 			/* ---------- 4. KUIS ---------- */
